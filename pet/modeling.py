@@ -31,6 +31,9 @@ from pet.wrapper import TransformerModelWrapper, SEQUENCE_CLASSIFIER_WRAPPER, Wr
 
 import collections
 
+import transformers
+transformers.logging.set_verbosity_error()
+
 logger = log.get_logger('root')
 
 # vanilla = False # whether fed vanilla is on, fed vanilla means no augmentation, but is fed, means using ft instead of pl to train local model, and aggregate the model via fedavg

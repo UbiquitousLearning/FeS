@@ -29,6 +29,9 @@ from pet.utils import InputExample, get_verbalization_ids
 import log
 from pet import wrapper as wrp
 
+import transformers
+transformers.logging.set_verbosity_error()
+
 logger = log.get_logger('root')
 
 FilledPattern = Tuple[List[Union[str, Tuple[str, bool]]], List[Union[str, Tuple[str, bool]]]]

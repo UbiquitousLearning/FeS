@@ -38,6 +38,9 @@ from pet import preprocessor
 from pet.tasks import TASK_HELPERS
 from pet.utils import InputFeatures, DictDataset, distillation_loss
 
+import transformers
+transformers.logging.set_verbosity_error()
+
 logger = log.get_logger('root')
 
 CONFIG_NAME = 'wrapper_config.json'
