@@ -10,6 +10,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import ast
+from enum import Flag
 import json
 import os
 import random
@@ -28,8 +29,64 @@ import log
 from pet.utils import InputExample, exact_match, save_logits, save_predictions, softmax, LogitsList, set_seed, eq_div
 from pet.wrapper import TransformerModelWrapper, SEQUENCE_CLASSIFIER_WRAPPER, WrapperConfig
 
+import collections
+
 logger = log.get_logger('root')
 
+# vanilla = False # whether fed vanilla is on, fed vanilla means no augmentation, but is fed, means using ft instead of pl to train local model, and aggregate the model via fedavg
+# aggregated = True # 是否将10个client训练出来的模型fedavg一下，只infer一次;后面的两个函数里也要改一下
+# augmentation = False # 如果不开augmentation，那每个client只能依靠自己的数据来进行训练，而且也不会用到unlabeled data (origin), fed is off
+# fed = False
+
+def partition_class_samples_with_dirichlet_distribution(
+        train_data, beta, client_num,seed):
+    """
+    params
+    ------------------------------------
+    train_data : labeled train dataset
+    beta : int  similarity of each client, the larger the beta the similar data for each client
+    client_num : int number of clients
+    seed : random seed, from initial args; default is 42
+    ------------------------------------
+
+    return
+    ------------------------------------
+    train_data_dirichlet : labeled train dataset with dirichlet distribution (not uniformed)
+    ------------------------------------
+    """
+    np.random.seed(seed)
+    # train dataset should be shuffled before
+    N = len(train_data)
+
+    # using dirichlet distribution to determine the unbalanced proportion for each client (client_num in total)
+    # e.g., when client_num = 4, proportions = [0.29543505 0.38414498 0.31998781 0.00043216], sum(proportions) = 1
+    proportions = np.random.dirichlet(np.repeat(beta, client_num))
+
+    train_data_dirichlet_list = np.array([])
+
+    N_available = N - client_num # ensure that each client has 1 samples at least
+
+    for i in range(client_num - 1):
+        train_data_dirichlet_list = np.append(train_data_dirichlet_list, int(N_available * proportions[i]))  # round down by inner function 'int'
+    N_avaiable_left = N_available - np.sum(train_data_dirichlet_list)
+    train_data_dirichlet_list = np.append(train_data_dirichlet_list, N_avaiable_left)
+
+    train_data_dirichlet_list = train_data_dirichlet_list + np.array([1]*client_num)# add 1 sample to each client
+    train_data_dirichlet_list_slice = []
+    idx = 0
+    for num in train_data_dirichlet_list:
+        idx = idx + int(num)
+        train_data_dirichlet_list_slice.append(idx)
+
+    # Debug info
+    # logger.info("train_data: {}".format(train_data))
+    # logger.info("train_data_dirichlet_list: {}".format(train_data_dirichlet_list))
+    # logger.info("train_data_dirichlet_list_slice: {}".format(train_data_dirichlet_list_slice))
+    
+    # generate the new train_data for each client
+    train_data_dirichlet = np.split(train_data, train_data_dirichlet_list_slice)
+
+    return train_data_dirichlet
 
 class PetConfig(ABC):
     """Abstract class for a PET configuration that can be saved to and loaded from a json file."""
@@ -294,12 +351,310 @@ def train_classifier(model_config: WrapperConfig, train_config: TrainConfig, eva
                        train_data=train_data, unlabeled_data=unlabeled_data, eval_data=eval_data, do_train=do_train,
                        do_eval=do_eval, seed=seed)
 
+def train_fedpet(ensemble_model_config: WrapperConfig, ensemble_train_config: TrainConfig,
+               ensemble_eval_config: EvalConfig, ipet_config: IPetConfig, final_model_config: WrapperConfig,
+               final_train_config: TrainConfig, final_eval_config: EvalConfig, pattern_ids: List[int], output_dir: str,
+               ensemble_repetitions: int = 3, final_repetitions: int = 1, reduction: str = 'wmean',
+               train_data: List[InputExample] = None, unlabeled_data: List[InputExample] = None,
+               eval_data: List[InputExample] = None, do_train: bool = True, do_eval: bool = True, seed: int = 42, aggregated: bool = True,
+               augmentation: bool = True, fed: bool = True, vanilla: bool = True, beta: int = None):
+    """
+    Train and evaluate a new fed PET model for a given task.
+
+    :param ensemble_model_config: the model configuration for each model corresponding to an individual PVP
+    :param ensemble_train_config: the training configuration for each model corresponding to an individual PVP
+    :param ensemble_eval_config: the evaluation configuration for each model corresponding to an individual PVP
+    :param ipet_config: the iPET training configuration
+    :param final_model_config: the model configuration for the final distilled sequence classifier
+    :param final_train_config: the training configuration for the final distilled sequence classifier
+    :param final_eval_config: the evaluation configuration for the final distilled sequence classifier
+    :param pattern_ids: the ids of all PVPs to use
+    :param output_dir: the output directory
+    :param ensemble_repetitions: the number of training repetitions for each model corresponding to an individual PVP
+    :param final_repetitions: the number of training repetitions for the final distilled sequence classifier
+    :param reduction: the reduction strategy for merging predictions, either 'mean' or 'wmean'
+    :param train_data: the training examples to use
+    :param unlabeled_data: the unlabeled examples to use
+    :param eval_data: the evaluation examples to use
+    :param do_train: whether to perform training
+    :param do_eval: whether to perform evaluation
+    :param seed: the random seed to use
+    """
+    client_num_in_total = 10
+    num_clients = 5 # per round
+    random.Random(seed).shuffle(train_data)
+    random.Random(seed).shuffle(unlabeled_data) # shuffle data for spliting
+    train_data = np.array(train_data)
+    unlabeled_data = np.array(unlabeled_data)
+    if beta:
+        train_data_sperate = partition_class_samples_with_dirichlet_distribution(train_data=train_data, beta=beta, client_num=client_num_in_total, seed=seed)
+    else:
+        train_data_sperate = np.split(train_data,client_num_in_total)
+    unlabeled_data_seperate = np.split(unlabeled_data,client_num_in_total)
+
+    if vanilla:
+        for gen in range(ipet_config.generations):
+            # Select clients
+            np.random.seed(gen)
+            client_indexes = np.random.choice(range(client_num_in_total), num_clients, replace=False)
+            logger.info("Gen {}: client_indexes is {}".format(gen, client_indexes))
+            aggregated_model_path = None
+            
+            # Calculate the samples numbers of each clients involved in this round 
+            sample_num_list = np.array([])
+            for client in range(num_clients):
+                sample_num_list = np.append(sample_num_list, len(train_data_sperate[client_indexes[client]]))
+            logger.info("Gen{}: sample_num_list is {}".format(gen, sample_num_list))
+
+            # Aggergate models trained in previous round.
+            if gen > 0:
+                aggregated_model_path = os.path.join(output_dir, f'g{gen-1}',f'aggregated')
+                models_path = []
+                for i in range(num_clients):
+                    pattern_iter_input_dir = os.path.join(output_dir, f'g{gen-1}',f'client{i}')
+                    models_path.append(pattern_iter_input_dir)
+                models, fl_model = aggregate(models_path=models_path, sample_num_list=sample_num_list)
+                wrapper = init_model(ensemble_model_config)
+                wrapper.model = fl_model
+
+                logger.info("Saving aggregated trained model at {}...".format(aggregated_model_path))
+                wrapper.save(aggregated_model_path)   
+
+            for client in range(num_clients):
+                client_idx = client_indexes[client]
+                gen_output_dir = os.path.join(output_dir, f'g{gen}', f'client{client}')
+                train_data = train_data_sperate[client_idx].tolist()
+                unlabeled_data = unlabeled_data_seperate[client_idx].tolist()
+
+                train_pet_ensemble(ensemble_model_config, ensemble_train_config, ensemble_eval_config, pattern_ids,
+                                gen_output_dir,
+                                repetitions=1, train_data=train_data, unlabeled_data=unlabeled_data,
+                                eval_data=eval_data, do_train=do_train, do_eval=do_eval, save_unlabeled_logits=True,aggregated_model_path=aggregated_model_path)
+    else:
+        for gen in range(ipet_config.generations): # debug mode: start from 2nd iteration; defalut is 0
+            # Select clients
+            aggregated_model_path = None
+            np.random.seed(gen)
+            client_indexes = np.array([])
+            if fed:
+                client_indexes = np.random.choice(range(client_num_in_total), num_clients, replace=False)
+            else:
+                client_indexes = range(10)
+            
+            logger.info("Gen {}: client_indexes is {}".format(gen, client_indexes))
+
+            sample_num_list = np.array([])
+            for client in range(num_clients):
+                sample_num_list = np.append(sample_num_list, len(train_data_sperate[client_indexes[client]]))
+            logger.info("Gen{}: sample_num_list is {}".format(gen, sample_num_list))
+
+            for client in range(num_clients):
+                # if client != 2: # debug mode
+                #     continue
+                client_idx = client_indexes[client]
+                gen_output_dir = os.path.join(output_dir, f'g{gen}', f'client{client}')
+                train_data = train_data_sperate[client_idx].tolist()
+                unlabeled_data = unlabeled_data_seperate[client_idx].tolist()
+                if gen > 0:
+                    if fed and aggregated: # 是否和其它方联合训练, fed avg 
+                        models_path = []
+                        aggregated_model_path = os.path.join(output_dir, f'g{gen-1}',f'aggregated')
+                        
+                        for i in range(num_clients):
+                            pattern_iter_input_dir = os.path.join(output_dir, f'g{gen-1}',f'client{i}')
+                            models_path.append(pattern_iter_input_dir)
+
+                        models, fl_model = aggregate(models_path=models_path, sample_num_list=sample_num_list)
+                        wrapper = init_model(ensemble_model_config)
+                        wrapper.model = fl_model
+                        logger.info("Saving aggregated trained model at {}...".format(aggregated_model_path))
+                        wrapper.save(aggregated_model_path) 
+
+                    if augmentation: # 是否利用unlabeled data
+                        if fed: # 是否和其它方联合训练
+                            # Step 1: Use all the model in last interation to annotate examples for this generation
+                            if aggregated: # 是否把多方的模型聚合，以此来利用unlabeled data
+                                models_path = []
+                                aggregated_model_path = os.path.join(output_dir, f'g{gen-1}',f'aggregated')
+                                
+                                for i in range(num_clients):
+                                    pattern_iter_input_dir = os.path.join(output_dir, f'g{gen-1}',f'client{i}')
+                                    models_path.append(pattern_iter_input_dir)
+
+                                models, fl_model = aggregate(models_path=models_path, sample_num_list=sample_num_list)
+                                wrapper = init_model(ensemble_model_config)
+                                wrapper.model = fl_model
+                                logger.info("Saving aggregated trained model at {}...".format(aggregated_model_path))
+                                wrapper.save(aggregated_model_path) 
+                                logits = evaluate(wrapper, unlabeled_data, ensemble_eval_config)['logits']
+
+                                save_logits(os.path.join(output_dir, f'g{gen-1}', f'client{0}', 'logits.txt'), logits)
+                                
+
+                                original_data_size = len(train_data) if train_data else 10 / ipet_config.scale_factor
+                                num_new_examples = int(original_data_size * (ipet_config.scale_factor * (gen + 1)) - len(train_data)) # 由原先的**级别增长，降至*级别增长
+                                generate_fedipet_train_sets(train_data=train_data, unlabeled_data=unlabeled_data,
+                                                    labels=ensemble_model_config.label_list, logits_dir=os.path.join(output_dir, f'g{gen-1}'),
+                                                    output_dir=os.path.join(output_dir, f'g{gen}', f'client{client}', 'this-gen-train-data'), reduction=reduction,
+                                                    num_new_examples=num_new_examples, logits_percentage=ipet_config.logits_percentage,
+                                                    n_most_likely=ipet_config.n_most_likely if gen == 0 else -1, seed=seed, aggregated=aggregated)
+
+                            else: # 如果aggreagetd 没开，那就是每一方都会用其它n方client的模型来进行n次infer，而不是n方模型的进行
+                                for i in range(num_clients):
+
+                                    pattern_iter_input_dir = os.path.join(output_dir, f'g{gen-1}',f'client{i}')
+
+                                    wrapper = TransformerModelWrapper.from_pretrained(pattern_iter_input_dir)
+
+                                    # evaluate on this client's unlabeled_data
+                                    logits = evaluate(wrapper, unlabeled_data, ensemble_eval_config)['logits']
+
+                                    # 本轮某个client的logits暂存在上一轮相应client的目录下，以供generate train sets使用; 会覆盖掉上一个client用自己的数据扩充的数据
+                                    save_logits(os.path.join(pattern_iter_input_dir, 'logits.txt'), logits)
+
+                                original_data_size = len(train_data) if train_data else 10 / ipet_config.scale_factor
+                                num_new_examples = int(original_data_size * (ipet_config.scale_factor * (gen + 1)) - len(train_data)) # 由原先的**级别增长，降至*级别增长
+                                generate_fedipet_train_sets(train_data=train_data, unlabeled_data=unlabeled_data,
+                                                    labels=ensemble_model_config.label_list, logits_dir=os.path.join(output_dir, f'g{gen-1}'),
+                                                    output_dir=os.path.join(output_dir, f'g{gen}', f'client{client}', 'this-gen-train-data'), reduction=reduction,
+                                                    num_new_examples=num_new_examples, logits_percentage=ipet_config.logits_percentage,
+                                                    n_most_likely=ipet_config.n_most_likely if gen == 0 else -1, seed=seed, aggregated=aggregated)
+
+                        else: # local pet
+                            models_path = []
+                                    
+                            pattern_iter_input_dir = os.path.join(output_dir, f'g{gen-1}',f'client{client_idx}')
+                            models_path.append(pattern_iter_input_dir)
+
+                            models, fl_model = aggregate(models_path=models_path, sample_num_list=sample_num_list)
+                            wrapper = init_model(ensemble_model_config)
+                            wrapper.model = fl_model
+                            logits = evaluate(wrapper, unlabeled_data, ensemble_eval_config)['logits']
+
+                            save_logits(os.path.join(output_dir, f'g{gen-1}', f'client{0}', 'logits.txt'), logits)
+
+                            original_data_size = len(train_data) if train_data else 10 / ipet_config.scale_factor
+                            num_new_examples = int(original_data_size * (ipet_config.scale_factor * (gen + 1)) - len(train_data)) # 由原先的**级别增长，降至*级别增长
+                            generate_fedipet_train_sets(train_data=train_data, unlabeled_data=unlabeled_data,
+                                                labels=ensemble_model_config.label_list, logits_dir=os.path.join(output_dir, f'g{gen-1}'),
+                                                output_dir=os.path.join(output_dir, f'g{gen}', f'client{client}', 'this-gen-train-data'), reduction=reduction,
+                                                num_new_examples=num_new_examples, logits_percentage=ipet_config.logits_percentage,
+                                                n_most_likely=ipet_config.n_most_likely if gen == 0 else -1, seed=seed, aggregated=aggregated)
+
+
+                # Step 2: Train an ensemble of models corresponding to individual clients (pattern = 1)
+                ipet_data_dir = os.path.join(output_dir, f'g{gen}', f'client{client}', 'this-gen-train-data') if gen > 0 and augmentation else None
+                last_iteration_model_path = None
+                if gen > 0: # Inherit the model para. from last iteration
+                    last_iteration_model_path = os.path.join(output_dir, f'g{gen-1}', f'client{client}')
+                if aggregated and fed:
+                    train_pet_ensemble(ensemble_model_config, ensemble_train_config, ensemble_eval_config, pattern_ids,
+                                    gen_output_dir, ipet_data_dir=ipet_data_dir,
+                                    repetitions=ensemble_repetitions, train_data=train_data, unlabeled_data=unlabeled_data,
+                                    eval_data=eval_data, do_train=do_train, do_eval=do_eval, save_unlabeled_logits=True, aggregated_model_path = aggregated_model_path) 
+                else:
+                    train_pet_ensemble(ensemble_model_config, ensemble_train_config, ensemble_eval_config, pattern_ids,
+                                    gen_output_dir, ipet_data_dir=ipet_data_dir,
+                                    repetitions=ensemble_repetitions, train_data=train_data, unlabeled_data=unlabeled_data,
+                                    eval_data=eval_data, do_train=do_train, do_eval=do_eval, save_unlabeled_logits=True, last_iteration_model_path = last_iteration_model_path) 
+
+
+    # Step 3: Merge the annotations created by each individual model 这一步相当于generate_ipet_train_sets。但是是把所有的unlabeled data都打标签了。如果有多个pattern的话，在本地可以把多个pattern infer出来的logit聚合。现在我们只有一个patter，这一步无用。注：多个client infer出来的logit，由于隐私愿意，其原始数据和中间logits不可以传输。所以没法聚合。
+    logits_dir = os.path.join(output_dir, f'g{ipet_config.generations - 1}')
+    logits_file = os.path.join(logits_dir, 'unlabeled_logits.txt')
+    merge_logits(logits_dir, logits_file, reduction)
+    logits = LogitsList.load(logits_file).logits
+    assert len(logits) == len(unlabeled_data)
+    logger.info("Got {} logits from file {}".format(len(logits), logits_file))
+    for example, example_logits in zip(unlabeled_data, logits):
+        example.logits = example_logits
+
+    # Step 4: Train the final sequence classifier model 这一步会变成，让每个client单独训练一个sc，然后聚合sc模型。和常规的fl一样了。
+    final_model_config.wrapper_type = SEQUENCE_CLASSIFIER_WRAPPER
+    final_train_config.use_logits = True
+
+    train_classifier(final_model_config, final_train_config, final_eval_config, os.path.join(output_dir, 'final'),
+                     repetitions=final_repetitions, train_data=train_data, unlabeled_data=unlabeled_data,
+                     eval_data=eval_data, do_train=do_train, do_eval=do_eval)
+
+def train_fedclassifier(model_config: WrapperConfig, train_config: TrainConfig, eval_config: EvalConfig, output_dir: str,
+                     repetitions: int = 3, train_data: List[InputExample] = None,
+                     unlabeled_data: List[InputExample] = None, eval_data: List[InputExample] = None,
+                     do_train: bool = True, do_eval: bool = True, seed: int = 42, beta: int = None):
+    """
+    Train and evaluate a sequence classification model.
+
+    :param model_config: the model configuration to use
+    :param train_config: the training configuration to use
+    :param eval_config: the evaluation configuration to use
+    :param output_dir: the output directory
+    :param repetitions: the number of training repetitions
+    :param train_data: the training examples to use
+    :param unlabeled_data: the unlabeled examples to use
+    :param eval_data: the evaluation examples to use
+    :param do_train: whether to perform training
+    :param do_eval: whether to perform evaluation
+    :param seed: the random seed to use
+    """
+
+    train_config.use_logits=False # !!!!!!!!!!!! to be the same with sequence classifer
+    client_num_in_total = 10
+    num_clients = 5 # per round
+    random.Random(seed).shuffle(train_data)
+    random.Random(seed).shuffle(unlabeled_data) # shuffle data for spliting
+    train_data_origin = train_data
+    unlabeled_data_origin = unlabeled_data
+    train_data = np.array(train_data)
+    unlabeled_data = np.array(unlabeled_data)
+    if beta:
+        train_data_sperate = partition_class_samples_with_dirichlet_distribution(train_data=train_data, beta=beta, client_num=client_num_in_total, seed=seed)
+    else:
+        train_data_sperate = np.split(train_data,client_num_in_total)
+    unlabeled_data_seperate = np.split(unlabeled_data,client_num_in_total)
+
+    for gen in range(repetitions):
+        # Select clients
+        np.random.seed(gen)
+        client_indexes = np.random.choice(range(client_num_in_total), num_clients, replace=False)
+        logger.info("Gen {}: client_indexes is {}".format(gen, client_indexes))
+        aggregated_model_path = None
+
+        # Calculate the samples numbers of each clients involved in this round 
+        sample_num_list = np.array([])
+        for client in range(num_clients):
+            sample_num_list = np.append(sample_num_list, len(train_data_sperate[client_indexes[client]]))
+        logger.info("Gen{}: sample_num_list is {}".format(gen, sample_num_list))
+
+        # Aggergate models trained in previous round.
+        if gen > 0:
+            aggregated_model_path = os.path.join(output_dir, f'g{gen-1}',f'aggregated')
+            models_path = []
+            for i in range(num_clients):
+                pattern_iter_input_dir = os.path.join(output_dir, f'g{gen-1}',f'client{i}')
+                models_path.append(pattern_iter_input_dir)
+            models, fl_model = aggregate(models_path=models_path, sample_num_list=sample_num_list)
+            wrapper = init_model(model_config)
+            wrapper.model = fl_model
+
+            logger.info("Saving aggregated trained model at {}...".format(aggregated_model_path))
+            wrapper.save(aggregated_model_path)   
+
+        for client in range(num_clients):
+            client_idx = client_indexes[client]
+            gen_output_dir = os.path.join(output_dir, f'g{gen}', f'client{client}')
+            train_data = train_data_sperate[client_idx].tolist()
+            unlabeled_data = unlabeled_data_seperate[client_idx].tolist()
+
+            train_pet_ensemble(model_config, train_config, eval_config, pattern_ids=[1], output_dir=gen_output_dir,
+                            repetitions=1,
+                            train_data=train_data, unlabeled_data=unlabeled_data, eval_data=eval_data, do_train=do_train,
+                            do_eval=do_eval, seed=seed, aggregated_model_path=aggregated_model_path)
 
 def train_pet_ensemble(model_config: WrapperConfig, train_config: TrainConfig, eval_config: EvalConfig,
                        pattern_ids: List[int], output_dir: str, ipet_data_dir: str = None, repetitions: int = 3,
                        train_data: List[InputExample] = None, unlabeled_data: List[InputExample] = None,
                        eval_data: List[InputExample] = None, do_train: bool = True, do_eval: bool = True,
-                       save_unlabeled_logits: bool = False, seed: int = 42):
+                       save_unlabeled_logits: bool = False, seed: int = 42, aggregated_model_path: str = None, last_iteration_model_path: str = None):
     """
     Train and evaluate an ensemble of PET models without knowledge distillation.
 
@@ -329,30 +684,58 @@ def train_pet_ensemble(model_config: WrapperConfig, train_config: TrainConfig, e
             model_config.pattern_id = pattern_id
             results_dict = {}
 
-            pattern_iter_output_dir = "{}/p{}-i{}".format(output_dir, pattern_id, iteration)
+            fed = 1
+            if fed:
+                pattern_iter_output_dir = "{}".format(output_dir)
+            else:
+                pattern_iter_output_dir = "{}/p{}-i{}".format(output_dir, pattern_id, iteration)
 
-            if os.path.exists(pattern_iter_output_dir):
+            if os.path.exists(pattern_iter_output_dir) and do_train and not fed: # eval&fed的时候不要跳过
                 logger.warning(f"Path {pattern_iter_output_dir} already exists, skipping it...")
                 continue
 
             if not os.path.exists(pattern_iter_output_dir):
                 os.makedirs(pattern_iter_output_dir)
 
-            wrapper = init_model(model_config)
+            wrapper = None
 
+            
             # Training
             if do_train:
+
+                wrapper = init_model(model_config)
+                
+                # Using the previous aggregated model
+                if aggregated_model_path:
+                    logger.info("Loading previous aggregated trained model from {}".format(aggregated_model_path))
+                    wrapper = TransformerModelWrapper.from_pretrained(aggregated_model_path)
+                
+                # Using the previous private model for each client seperatedly.
+                if last_iteration_model_path:
+                    logger.info("Loading previous private trained model in last iteration for each client seperatedly from {}.".format(last_iteration_model_path))
+                    wrapper = TransformerModelWrapper.from_pretrained(last_iteration_model_path)
+
+                # Using trained model after 3 epochs of PET unsupervised learning (Only for SC testing, will be removed)
+                inherit = 0
+                if inherit: 
+                    logger.info("Loading previous aggregated trained model via PET unsupervised learning.")
+                    from transformers import BertForSequenceClassification
+                    wrapper.model = BertForSequenceClassification.from_pretrained('./log_10_100/p0-i0')
+                
                 if ipet_data_dir:
-                    p = os.path.join(ipet_data_dir, 'p{}-i{}-train.bin'.format(pattern_id, iteration))
+                    p = os.path.join(ipet_data_dir, 'train.bin')
                     ipet_train_data = InputExample.load_examples(p)
                     for example in ipet_train_data:
                         example.logits = None
                 else:
                     ipet_train_data = None
+                
+                # # See test acc before training
+                # eval_result = evaluate(wrapper, eval_data, eval_config, priming_data=train_data)
 
                 results_dict.update(train_single_model(wrapper, train_data, train_config, eval_config,
                                                        ipet_train_data=ipet_train_data,
-                                                       unlabeled_data=unlabeled_data))
+                                                       unlabeled_data=unlabeled_data, eval_data = eval_data))
 
                 with open(os.path.join(pattern_iter_output_dir, 'results.txt'), 'w') as fh:
                     fh.write(str(results_dict))
@@ -376,9 +759,21 @@ def train_pet_ensemble(model_config: WrapperConfig, train_config: TrainConfig, e
             if do_eval:
                 logger.info("Starting evaluation...")
                 if not wrapper:
+                    logger.info("Loading from pattern_iter_output_dir")
                     wrapper = TransformerModelWrapper.from_pretrained(pattern_iter_output_dir)
 
                 eval_result = evaluate(wrapper, eval_data, eval_config, priming_data=train_data)
+
+                # (Only for SC testing, will be removed)
+                # wrapper.config = wrapper._load_config('./log_10_100/final/p0-i0')
+                # wrapper.config.wrapper_type = SEQUENCE_CLASSIFIER_WRAPPER
+                # from transformers import BertForSequenceClassification
+                # wrapper.model = BertForSequenceClassification.from_pretrained(pattern_iter_output_dir)
+                # from pet import preprocessor
+                # wrapper.preprocessor = preprocessor.SequenceClassifierPreprocessor(
+                #     wrapper, wrapper.config.task_name, 0, wrapper.config.verbalizer_file)
+                # sc_eval_result = evaluate(wrapper, eval_data, eval_config, priming_data=train_data)
+                # logger.info(sc_eval_result['scores']['acc'])
 
                 save_predictions(os.path.join(pattern_iter_output_dir, 'predictions.jsonl'), wrapper, eval_result)
                 save_logits(os.path.join(pattern_iter_output_dir, 'eval_logits.txt'), eval_result['logits'])
@@ -386,6 +781,7 @@ def train_pet_ensemble(model_config: WrapperConfig, train_config: TrainConfig, e
                 scores = eval_result['scores']
                 logger.info("--- RESULT (pattern_id={}, iteration={}) ---".format(pattern_id, iteration))
                 logger.info(scores)
+                logger.info(pattern_iter_output_dir)
 
                 results_dict['test_set_after_training'] = scores
                 with open(os.path.join(pattern_iter_output_dir, 'results.json'), 'w') as fh:
@@ -407,7 +803,7 @@ def train_pet_ensemble(model_config: WrapperConfig, train_config: TrainConfig, e
 
 def train_single_model(model: TransformerModelWrapper, train_data: List[InputExample], config: TrainConfig,
                        eval_config: EvalConfig = None, ipet_train_data: List[InputExample] = None,
-                       unlabeled_data: List[InputExample] = None, return_train_set_results: bool = True):
+                       unlabeled_data: List[InputExample] = None, return_train_set_results: bool = True, eval_data: List[InputExample] = None):
     """
     Train a single model.
 
@@ -429,11 +825,16 @@ def train_single_model(model: TransformerModelWrapper, train_data: List[InputExa
     results_dict = {}
 
     model.model.to(device)
-
+    
+    # debug mode, evaluate the val set, default is train_data
     if train_data and return_train_set_results:
-        results_dict['train_set_before_training'] = evaluate(model, train_data, eval_config)['scores']['acc']
+        results_dict['train_set_before_training'] = evaluate(model, eval_data, eval_config)['scores']['acc']
+
+    logger.info('init acc: val acc before training is {}'.format(results_dict['train_set_before_training']))
 
     all_train_data = train_data + ipet_train_data
+
+    logger.info('len of all_train_data: {}'.format(len(all_train_data)))
 
     if not all_train_data and not config.use_logits:
         logger.warning('Training method was called without training examples')
@@ -455,7 +856,8 @@ def train_single_model(model: TransformerModelWrapper, train_data: List[InputExa
             lm_training=config.lm_training,
             use_logits=config.use_logits,
             alpha=config.alpha,
-            temperature=config.temperature
+            temperature=config.temperature,
+            task_eval_data=eval_data
         )
         results_dict['global_step'] = global_step
         results_dict['average_loss'] = tr_loss
@@ -600,6 +1002,93 @@ def merge_logits_lists(logits_lists: List[LogitsList], reduction: str = 'mean') 
 
     return LogitsList(score=-1, logits=logits)
 
+def generate_fedipet_train_sets(train_data: List[InputExample], unlabeled_data: List[InputExample], labels: List[str],
+                             logits_dir: str, output_dir: str, reduction: str, num_new_examples: int,
+                             logits_percentage: float, n_most_likely: int = -1, seed: int = 42, aggregated: bool = True):
+    """
+    Generate training sets for the next generation of iPET models.
+
+    :param train_data: the training examples
+    :param unlabeled_data: the unlabeled examples
+    :param labels: the list of all possible labels
+    :param logits_dir: the directory that contains the predictions of all models in the current generation for the
+           unlabeled data.
+    :param output_dir: the output directory
+    :param reduction: the strategy for merging logits, either 'mean' or 'wmean'. For 'mean', all models contribute
+           equally, for 'wmean', each model's contribution is proportional to its accuracy on the training set before
+           training.
+    :param num_new_examples: the number of new examples to create
+    :param logits_percentage: the percentage of models to use for annotating training sets for the next generation
+    :param n_most_likely: If >0, in the first generation the n_most_likely examples per label are chosen even
+                              if their predicted label is different
+    :param seed: the random seed to use
+    """
+    subdirs = next(os.walk(logits_dir))[1]
+
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
+    logger.info("Found the following {} subdirectories: {}".format(len(subdirs), subdirs))
+
+    if train_data:
+        train_examples_per_label = [sum(1 for ex in train_data if ex.label == label) for label in labels]
+        multiplier = num_new_examples / len(train_data)
+        examples_per_label = [int(epl * multiplier) for epl in train_examples_per_label]
+        logger.info(f"Example distribution in the original dataset: {train_examples_per_label}")
+    else:
+        examples_per_label = eq_div(num_new_examples, len(labels))
+
+    logger.info(f"Target distribution for the new dataset: {examples_per_label}")
+
+    for example in unlabeled_data:
+        example.label, example.logits = None, None
+
+    logits_lists = {}
+
+    rng = random.Random(seed)
+    rng_np = np.random.RandomState(seed)
+    
+    for subdir in subdirs:
+        if aggregated and subdir != 'client0':
+            print(subdir,' ','no aggregated data')
+            continue
+        print(subdir,' ','has aggregated data')
+        results_file = os.path.join(logits_dir, subdir, 'results.txt')
+        logits_file = os.path.join(logits_dir, subdir, 'logits.txt')
+        logits = []
+
+        if not os.path.exists(results_file) or not os.path.exists(logits_file):
+            logger.warning(f"Skipping subdir '{subdir}' because 'results.txt' or 'logits.txt' not found")
+            continue
+
+        if reduction == 'mean':
+            result_train = 1
+        else:
+            with open(results_file, 'r') as fh:
+                results = ast.literal_eval(fh.read())
+                result_train = results['train_set_before_training']
+
+        with open(logits_file, 'r') as fh:
+            for line in fh.read().splitlines():
+                example_logits = [float(x) for x in line.split()]
+                logits.append(example_logits)
+
+        logger.info("File {}: Score = {}, #Logits = {}, #Labels = {}".format(
+            results_file, result_train, len(logits), len(logits[0])))
+
+        loglist = LogitsList(score=result_train, logits=logits)
+        logits_lists[subdir] = loglist
+
+
+    other_logits_lists = [ll for sd, ll in logits_lists.items()]
+    subdir_train_set = generate_ipet_train_set(
+        other_logits_lists, labels=labels, original_data=unlabeled_data, examples_per_label=examples_per_label,
+        logits_percentage=logits_percentage, reduction=reduction, n_most_likely=n_most_likely, rng=rng,
+        rng_np=rng_np
+    )
+
+    InputExample.save_examples(subdir_train_set,
+                                os.path.join(output_dir, 'train.bin'))
 
 def generate_ipet_train_sets(train_data: List[InputExample], unlabeled_data: List[InputExample], labels: List[str],
                              logits_dir: str, output_dir: str, reduction: str, num_new_examples: int,
@@ -688,7 +1177,7 @@ def generate_ipet_train_sets(train_data: List[InputExample], unlabeled_data: Lis
 
 def generate_ipet_train_set(logits_lists: List[LogitsList], labels: List[str], original_data: List[InputExample],
                             examples_per_label: List[int], logits_percentage: float, reduction: str = 'mean',
-                            n_most_likely: int = -1, rng=None, rng_np=None) -> List[InputExample]:
+                            n_most_likely: int = -1, rng=None, rng_np=None, aggregated: bool = True) -> List[InputExample]:
     """
     Generate a single training set for the next generation of iPET models.
 
@@ -711,7 +1200,10 @@ def generate_ipet_train_set(logits_lists: List[LogitsList], labels: List[str], o
     if not rng_np:
         rng_np = np.random.RandomState()
 
-    num_logits_lists = round(len(logits_lists) * logits_percentage)
+    if aggregated:
+        num_logits_lists = 1
+    else:
+        num_logits_lists = round(len(logits_lists) * logits_percentage) 
     logits_lists = rng.sample(logits_lists, k=num_logits_lists)
     logits = np.array([ll.logits for ll in logits_lists])
     weights = np.array([ll.score for ll in logits_lists])
@@ -758,7 +1250,52 @@ def generate_ipet_train_set(logits_lists: List[LogitsList], labels: List[str], o
 
 
 def _draw_examples_by_label_probability(examples: List[InputExample], num_examples: int, rng) -> List[InputExample]:
-    label_probabilities = [max(example.logits) for example in examples]
-    sum_label_probabilities = sum(label_probabilities)
-    label_probabilities = [p / sum_label_probabilities for p in label_probabilities]
-    return rng.choice(examples, size=num_examples, replace=False, p=label_probabilities).tolist()
+    if len(examples) > 0:
+        label_probabilities = [max(example.logits) for example in examples]
+        sum_label_probabilities = sum(label_probabilities)
+        label_probabilities = [p / sum_label_probabilities for p in label_probabilities]
+        return rng.choice(examples, size=num_examples, replace=False, p=label_probabilities).tolist()
+    else:
+        logger.info("This client has 0 examples to draw. Funtion _draw_examples_by_label_probability is passed.")
+        return []
+
+def get_parameter_number(net):
+    total_num = sum(p.numel() for p in net.parameters())
+    trainable_num = sum(p.numel() for p in net.parameters() if p.requires_grad)
+    return {'Total': total_num, 'Trainable': trainable_num}
+
+def aggregate(models_path=None, sample_num_list=None):
+    if not models_path:
+        models_path = ['./log_10_100/p0-i0', 
+        './log_10_100/p1-i0', 
+        './log_10_100/p2-i0', 
+        './log_10_100/p3-i0', 
+        './log_10_100/p4-i0']
+    models = []
+    for model_path in models_path:
+        model = TransformerModelWrapper.from_pretrained(model_path).model
+        models.append(model)
+
+    worker_state_dict =[x.state_dict()for x in models]
+    weight_keys =list(worker_state_dict[0].keys())
+    fed_state_dict = collections.OrderedDict()
+    for key in weight_keys:
+        key_sum =0
+        for i in range(len(models)):
+            key_sum = key_sum + worker_state_dict[i][key] * sample_num_list[i]
+        fed_state_dict[key]= key_sum / np.sum(sample_num_list)
+    #### update fed weights to fl model
+    fl_model = TransformerModelWrapper.from_pretrained(models_path[0]).model
+    fl_model.load_state_dict(fed_state_dict)
+    return models, fl_model
+
+def compare_model(m1, m2):
+    worker_state_dict = [m1.state_dict(), m2.state_dict()]
+    weight_keys =list(worker_state_dict[0].keys())
+    import collections
+    sub_state_dict = collections.OrderedDict() # subtraction state dictionary
+    for key in weight_keys:
+        sub_state_dict[key]= worker_state_dict[0][key] - worker_state_dict[1][key]
+    sub_model = TransformerModelWrapper.from_pretrained('./log_10_100/p0-i0').model
+    sub_model.load_state_dict(sub_state_dict)
+    return sub_model

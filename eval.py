@@ -17,7 +17,7 @@ one of the supported tasks and datasets.
 
 import argparse
 import os
-# os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 from typing import Tuple
 
 import torch
@@ -93,7 +93,7 @@ def main():
     parser = argparse.ArgumentParser(description="Command line interface for PET/iPET")
 
     # Required parameters
-    parser.add_argument("--method", required=True, choices=['pet', 'ipet', 'sequence_classifier', 'fedpet', 'fedclassifier'],
+    parser.add_argument("--method", required=True, choices=['pet', 'ipet', 'sequence_classifier'],
                         help="The training method to use. Either regular sequence classification, PET or iPET.")
     parser.add_argument("--data_dir", default=None, type=str, required=True,
                         help="The input data dir. Should contain the data files for the task.")
@@ -110,7 +110,7 @@ def main():
     parser.add_argument("--wrapper_type", default="mlm", choices=WRAPPER_TYPES,
                         help="The wrapper type. Set this to 'mlm' for a masked language model like BERT or to 'plm' "
                              "for a permuted language model like XLNet (only for PET)")
-    parser.add_argument("--pattern_ids", default=[1], type=int, nargs='+',
+    parser.add_argument("--pattern_ids", default=[0,1,2,3,4], type=int, nargs='+',
                         help="The ids of the PVPs to be used (only for PET)")
     parser.add_argument("--lm_training", action='store_true',
                         help="Whether to use language modeling as auxiliary task (only for PET)")
@@ -120,7 +120,7 @@ def main():
                         help="Temperature used for combining PVPs (only for PET)")
     parser.add_argument("--verbalizer_file", default=None,
                         help="The path to a file to override default verbalizers (only for PET)")
-    parser.add_argument("--reduction", default='mean', choices=['wmean', 'mean'],
+    parser.add_argument("--reduction", default='wmean', choices=['wmean', 'mean'],
                         help="Reduction strategy for merging predictions from multiple PET models. Select either "
                              "uniform weighting (mean) or weighting based on train set accuracy (wmean)")
     parser.add_argument("--decoding_strategy", default='default', choices=['default', 'ltr', 'parallel'],
@@ -198,7 +198,7 @@ def main():
                         help="Max gradient norm.")
     parser.add_argument("--warmup_steps", default=0, type=int,
                         help="Linear warmup over warmup_steps.")
-    parser.add_argument('--logging_steps', type=int, default=5000,
+    parser.add_argument('--logging_steps', type=int, default=50,
                         help="Log every X updates steps.")
     parser.add_argument("--no_cuda", action='store_true',
                         help="Avoid using CUDA when available")
@@ -214,23 +214,13 @@ def main():
                         help="Whether to use priming for evaluation")
     parser.add_argument("--eval_set", choices=['dev', 'test'], default='dev',
                         help="Whether to perform evaluation on the dev set or the test set")
-    parser.add_argument("--aggregated", action='store_true',
-                        help="Whether to aggregated models from multi clients")
-    parser.add_argument("--vanilla", action='store_true',
-                        help="whether fed vanilla is on, fed vanilla means no augmentation, but is fed, means using ft instead of pl to train local model, and aggregate the model via fedavg")
-    parser.add_argument("--augmentation", action='store_true',
-                        help="Whether to predict soft label for unlabeled data")
-    parser.add_argument("--fed", action='store_true',
-                        help="Whether to perform fed training or just local training")
-    parser.add_argument("--beta", type=int, default=None,
-                        help="Int  similarity of each client, the larger the beta the similar data for each client")
 
     args = parser.parse_args()
     logger.info("Parameters: {}".format(args))
 
-    # if os.path.exists(args.output_dir) and os.listdir(args.output_dir) \
-    #         and args.do_train and not args.overwrite_output_dir:
-    #     raise ValueError("Output directory ({}) already exists and is not empty.".format(args.output_dir))
+    if os.path.exists(args.output_dir) and os.listdir(args.output_dir) \
+            and args.do_train and not args.overwrite_output_dir:
+        raise ValueError("Output directory ({}) already exists and is not empty.".format(args.output_dir))
 
     # Setup CUDA, GPU & distributed training
     args.device = "cuda" if torch.cuda.is_available() and not args.no_cuda else "cpu"
@@ -265,8 +255,6 @@ def main():
     sc_model_cfg, sc_train_cfg, sc_eval_cfg = load_sequence_classifier_configs(args)
     ipet_cfg = load_ipet_config(args)
 
-    logger.info("Parameters after setting: {}".format(args))
-
     if args.method == 'pet':
         pet.train_pet(pet_model_cfg, pet_train_cfg, pet_eval_cfg, sc_model_cfg, sc_train_cfg, sc_eval_cfg,
                       pattern_ids=args.pattern_ids, output_dir=args.output_dir,
@@ -286,18 +274,6 @@ def main():
         pet.train_classifier(sc_model_cfg, sc_train_cfg, sc_eval_cfg, output_dir=args.output_dir,
                              repetitions=args.sc_repetitions, train_data=train_data, unlabeled_data=unlabeled_data,
                              eval_data=eval_data, do_train=args.do_train, do_eval=args.do_eval, seed=args.seed)
-    
-    elif args.method == 'fedpet':
-        pet.train_fedpet(pet_model_cfg, pet_train_cfg, pet_eval_cfg, ipet_cfg, sc_model_cfg, sc_train_cfg, sc_eval_cfg,
-                       pattern_ids=args.pattern_ids, output_dir=args.output_dir,
-                       ensemble_repetitions=args.pet_repetitions, final_repetitions=args.sc_repetitions,
-                       reduction=args.reduction, train_data=train_data, unlabeled_data=unlabeled_data,
-                       eval_data=eval_data, do_train=args.do_train, do_eval=args.do_eval, seed=args.seed, aggregated=args.aggregated, vanilla=args.vanilla, fed=args.fed, augmentation=args.augmentation, beta=args.beta)
-
-    elif args.method == 'fedclassifier':
-        pet.train_fedclassifier(sc_model_cfg, sc_train_cfg, sc_eval_cfg, output_dir=args.output_dir,
-                             repetitions=args.sc_repetitions, train_data=train_data, unlabeled_data=unlabeled_data,
-                             eval_data=eval_data, do_train=args.do_train, do_eval=args.do_eval, seed=args.seed, beta=args.beta)
 
     else:
         raise ValueError(f"Training method '{args.method}' not implemented")

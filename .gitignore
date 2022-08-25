@@ -8,3 +8,8 @@
 glue_data/*
 out/*
 venv/*
+
+data/*
+fig/*
+log/*
+.vscode

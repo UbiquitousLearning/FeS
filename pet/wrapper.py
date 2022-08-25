@@ -23,7 +23,7 @@ import torch
 import torch.nn as nn
 import numpy as np
 from torch.utils.data import RandomSampler, DataLoader, SequentialSampler
-from tqdm import trange, tqdm
+from tqdm.auto import trange, tqdm
 from transformers import InputExample, AdamW, get_linear_schedule_with_warmup, PreTrainedTokenizer, BertForMaskedLM, \
     RobertaForMaskedLM, XLMRobertaForMaskedLM, XLNetConfig, XLNetForSequenceClassification, XLNetTokenizer, \
     XLNetLMHeadModel, BertConfig, BertForSequenceClassification, BertTokenizer, RobertaConfig, \
@@ -31,6 +31,7 @@ from transformers import InputExample, AdamW, get_linear_schedule_with_warmup, P
     XLMRobertaTokenizer, AlbertForSequenceClassification, AlbertForMaskedLM, AlbertTokenizer, AlbertConfig, \
     GPT2Config, GPT2LMHeadModel, GPT2Tokenizer
 from transformers import __version__ as transformers_version
+from transformers.data.metrics import simple_accuracy
 
 import log
 from pet import preprocessor
@@ -198,9 +199,9 @@ class TransformerModelWrapper:
     def train(self, task_train_data: List[InputExample], device, per_gpu_train_batch_size: int = 8, n_gpu: int = 1,
               num_train_epochs: int = 3, gradient_accumulation_steps: int = 1, weight_decay: float = 0.0,
               learning_rate: float = 5e-5, adam_epsilon: float = 1e-8, warmup_steps=0, max_grad_norm: float = 1,
-              logging_steps: int = 50, per_gpu_unlabeled_batch_size: int = 8, unlabeled_data: List[InputExample] = None,
+              logging_steps: int = 5000, per_gpu_unlabeled_batch_size: int = 8, unlabeled_data: List[InputExample] = None,
               lm_training: bool = False, use_logits: bool = False, alpha: float = 0.8, temperature: float = 1,
-              max_steps=-1, **_):
+              max_steps=-1, task_eval_data: List[InputExample] = None, **_):
         """
         Train the underlying language model.
 
@@ -227,6 +228,7 @@ class TransformerModelWrapper:
         """
 
         train_batch_size = per_gpu_train_batch_size * max(1, n_gpu)
+        logger.info("CDQ: n_gpu: {}, per_gpu_train_batch_size: {}, train_batch_size: {}".format(n_gpu, per_gpu_train_batch_size, train_batch_size))
         train_dataset = self._generate_dataset(task_train_data)
         train_sampler = RandomSampler(train_dataset)
         train_dataloader = DataLoader(train_dataset, sampler=train_sampler, batch_size=train_batch_size)
@@ -274,7 +276,7 @@ class TransformerModelWrapper:
         train_iterator = trange(int(num_train_epochs), desc="Epoch")
 
         for _ in train_iterator:
-            epoch_iterator = tqdm(train_dataloader, desc="Iteration")
+            epoch_iterator = tqdm(train_dataloader, desc="Iteration", position=0, leave=True, ascii=True, disable=True)
             for _, batch in enumerate(epoch_iterator):
                 self.model.train()
                 unlabeled_batch = None
@@ -321,8 +323,13 @@ class TransformerModelWrapper:
                         logs = {}
                         loss_scalar = (tr_loss - logging_loss) / logging_steps
                         learning_rate_scalar = scheduler.get_lr()[0]
+                        results = self.eval(task_eval_data, device)
+                        predictions = np.argmax(results['logits'], axis=1)
+                        acc = simple_accuracy(predictions, results['labels'])
+
                         logs['learning_rate'] = learning_rate_scalar
                         logs['loss'] = loss_scalar
+                        logs['acc'] = acc
                         logging_loss = tr_loss
 
                         print(json.dumps({**logs, **{'step': global_step}}))
@@ -360,7 +367,7 @@ class TransformerModelWrapper:
         preds = None
         all_indices, out_label_ids, question_ids = None, None, None
 
-        for batch in tqdm(eval_dataloader, desc="Evaluating"):
+        for batch in tqdm(eval_dataloader, desc="Evaluating", position=0, leave=True, ascii=True, disable=True):
             self.model.eval()
 
             batch = {k: t.to(device) for k, t in batch.items()}
@@ -425,7 +432,7 @@ class TransformerModelWrapper:
             if self.task_helper:
                 self.task_helper.add_special_input_features(example, input_features)
             features.append(input_features)
-            if ex_index < 5:
+            if ex_index < 0: # default num is 5; change it to 0 to avoid verbose output
                 logger.info(f'--- Example {ex_index} ---')
                 logger.info(input_features.pretty_print(self.tokenizer))
         return features
