@@ -36,6 +36,7 @@ transformers.logging.set_verbosity_error()
 
 logger = log.get_logger('root')
 
+debug = False
 # vanilla = False # whether fed vanilla is on, fed vanilla means no augmentation, but is fed, means using ft instead of pl to train local model, and aggregate the model via fedavg
 # aggregated = True # 是否将10个client训练出来的模型fedavg一下，只infer一次;后面的两个函数里也要改一下
 # augmentation = False # 如果不开augmentation，那每个client只能依靠自己的数据来进行训练，而且也不会用到unlabeled data (origin), fed is off
@@ -386,14 +387,19 @@ def train_fedpet(ensemble_model_config: WrapperConfig, ensemble_train_config: Tr
     client_num_in_total = 10
     num_clients = 5 # per round
     random.Random(seed).shuffle(train_data)
-    random.Random(seed).shuffle(unlabeled_data) # shuffle data for spliting
+    random.Random(seed).shuffle(unlabeled_data) 
+    random.Random(seed).shuffle(eval_data) # shuffle data for spliting
+
     train_data = np.array(train_data)
     unlabeled_data = np.array(unlabeled_data)
+    eval_data = np.array(eval_data)
+
     if beta:
         train_data_sperate = partition_class_samples_with_dirichlet_distribution(train_data=train_data, beta=beta, client_num=client_num_in_total, seed=seed)
     else:
         train_data_sperate = np.split(train_data,client_num_in_total)
     unlabeled_data_seperate = np.split(unlabeled_data,client_num_in_total)
+    eval_data_seperate = np.split(eval_data,client_num_in_total)
 
     if vanilla:
         for gen in range(ipet_config.generations):
@@ -428,11 +434,12 @@ def train_fedpet(ensemble_model_config: WrapperConfig, ensemble_train_config: Tr
                 gen_output_dir = os.path.join(output_dir, f'g{gen}', f'client{client}')
                 train_data = train_data_sperate[client_idx].tolist()
                 unlabeled_data = unlabeled_data_seperate[client_idx].tolist()
+                eval_data = eval_data_seperate[client_idx].tolist()
 
                 train_pet_ensemble(ensemble_model_config, ensemble_train_config, ensemble_eval_config, pattern_ids,
                                 gen_output_dir,
                                 repetitions=1, train_data=train_data, unlabeled_data=unlabeled_data,
-                                eval_data=eval_data, do_train=do_train, do_eval=do_eval, save_unlabeled_logits=True,aggregated_model_path=aggregated_model_path)
+                                eval_data=eval_data, do_train=do_train, do_eval=do_eval, save_unlabeled_logits=False,aggregated_model_path=aggregated_model_path)
     else:
         for gen in range(ipet_config.generations): # debug mode: start from 2nd iteration; defalut is 0
             # Select clients
@@ -458,6 +465,8 @@ def train_fedpet(ensemble_model_config: WrapperConfig, ensemble_train_config: Tr
                 gen_output_dir = os.path.join(output_dir, f'g{gen}', f'client{client}')
                 train_data = train_data_sperate[client_idx].tolist()
                 unlabeled_data = unlabeled_data_seperate[client_idx].tolist()
+                eval_data = eval_data_seperate[client_idx].tolist()
+
                 if gen > 0:
                     if fed and aggregated: # 是否和其它方联合训练, fed avg 
                         models_path = []
@@ -554,12 +563,12 @@ def train_fedpet(ensemble_model_config: WrapperConfig, ensemble_train_config: Tr
                     train_pet_ensemble(ensemble_model_config, ensemble_train_config, ensemble_eval_config, pattern_ids,
                                     gen_output_dir, ipet_data_dir=ipet_data_dir,
                                     repetitions=ensemble_repetitions, train_data=train_data, unlabeled_data=unlabeled_data,
-                                    eval_data=eval_data, do_train=do_train, do_eval=do_eval, save_unlabeled_logits=True, aggregated_model_path = aggregated_model_path) 
+                                    eval_data=eval_data, do_train=do_train, do_eval=do_eval, save_unlabeled_logits=augmentation, aggregated_model_path = aggregated_model_path) 
                 else:
                     train_pet_ensemble(ensemble_model_config, ensemble_train_config, ensemble_eval_config, pattern_ids,
                                     gen_output_dir, ipet_data_dir=ipet_data_dir,
                                     repetitions=ensemble_repetitions, train_data=train_data, unlabeled_data=unlabeled_data,
-                                    eval_data=eval_data, do_train=do_train, do_eval=do_eval, save_unlabeled_logits=True, last_iteration_model_path = last_iteration_model_path) 
+                                    eval_data=eval_data, do_train=do_train, do_eval=do_eval, save_unlabeled_logits=augmentation, last_iteration_model_path = last_iteration_model_path) 
 
 
     # Step 3: Merge the annotations created by each individual model 这一步相当于generate_ipet_train_sets。但是是把所有的unlabeled data都打标签了。如果有多个pattern的话，在本地可以把多个pattern infer出来的logit聚合。现在我们只有一个patter，这一步无用。注：多个client infer出来的logit，由于隐私愿意，其原始数据和中间logits不可以传输。所以没法聚合。
@@ -604,16 +613,19 @@ def train_fedclassifier(model_config: WrapperConfig, train_config: TrainConfig, 
     client_num_in_total = 10
     num_clients = 5 # per round
     random.Random(seed).shuffle(train_data)
-    random.Random(seed).shuffle(unlabeled_data) # shuffle data for spliting
-    train_data_origin = train_data
-    unlabeled_data_origin = unlabeled_data
+    random.Random(seed).shuffle(unlabeled_data) 
+    random.Random(seed).shuffle(eval_data) # shuffle data for spliting
+
     train_data = np.array(train_data)
     unlabeled_data = np.array(unlabeled_data)
+    eval_data = np.array(eval_data)
+
     if beta:
         train_data_sperate = partition_class_samples_with_dirichlet_distribution(train_data=train_data, beta=beta, client_num=client_num_in_total, seed=seed)
     else:
         train_data_sperate = np.split(train_data,client_num_in_total)
     unlabeled_data_seperate = np.split(unlabeled_data,client_num_in_total)
+    eval_data_seperate = np.split(eval_data,client_num_in_total)
 
     for gen in range(repetitions):
         # Select clients
@@ -647,6 +659,7 @@ def train_fedclassifier(model_config: WrapperConfig, train_config: TrainConfig, 
             gen_output_dir = os.path.join(output_dir, f'g{gen}', f'client{client}')
             train_data = train_data_sperate[client_idx].tolist()
             unlabeled_data = unlabeled_data_seperate[client_idx].tolist()
+            eval_data = eval_data_seperate[client_idx].tolist()
 
             train_pet_ensemble(model_config, train_config, eval_config, pattern_ids=[1], output_dir=gen_output_dir,
                             repetitions=1,
@@ -829,11 +842,13 @@ def train_single_model(model: TransformerModelWrapper, train_data: List[InputExa
 
     model.model.to(device)
     
-    # debug mode, evaluate the val set, default is train_data
-    if train_data and return_train_set_results:
-        results_dict['train_set_before_training'] = evaluate(model, eval_data, eval_config)['scores']['acc']
+    if debug:
+        # debug mode, evaluate the val set, default is train_data
+        if train_data and return_train_set_results:
+            results_dict['train_set_before_training'] = evaluate(model, eval_data, eval_config)['scores']['acc']
 
-    logger.info('init acc: val acc before training is {}'.format(results_dict['train_set_before_training']))
+        
+        logger.info('init acc: val acc before training is {}'.format(results_dict['train_set_before_training']))
 
     all_train_data = train_data + ipet_train_data
 
