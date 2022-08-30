@@ -22,11 +22,16 @@ from abc import ABC, abstractmethod
 from collections import defaultdict, Counter
 from typing import List, Dict, Callable
 
-import log
+import logging
 from pet import task_helpers
 from pet.utils import InputExample
 
-logger = log.get_logger('root')
+process_id = os.getpid()
+logging.getLogger().setLevel(logging.INFO)
+logging.basicConfig(level=logging.INFO,
+                        format=str(
+                            process_id) + ' - %(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',
+                        datefmt='%a, %d %b %Y %H:%M:%S')
 
 
 def _shuffle_and_restrict(examples: List[InputExample], num_examples: int, seed: int = 42) -> List[InputExample]:
@@ -499,7 +504,7 @@ class WscProcessor(DataProcessor):
                             span1_index += offset
 
                 if words_a_lower[span1_index:span1_index + span1_len] != words_span1_text:
-                    logger.warning(f"Got '{words_a_lower[span1_index:span1_index + span1_len]}' but expected "
+                    logging.warning(f"Got '{words_a_lower[span1_index:span1_index + span1_len]}' but expected "
                                    f"'{words_span1_text}' at index {span1_index} for '{words_a}'")
 
                 if words_a[span2_index] != span2_text:
@@ -611,7 +616,7 @@ class CopaProcessor(DataProcessor):
                 mirror_example = InputExample(guid=ex.guid + 'm', text_a=ex.text_a, label=label, meta=meta)
                 mirror_examples.append(mirror_example)
             examples += mirror_examples
-            logger.info(f"Added {len(mirror_examples)} mirror examples, total size is {len(examples)}...")
+            logging.info(f"Added {len(mirror_examples)} mirror examples, total size is {len(examples)}...")
         return examples
 
 
@@ -664,7 +669,7 @@ class MultiRcProcessor(DataProcessor):
 
         question_indices = list(set(example.meta['question_idx'] for example in examples))
         label_distribution = Counter(example.label for example in examples)
-        logger.info(f"Returning {len(examples)} examples corresponding to {len(question_indices)} questions with label "
+        logging.info(f"Returning {len(examples)} examples corresponding to {len(question_indices)} questions with label "
                     f"distribution {list(label_distribution.items())}")
         return examples
 
@@ -757,7 +762,7 @@ class RecordProcessor(DataProcessor):
 
         question_indices = list(set(example.meta['question_idx'] for example in examples))
         label_distribution = Counter(example.label for example in examples)
-        logger.info(f"Returning {len(examples)} examples corresponding to {len(question_indices)} questions with label "
+        logging.info(f"Returning {len(examples)} examples corresponding to {len(question_indices)} questions with label "
                     f"distribution {list(label_distribution.items())}")
         return examples
 
@@ -818,7 +823,7 @@ def load_examples(task, data_dir: str, set_type: str, *_, num_examples: int = No
 
     ex_str = f"num_examples={num_examples}" if num_examples is not None \
         else f"num_examples_per_label={num_examples_per_label}"
-    logger.info(
+    logging.info(
         f"Creating features from dataset file at {data_dir} ({ex_str}, set_type={set_type})"
     )
 
@@ -845,6 +850,6 @@ def load_examples(task, data_dir: str, set_type: str, *_, num_examples: int = No
         examples = limited_examples.to_list()
 
     label_distribution = Counter(example.label for example in examples)
-    logger.info(f"Returning {len(examples)} {set_type} examples with label dist.: {list(label_distribution.items())}")
+    logging.info(f"Returning {len(examples)} {set_type} examples with label dist.: {list(label_distribution.items())}")
 
     return examples

@@ -1,3 +1,99 @@
 fedpet start.
 fedcls start.
 fedcls start.
+fedcls start.
+run_fed.sh: line 202: syntax error: unexpected end of file
+run_fed.sh: line 202: syntax error: unexpected end of file
+run_fed.sh: line 202: syntax error: unexpected end of file
+run_fed.sh: line 202: syntax error: unexpected end of file
+fedcls start.
+fedpet start.
+62879 2022-08-28,13:28:31.801 - {sweep.py (62)} - <module>(): hp = yelp-full fedclassifier 6 1000 -1 -1 0
+fedcls start.
+63483 2022-08-28,13:28:40.130 - {sweep.py (62)} - <module>(): hp = yelp-full fedpet 6 1000 -1 -1 0
+fedpet start.
+14739 2022-08-28,13:34:05.752 - {sweep.py (62)} - <module>(): hp = agnews fedclassifier 6 1000 -1 -1 1
+fedcls start.
+run_fed.sh: line 142: 14746 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --beta ${beta} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}_${beta}.log 2>&1
+35101 2022-08-28,13:40:55.223 - {sweep.py (62)} - <module>(): hp = agnews fedclassifier 6 1000 -1 -1 1
+fedcls start.
+run_fed.sh: line 142: 35106 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients}_${beta} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --beta ${beta} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}_${beta}.log 2>&1
+45175 2022-08-28,13:44:13.491 - {sweep.py (62)} - <module>(): hp = agnews fedclassifier 6 1000 -1 -1 1
+fedcls start.
+55328 2022-08-28,13:47:32.173 - {sweep.py (62)} - <module>(): hp = agnews fedclassifier 6 1000 -1 -1 1
+fedcls start.
+58684 2022-08-28,13:48:34.406 - {sweep.py (62)} - <module>(): hp = agnews fedclassifier 6 1000 -1 -1 1
+fedcls start.
+61872 2022-08-28,13:49:33.878 - {sweep.py (62)} - <module>(): hp = yahoo fedpet 4 1000 -1 -1 1
+fedpet start.
+61869 2022-08-28,13:49:33.886 - {sweep.py (62)} - <module>(): hp = mnli fedclassifier 7 1000 8700 392700 1
+61871 2022-08-28,13:49:33.887 - {sweep.py (62)} - <module>(): hp = yahoo fedclassifier 4 1000 -1 -1 1
+61874 2022-08-28,13:49:33.887 - {sweep.py (62)} - <module>(): hp = yelp-full fedpet 1 1000 -1 -1 1
+61873 2022-08-28,13:49:33.887 - {sweep.py (62)} - <module>(): hp = yelp-full fedclassifier 1 1000 -1 -1 1
+61870 2022-08-28,13:49:33.889 - {sweep.py (62)} - <module>(): hp = mnli fedpet 7 1000 8700 392700 1
+61867 2022-08-28,13:49:33.890 - {sweep.py (62)} - <module>(): hp = agnews fedpet 6 1000 -1 -1 1
+61866 2022-08-28,13:49:33.891 - {sweep.py (62)} - <module>(): hp = agnews fedclassifier 6 1000 -1 -1 1
+fedcls start.
+fedpet start.
+fedcls start.
+fedcls start.
+fedpet start.
+fedcls start.
+fedpet start.
+run_fed.sh: line 142: 61962 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients}_${beta} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --beta ${beta} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}_${beta}.log 2>&1
+run_fed.sh: line 142: 61961 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients}_${beta} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --beta ${beta} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}_${beta}.log 2>&1
+run_fed.sh: line 142: 61890 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients}_${beta} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --beta ${beta} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}_${beta}.log 2>&1
+run_fed.sh: line 142: 61958 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients}_${beta} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --beta ${beta} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}_${beta}.log 2>&1
+run_fed.sh: line 142: 61969 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients}_${beta} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --beta ${beta} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}_${beta}.log 2>&1
+run_fed.sh: line 142: 61965 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients}_${beta} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --beta ${beta} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}_${beta}.log 2>&1
+run_fed.sh: line 142: 61997 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients}_${beta} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --beta ${beta} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}_${beta}.log 2>&1
+run_fed.sh: line 142: 61985 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients}_${beta} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --beta ${beta} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}_${beta}.log 2>&1
+13351 2022-08-28,13:53:53.361 - {sweep.py (62)} - <module>(): hp = agnews fedclassifier 6 1000 -1 -1 1
+fedcls start.
+16677 2022-08-28,13:54:44.651 - {sweep.py (62)} - <module>(): hp = agnews fedclassifier 6 1000 -1 -1 1
+fedcls start.
+18962 2022-08-28,13:55:20.934 - {sweep.py (62)} - <module>(): hp = agnews fedclassifier 6 1000 -1 -1 1
+fedcls start.
+21384 2022-08-28,13:56:06.554 - {sweep.py (62)} - <module>(): hp = mnli fedclassifier 7 1000 8700 392700 1
+21383 2022-08-28,13:56:06.555 - {sweep.py (62)} - <module>(): hp = agnews fedpet 6 1000 -1 -1 1
+21465 2022-08-28,13:56:06.555 - {sweep.py (62)} - <module>(): hp = yahoo fedpet 4 1000 -1 -1 1
+21464 2022-08-28,13:56:06.555 - {sweep.py (62)} - <module>(): hp = yahoo fedclassifier 4 1000 -1 -1 1
+21468 2022-08-28,13:56:06.555 - {sweep.py (62)} - <module>(): hp = yelp-full fedpet 1 1000 -1 -1 1
+21463 2022-08-28,13:56:06.556 - {sweep.py (62)} - <module>(): hp = mnli fedpet 7 1000 8700 392700 1
+21382 2022-08-28,13:56:06.558 - {sweep.py (62)} - <module>(): hp = agnews fedclassifier 6 1000 -1 -1 1
+21466 2022-08-28,13:56:06.559 - {sweep.py (62)} - <module>(): hp = yelp-full fedclassifier 1 1000 -1 -1 1
+fedpet start.
+fedcls start.
+fedpet start.
+fedpet start.
+fedpet start.
+fedcls start.
+fedcls start.
+fedcls start.
+42417 2022-08-28,14:02:10.068 - {sweep.py (62)} - <module>(): hp = yahoo fedclassifier 5 100 -1 -1 1
+42412 2022-08-28,14:02:10.070 - {sweep.py (62)} - <module>(): hp = agnews fedclassifier 0 100 -1 -1 1
+42414 2022-08-28,14:02:10.071 - {sweep.py (62)} - <module>(): hp = mnli fedclassifier 1 100 8700 392700 1
+42418 2022-08-28,14:02:10.072 - {sweep.py (62)} - <module>(): hp = yahoo fedpet 7 100 -1 -1 1
+42415 2022-08-28,14:02:10.073 - {sweep.py (62)} - <module>(): hp = mnli fedpet 5 100 8700 392700 1
+42420 2022-08-28,14:02:10.073 - {sweep.py (62)} - <module>(): hp = yelp-full fedpet 4 100 -1 -1 1
+42413 2022-08-28,14:02:10.074 - {sweep.py (62)} - <module>(): hp = agnews fedpet 1 100 -1 -1 1
+fedcls start.
+fedcls start.
+fedcls start.
+fedpet start.
+42419 2022-08-28,14:02:10.080 - {sweep.py (62)} - <module>(): hp = yelp-full fedclassifier 4 100 -1 -1 1
+fedpet start.
+fedpet start.
+fedpet start.
+fedcls start.
+run_fed.sh: line 142: 42472 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients}_${beta} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --beta ${beta} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}_${beta}.log 2>&1
+run_fed.sh: line 142: 21551 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients}_${beta} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --beta ${beta} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}_${beta}.log 2>&1
+run_fed.sh: line 144: syntax error near unexpected token `fi'
+run_fed.sh: line 144: `    fi'
+run_fed.sh: line 96: syntax error near unexpected token `fi'
+run_fed.sh: line 96: `    fi'
+run_fed.sh: line 142: 21550 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients}_${beta} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --beta ${beta} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}_${beta}.log 2>&1
+run_fed.sh: line 142: 42467 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients}_${beta} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --beta ${beta} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}_${beta}.log 2>&1
+run_fed.sh: line 142: 42452 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients}_${beta} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --beta ${beta} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}_${beta}.log 2>&1
+run_fed.sh: line 144: syntax error near unexpected token `fi'
+run_fed.sh: line 144: `    fi'

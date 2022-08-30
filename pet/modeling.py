@@ -25,7 +25,7 @@ import torch
 from sklearn.metrics import f1_score
 from transformers.data.metrics import simple_accuracy
 
-import log
+import logging
 from pet.utils import InputExample, exact_match, save_logits, save_predictions, softmax, LogitsList, set_seed, eq_div
 from pet.wrapper import TransformerModelWrapper, SEQUENCE_CLASSIFIER_WRAPPER, WrapperConfig
 
@@ -34,7 +34,12 @@ import collections
 import transformers
 transformers.logging.set_verbosity_error()
 
-logger = log.get_logger('root')
+process_id = os.getpid()
+logging.getLogger().setLevel(logging.INFO)
+logging.basicConfig(level=logging.INFO,
+                        format=str(
+                            process_id) + ' - %(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',
+                        datefmt='%a, %d %b %Y %H:%M:%S')
 
 debug = False
 # vanilla = False # whether fed vanilla is on, fed vanilla means no augmentation, but is fed, means using ft instead of pl to train local model, and aggregate the model via fedavg
@@ -83,14 +88,23 @@ def partition_class_samples_with_dirichlet_distribution(
         train_data_dirichlet_list_slice.append(idx)
 
     # Debug info
-    # logger.info("train_data: {}".format(train_data))
-    # logger.info("train_data_dirichlet_list: {}".format(train_data_dirichlet_list))
-    # logger.info("train_data_dirichlet_list_slice: {}".format(train_data_dirichlet_list_slice))
+    # logging.info("train_data: {}".format(train_data))
+    # logging.info("train_data_dirichlet_list: {}".format(train_data_dirichlet_list))
+    # logging.info("train_data_dirichlet_list_slice: {}".format(train_data_dirichlet_list_slice))
     
     # generate the new train_data for each client
     train_data_dirichlet = np.split(train_data, train_data_dirichlet_list_slice)
 
     return train_data_dirichlet
+
+def delete_cache(gen, output_dir):
+    if gen > 4 :
+        delete_model_path = os.path.join(output_dir, f'g{gen-3}')
+        logging.info("Delete model cache {delete_model_path}".format(delete_model_path=delete_model_path))
+        os.system('rm -rf {delete_model_path}'.format(delete_model_path=delete_model_path))
+    else:
+        pass
+         
 
 class PetConfig(ABC):
     """Abstract class for a PET configuration that can be saved to and loaded from a json file."""
@@ -261,7 +275,7 @@ def train_ipet(ensemble_model_config: WrapperConfig, ensemble_train_config: Trai
     merge_logits(logits_dir, logits_file, reduction)
     logits = LogitsList.load(logits_file).logits
     assert len(logits) == len(unlabeled_data)
-    logger.info("Got {} logits from file {}".format(len(logits), logits_file))
+    logging.info("Got {} logits from file {}".format(len(logits), logits_file))
     for example, example_logits in zip(unlabeled_data, logits):
         example.logits = example_logits
 
@@ -317,7 +331,7 @@ def train_pet(ensemble_model_config: WrapperConfig, ensemble_train_config: Train
     merge_logits(output_dir, logits_file, reduction)
     logits = LogitsList.load(logits_file).logits
     assert len(logits) == len(unlabeled_data)
-    logger.info("Got {} logits from file {}".format(len(logits), logits_file))
+    logging.info("Got {} logits from file {}".format(len(logits), logits_file))
     for example, example_logits in zip(unlabeled_data, logits):
         example.logits = example_logits
 
@@ -403,17 +417,18 @@ def train_fedpet(ensemble_model_config: WrapperConfig, ensemble_train_config: Tr
 
     if vanilla:
         for gen in range(ipet_config.generations):
+            delete_cache(gen, output_dir)
             # Select clients
             np.random.seed(gen)
             client_indexes = np.random.choice(range(client_num_in_total), num_clients, replace=False)
-            logger.info("Gen {}: client_indexes is {}".format(gen, client_indexes))
+            logging.info("Gen {}: client_indexes is {}".format(gen, client_indexes))
             aggregated_model_path = None
             
             # Calculate the samples numbers of each clients involved in this round 
             sample_num_list = np.array([])
             for client in range(num_clients):
                 sample_num_list = np.append(sample_num_list, len(train_data_sperate[client_indexes[client]]))
-            logger.info("Gen{}: sample_num_list is {}".format(gen, sample_num_list))
+            logging.info("Gen{}: sample_num_list is {}".format(gen, sample_num_list))
 
             # Aggergate models trained in previous round.
             if gen > 0:
@@ -426,7 +441,7 @@ def train_fedpet(ensemble_model_config: WrapperConfig, ensemble_train_config: Tr
                 wrapper = init_model(ensemble_model_config)
                 wrapper.model = fl_model
 
-                logger.info("Saving aggregated trained model at {}...".format(aggregated_model_path))
+                logging.info("Saving aggregated trained model at {}...".format(aggregated_model_path))
                 wrapper.save(aggregated_model_path)   
 
             for client in range(num_clients):
@@ -442,6 +457,7 @@ def train_fedpet(ensemble_model_config: WrapperConfig, ensemble_train_config: Tr
                                 eval_data=eval_data, do_train=do_train, do_eval=do_eval, save_unlabeled_logits=False,aggregated_model_path=aggregated_model_path)
     else:
         for gen in range(ipet_config.generations): # debug mode: start from 2nd iteration; defalut is 0
+            delete_cache(gen, output_dir)
             # Select clients
             aggregated_model_path = None
             np.random.seed(gen)
@@ -451,12 +467,12 @@ def train_fedpet(ensemble_model_config: WrapperConfig, ensemble_train_config: Tr
             else:
                 client_indexes = range(10)
             
-            logger.info("Gen {}: client_indexes is {}".format(gen, client_indexes))
+            logging.info("Gen {}: client_indexes is {}".format(gen, client_indexes))
 
             sample_num_list = np.array([])
             for client in range(num_clients):
                 sample_num_list = np.append(sample_num_list, len(train_data_sperate[client_indexes[client]]))
-            logger.info("Gen{}: sample_num_list is {}".format(gen, sample_num_list))
+            logging.info("Gen{}: sample_num_list is {}".format(gen, sample_num_list))
 
             for client in range(num_clients):
                 # if client != 2: # debug mode
@@ -479,7 +495,7 @@ def train_fedpet(ensemble_model_config: WrapperConfig, ensemble_train_config: Tr
                         models, fl_model = aggregate(models_path=models_path, sample_num_list=sample_num_list)
                         wrapper = init_model(ensemble_model_config)
                         wrapper.model = fl_model
-                        logger.info("Saving aggregated trained model at {}...".format(aggregated_model_path))
+                        logging.info("Saving aggregated trained model at {}...".format(aggregated_model_path))
                         wrapper.save(aggregated_model_path) 
 
                     if augmentation: # 是否利用unlabeled data
@@ -496,7 +512,7 @@ def train_fedpet(ensemble_model_config: WrapperConfig, ensemble_train_config: Tr
                                 models, fl_model = aggregate(models_path=models_path, sample_num_list=sample_num_list)
                                 wrapper = init_model(ensemble_model_config)
                                 wrapper.model = fl_model
-                                logger.info("Saving aggregated trained model at {}...".format(aggregated_model_path))
+                                logging.info("Saving aggregated trained model at {}...".format(aggregated_model_path))
                                 wrapper.save(aggregated_model_path) 
                                 logits = evaluate(wrapper, unlabeled_data, ensemble_eval_config)['logits']
 
@@ -577,7 +593,7 @@ def train_fedpet(ensemble_model_config: WrapperConfig, ensemble_train_config: Tr
     merge_logits(logits_dir, logits_file, reduction)
     logits = LogitsList.load(logits_file).logits
     assert len(logits) == len(unlabeled_data)
-    logger.info("Got {} logits from file {}".format(len(logits), logits_file))
+    logging.info("Got {} logits from file {}".format(len(logits), logits_file))
     for example, example_logits in zip(unlabeled_data, logits):
         example.logits = example_logits
 
@@ -628,17 +644,18 @@ def train_fedclassifier(model_config: WrapperConfig, train_config: TrainConfig, 
     eval_data_seperate = np.split(eval_data,client_num_in_total)
 
     for gen in range(repetitions):
+        delete_cache(gen, output_dir)
         # Select clients
         np.random.seed(gen)
         client_indexes = np.random.choice(range(client_num_in_total), num_clients, replace=False)
-        logger.info("Gen {}: client_indexes is {}".format(gen, client_indexes))
+        logging.info("Gen {}: client_indexes is {}".format(gen, client_indexes))
         aggregated_model_path = None
 
         # Calculate the samples numbers of each clients involved in this round 
         sample_num_list = np.array([])
         for client in range(num_clients):
             sample_num_list = np.append(sample_num_list, len(train_data_sperate[client_indexes[client]]))
-        logger.info("Gen{}: sample_num_list is {}".format(gen, sample_num_list))
+        logging.info("Gen{}: sample_num_list is {}".format(gen, sample_num_list))
 
         # Aggergate models trained in previous round.
         if gen > 0:
@@ -651,7 +668,7 @@ def train_fedclassifier(model_config: WrapperConfig, train_config: TrainConfig, 
             wrapper = init_model(model_config)
             wrapper.model = fl_model
 
-            logger.info("Saving aggregated trained model at {}...".format(aggregated_model_path))
+            logging.info("Saving aggregated trained model at {}...".format(aggregated_model_path))
             wrapper.save(aggregated_model_path)   
 
         for client in range(num_clients):
@@ -707,7 +724,7 @@ def train_pet_ensemble(model_config: WrapperConfig, train_config: TrainConfig, e
                 pattern_iter_output_dir = "{}/p{}-i{}".format(output_dir, pattern_id, iteration)
 
             if os.path.exists(pattern_iter_output_dir) and do_train and not fed: # eval&fed的时候不要跳过
-                logger.warning(f"Path {pattern_iter_output_dir} already exists, skipping it...")
+                logging.warning(f"Path {pattern_iter_output_dir} already exists, skipping it...")
                 continue
 
             if not os.path.exists(pattern_iter_output_dir):
@@ -723,18 +740,18 @@ def train_pet_ensemble(model_config: WrapperConfig, train_config: TrainConfig, e
                 
                 # Using the previous aggregated model
                 if aggregated_model_path:
-                    logger.info("Loading previous aggregated trained model from {}".format(aggregated_model_path))
+                    logging.info("Loading previous aggregated trained model from {}".format(aggregated_model_path))
                     wrapper = TransformerModelWrapper.from_pretrained(aggregated_model_path)
                 
                 # Using the previous private model for each client seperatedly.
                 if last_iteration_model_path:
-                    logger.info("Loading previous private trained model in last iteration for each client seperatedly from {}.".format(last_iteration_model_path))
+                    logging.info("Loading previous private trained model in last iteration for each client seperatedly from {}.".format(last_iteration_model_path))
                     wrapper = TransformerModelWrapper.from_pretrained(last_iteration_model_path)
 
                 # Using trained model after 3 epochs of PET unsupervised learning (Only for SC testing, will be removed)
                 inherit = 0
                 if inherit: 
-                    logger.info("Loading previous aggregated trained model via PET unsupervised learning.")
+                    logging.info("Loading previous aggregated trained model via PET unsupervised learning.")
                     from transformers import BertForSequenceClassification
                     wrapper.model = BertForSequenceClassification.from_pretrained('./log_10_100/p0-i0')
                 
@@ -756,11 +773,11 @@ def train_pet_ensemble(model_config: WrapperConfig, train_config: TrainConfig, e
                 with open(os.path.join(pattern_iter_output_dir, 'results.txt'), 'w') as fh:
                     fh.write(str(results_dict))
 
-                logger.info("Saving trained model at {}...".format(pattern_iter_output_dir))
+                logging.info("Saving trained model at {}...".format(pattern_iter_output_dir))
                 wrapper.save(pattern_iter_output_dir)
                 train_config.save(os.path.join(pattern_iter_output_dir, 'train_config.json'))
                 eval_config.save(os.path.join(pattern_iter_output_dir, 'eval_config.json'))
-                logger.info("Saving complete")
+                logging.info("Saving complete")
 
                 if save_unlabeled_logits:
                     logits = evaluate(wrapper, unlabeled_data, eval_config)['logits']
@@ -773,9 +790,9 @@ def train_pet_ensemble(model_config: WrapperConfig, train_config: TrainConfig, e
 
             # Evaluation
             if do_eval:
-                logger.info("Starting evaluation...")
+                logging.info("Starting evaluation...")
                 if not wrapper:
-                    logger.info("Loading from pattern_iter_output_dir")
+                    logging.info("Loading from pattern_iter_output_dir")
                     wrapper = TransformerModelWrapper.from_pretrained(pattern_iter_output_dir)
 
                 eval_result = evaluate(wrapper, eval_data, eval_config, priming_data=train_data)
@@ -789,15 +806,15 @@ def train_pet_ensemble(model_config: WrapperConfig, train_config: TrainConfig, e
                 # wrapper.preprocessor = preprocessor.SequenceClassifierPreprocessor(
                 #     wrapper, wrapper.config.task_name, 0, wrapper.config.verbalizer_file)
                 # sc_eval_result = evaluate(wrapper, eval_data, eval_config, priming_data=train_data)
-                # logger.info(sc_eval_result['scores']['acc'])
+                # logging.info(sc_eval_result['scores']['acc'])
 
                 save_predictions(os.path.join(pattern_iter_output_dir, 'predictions.jsonl'), wrapper, eval_result)
                 save_logits(os.path.join(pattern_iter_output_dir, 'eval_logits.txt'), eval_result['logits'])
 
                 scores = eval_result['scores']
-                logger.info("--- RESULT (pattern_id={}, iteration={}) ---".format(pattern_id, iteration))
-                logger.info(scores)
-                logger.info(pattern_iter_output_dir)
+                logging.info("--- RESULT (pattern_id={}, iteration={}) ---".format(pattern_id, iteration))
+                logging.info(scores)
+                logging.info(pattern_iter_output_dir)
 
                 results_dict['test_set_after_training'] = scores
                 with open(os.path.join(pattern_iter_output_dir, 'results.json'), 'w') as fh:
@@ -811,10 +828,10 @@ def train_pet_ensemble(model_config: WrapperConfig, train_config: TrainConfig, e
                 torch.cuda.empty_cache()
 
     if do_eval:
-        logger.info("=== OVERALL RESULTS ===")
+        logging.info("=== OVERALL RESULTS ===")
         _write_results(os.path.join(output_dir, 'result_test.txt'), results)
     else:
-        logger.info("=== ENSEMBLE TRAINING COMPLETE ===")
+        logging.info("=== ENSEMBLE TRAINING COMPLETE ===")
 
 
 def train_single_model(model: TransformerModelWrapper, train_data: List[InputExample], config: TrainConfig,
@@ -848,14 +865,14 @@ def train_single_model(model: TransformerModelWrapper, train_data: List[InputExa
             results_dict['train_set_before_training'] = evaluate(model, eval_data, eval_config)['scores']['acc']
 
         
-        logger.info('init acc: val acc before training is {}'.format(results_dict['train_set_before_training']))
+        logging.info('init acc: val acc before training is {}'.format(results_dict['train_set_before_training']))
 
     all_train_data = train_data + ipet_train_data
 
-    logger.info('len of all_train_data: {}'.format(len(all_train_data)))
+    logging.info('len of all_train_data: {}'.format(len(all_train_data)))
 
     if not all_train_data and not config.use_logits:
-        logger.warning('Training method was called without training examples')
+        logging.warning('Training method was called without training examples')
     else:
         global_step, tr_loss = model.train(
             all_train_data, device,
@@ -936,7 +953,7 @@ def _write_results(path: str, results: Dict):
                 mean = statistics.mean(values)
                 stdev = statistics.stdev(values) if len(values) > 1 else 0
                 result_str = "{}-p{}: {} +- {}".format(metric, pattern_id, mean, stdev)
-                logger.info(result_str)
+                logging.info(result_str)
                 fh.write(result_str + '\n')
 
         for metric in results.keys():
@@ -944,7 +961,7 @@ def _write_results(path: str, results: Dict):
             all_mean = statistics.mean(all_results)
             all_stdev = statistics.stdev(all_results) if len(all_results) > 1 else 0
             result_str = "{}-all-p: {} +- {}".format(metric, all_mean, all_stdev)
-            logger.info(result_str)
+            logging.info(result_str)
             fh.write(result_str + '\n')
 
 
@@ -961,7 +978,7 @@ def merge_logits(logits_dir: str, output_file: str, reduction: str):
            training.
     """
     subdirs = next(os.walk(logits_dir))[1]
-    logger.info("Found the following {} subdirectories: {}".format(len(subdirs), subdirs))
+    logging.info("Found the following {} subdirectories: {}".format(len(subdirs), subdirs))
 
     all_logits_lists = []
 
@@ -971,7 +988,7 @@ def merge_logits(logits_dir: str, output_file: str, reduction: str):
         logits = []
 
         if not os.path.exists(results_file) or not os.path.exists(logits_file):
-            logger.warning(f"Skipping subdir '{subdir}' because 'results.txt' or 'logits.txt' not found")
+            logging.warning(f"Skipping subdir '{subdir}' because 'results.txt' or 'logits.txt' not found")
             continue
 
         if reduction == 'mean':
@@ -986,7 +1003,7 @@ def merge_logits(logits_dir: str, output_file: str, reduction: str):
                 example_logits = [float(x) for x in line.split()]
                 logits.append(example_logits)
 
-        logger.info("File {}: Score = {}, #Logits = {}, #Labels = {}".format(
+        logging.info("File {}: Score = {}, #Logits = {}, #Labels = {}".format(
             results_file, result_train, len(logits), len(logits[0])))
 
         loglist = LogitsList(score=result_train, logits=logits)
@@ -1046,17 +1063,17 @@ def generate_fedipet_train_sets(train_data: List[InputExample], unlabeled_data: 
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
-    logger.info("Found the following {} subdirectories: {}".format(len(subdirs), subdirs))
+    logging.info("Found the following {} subdirectories: {}".format(len(subdirs), subdirs))
 
     if train_data:
         train_examples_per_label = [sum(1 for ex in train_data if ex.label == label) for label in labels]
         multiplier = num_new_examples / len(train_data)
         examples_per_label = [int(epl * multiplier) for epl in train_examples_per_label]
-        logger.info(f"Example distribution in the original dataset: {train_examples_per_label}")
+        logging.info(f"Example distribution in the original dataset: {train_examples_per_label}")
     else:
         examples_per_label = eq_div(num_new_examples, len(labels))
 
-    logger.info(f"Target distribution for the new dataset: {examples_per_label}")
+    logging.info(f"Target distribution for the new dataset: {examples_per_label}")
 
     for example in unlabeled_data:
         example.label, example.logits = None, None
@@ -1076,7 +1093,7 @@ def generate_fedipet_train_sets(train_data: List[InputExample], unlabeled_data: 
         logits = []
 
         if not os.path.exists(results_file) or not os.path.exists(logits_file):
-            logger.warning(f"Skipping subdir '{subdir}' because 'results.txt' or 'logits.txt' not found")
+            logging.warning(f"Skipping subdir '{subdir}' because 'results.txt' or 'logits.txt' not found")
             continue
 
         if reduction == 'mean':
@@ -1091,7 +1108,7 @@ def generate_fedipet_train_sets(train_data: List[InputExample], unlabeled_data: 
                 example_logits = [float(x) for x in line.split()]
                 logits.append(example_logits)
 
-        logger.info("File {}: Score = {}, #Logits = {}, #Labels = {}".format(
+        logging.info("File {}: Score = {}, #Logits = {}, #Labels = {}".format(
             results_file, result_train, len(logits), len(logits[0])))
 
         loglist = LogitsList(score=result_train, logits=logits)
@@ -1134,17 +1151,17 @@ def generate_ipet_train_sets(train_data: List[InputExample], unlabeled_data: Lis
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
-    logger.info("Found the following {} subdirectories: {}".format(len(subdirs), subdirs))
+    logging.info("Found the following {} subdirectories: {}".format(len(subdirs), subdirs))
 
     if train_data:
         train_examples_per_label = [sum(1 for ex in train_data if ex.label == label) for label in labels]
         multiplier = num_new_examples / len(train_data)
         examples_per_label = [int(epl * multiplier) for epl in train_examples_per_label]
-        logger.info(f"Example distribution in the original dataset: {train_examples_per_label}")
+        logging.info(f"Example distribution in the original dataset: {train_examples_per_label}")
     else:
         examples_per_label = eq_div(num_new_examples, len(labels))
 
-    logger.info(f"Target distribution for the new dataset: {examples_per_label}")
+    logging.info(f"Target distribution for the new dataset: {examples_per_label}")
 
     for example in unlabeled_data:
         example.label, example.logits = None, None
@@ -1160,7 +1177,7 @@ def generate_ipet_train_sets(train_data: List[InputExample], unlabeled_data: Lis
         logits = []
 
         if not os.path.exists(results_file) or not os.path.exists(logits_file):
-            logger.warning(f"Skipping subdir '{subdir}' because 'results.txt' or 'logits.txt' not found")
+            logging.warning(f"Skipping subdir '{subdir}' because 'results.txt' or 'logits.txt' not found")
             continue
 
         if reduction == 'mean':
@@ -1175,7 +1192,7 @@ def generate_ipet_train_sets(train_data: List[InputExample], unlabeled_data: Lis
                 example_logits = [float(x) for x in line.split()]
                 logits.append(example_logits)
 
-        logger.info("File {}: Score = {}, #Logits = {}, #Labels = {}".format(
+        logging.info("File {}: Score = {}, #Logits = {}, #Labels = {}".format(
             results_file, result_train, len(logits), len(logits[0])))
 
         loglist = LogitsList(score=result_train, logits=logits)
@@ -1247,7 +1264,7 @@ def generate_ipet_train_set(logits_lists: List[LogitsList], labels: List[str], o
 
         if n_most_likely <= 0:
             examples = [ex for ex in original_data if ex.label == label]
-            logger.info("There are {} examples for label {}".format(len(examples), label))
+            logging.info("There are {} examples for label {}".format(len(examples), label))
             while len(examples) < examples_per_label[idx]:
                 # upsample examples if there are too few
                 examples.extend(ex for ex in original_data if ex.label == label)
@@ -1274,7 +1291,7 @@ def _draw_examples_by_label_probability(examples: List[InputExample], num_exampl
         label_probabilities = [p / sum_label_probabilities for p in label_probabilities]
         return rng.choice(examples, size=num_examples, replace=False, p=label_probabilities).tolist()
     else:
-        logger.info("This client has 0 examples to draw. Funtion _draw_examples_by_label_probability is passed.")
+        logging.info("This client has 0 examples to draw. Funtion _draw_examples_by_label_probability is passed.")
         return []
 
 def get_parameter_number(net):

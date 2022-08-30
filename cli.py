@@ -26,10 +26,14 @@ from pet.tasks import PROCESSORS, load_examples, UNLABELED_SET, TRAIN_SET, DEV_S
 from pet.utils import eq_div
 from pet.wrapper import WRAPPER_TYPES, MODEL_CLASSES, SEQUENCE_CLASSIFIER_WRAPPER, WrapperConfig
 import pet
-import log
+import logging
 
-logger = log.get_logger('root')
-
+process_id = os.getpid()
+logging.getLogger().setLevel(logging.INFO)
+logging.basicConfig(level=logging.INFO,
+                        format=str(
+                            process_id) + ' - %(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',
+                        datefmt='%a, %d %b %Y %H:%M:%S')
 
 def load_pet_configs(args) -> Tuple[WrapperConfig, pet.TrainConfig, pet.EvalConfig]:
     """
@@ -226,7 +230,7 @@ def main():
                         help="Int  similarity of each client, the larger the beta the similar data for each client")
 
     args = parser.parse_args()
-    logger.info("Parameters: {}".format(args))
+    logging.info("Parameters: {}".format(args))
 
     # if os.path.exists(args.output_dir) and os.listdir(args.output_dir) \
     #         and args.do_train and not args.overwrite_output_dir:
@@ -265,7 +269,7 @@ def main():
     sc_model_cfg, sc_train_cfg, sc_eval_cfg = load_sequence_classifier_configs(args)
     ipet_cfg = load_ipet_config(args)
 
-    logger.info("Parameters after setting: {}".format(args))
+    logging.info("Parameters after setting: {}".format(args))
 
     if args.method == 'pet':
         pet.train_pet(pet_model_cfg, pet_train_cfg, pet_eval_cfg, sc_model_cfg, sc_train_cfg, sc_eval_cfg,

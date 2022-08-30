@@ -27,6 +27,7 @@ device=$3
 train_examples=$4 # done: 40; todo: 10, 100, 1000, 
 test_examples=$5 # 8700 for mnli
 unlabeled_examples=$6 # 392700 for mnli
+beta=$7 # niid button, 0 for off.
 
 task_name=${dataset}
 model_type="bert"
@@ -40,53 +41,106 @@ clients=10
 mkdir -p /${output_dir}/log/${dataset}/
 mkdir -p ./log/${dataset}
 
-if [ $method == "fedpet" ]; then
-    echo "fedpet start."
-    CUDA_VISIBLE_DEVICES=$device python3 cli.py \
-    --train_examples ${train_examples} \
-    --test_examples ${test_examples} \
-    --unlabeled_examples ${unlabeled_examples} \
-    --method ${method} \
-    --pattern_ids ${pattern_ids} \
-    --data_dir $data_dir/${dataset} \
-    --model_type ${model_type} \
-    --model_name_or_path ${model_name_or_path} \
-    --task_name ${task_name} \
-    --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} \
-    --ipet_scale_factor 1 \
-    --ipet_generations ${iteration} \
-    --pet_num_train_epochs ${epochs} \
-    --pet_repetitions 1 \
-    --pet_per_gpu_train_batch_size 4 \
-    --sc_num_train_epochs ${epochs} \
-    --sc_repetitions ${iteration} \
-    --do_train \
-    --do_eval \
-    --vanilla > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+if [ $beta == 0 ]; then
+    if [ $method == "fedpet" ]; then
+        echo "fedpet start."
+        CUDA_VISIBLE_DEVICES=$device python3 cli.py \
+        --train_examples ${train_examples} \
+        --test_examples ${test_examples} \
+        --unlabeled_examples ${unlabeled_examples} \
+        --method ${method} \
+        --pattern_ids ${pattern_ids} \
+        --data_dir $data_dir/${dataset} \
+        --model_type ${model_type} \
+        --model_name_or_path ${model_name_or_path} \
+        --task_name ${task_name} \
+        --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} \
+        --ipet_scale_factor 1 \
+        --ipet_generations ${iteration} \
+        --pet_num_train_epochs ${epochs} \
+        --pet_repetitions 1 \
+        --pet_per_gpu_train_batch_size 4 \
+        --sc_num_train_epochs ${epochs} \
+        --sc_repetitions ${iteration} \
+        --do_train \
+        --do_eval \
+        --vanilla > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+    else
+        echo "fedcls start."
+        CUDA_VISIBLE_DEVICES=$device python3 cli.py \
+        --train_examples ${train_examples} \
+        --test_examples ${test_examples} \
+        --unlabeled_examples ${unlabeled_examples} \
+        --method ${method} \
+        --pattern_ids ${pattern_ids} \
+        --data_dir $data_dir/${dataset} \
+        --model_type ${model_type} \
+        --model_name_or_path ${model_name_or_path} \
+        --task_name ${task_name} \
+        --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} \
+        --ipet_scale_factor 1 \
+        --ipet_generations ${iteration} \
+        --pet_num_train_epochs ${epochs} \
+        --pet_repetitions 1 \
+        --pet_per_gpu_train_batch_size 4 \
+        --sc_num_train_epochs ${epochs} \
+        --sc_repetitions ${iteration} \
+        --do_train \
+        --do_eval \
+        --vanilla > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+    fi
 else
-    echo "fedcls start."
-    CUDA_VISIBLE_DEVICES=1 python3 cli.py \
-    --train_examples ${train_examples} \
-    --test_examples ${test_examples} \
-    --unlabeled_examples ${unlabeled_examples} \
-    --method ${method} \
-    --pattern_ids ${pattern_ids} \
-    --data_dir $data_dir/${dataset} \
-    --model_type ${model_type} \
-    --model_name_or_path ${model_name_or_path} \
-    --task_name ${task_name} \
-    --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} \
-    --ipet_scale_factor 1 \
-    --ipet_generations ${iteration} \
-    --pet_num_train_epochs ${epochs} \
-    --pet_repetitions 1 \
-    --pet_per_gpu_train_batch_size 4 \
-    --sc_num_train_epochs ${epochs} \
-    --sc_repetitions ${iteration} \
-    --do_train \
-    --do_eval \
-    --vanilla > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+    if [ $method == "fedpet" ]; then
+        echo "fedpet start."
+        CUDA_VISIBLE_DEVICES=$device python3 cli.py \
+        --train_examples ${train_examples} \
+        --test_examples ${test_examples} \
+        --unlabeled_examples ${unlabeled_examples} \
+        --method ${method} \
+        --pattern_ids ${pattern_ids} \
+        --data_dir $data_dir/${dataset} \
+        --model_type ${model_type} \
+        --model_name_or_path ${model_name_or_path} \
+        --task_name ${task_name} \
+        --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients}_${beta} \
+        --ipet_scale_factor 1 \
+        --ipet_generations ${iteration} \
+        --pet_num_train_epochs ${epochs} \
+        --pet_repetitions 1 \
+        --pet_per_gpu_train_batch_size 4 \
+        --sc_num_train_epochs ${epochs} \
+        --sc_repetitions ${iteration} \
+        --beta ${beta} \
+        --do_train \
+        --do_eval \
+        --vanilla > log/${dataset}/${method}_${train_examples}_${clients}_${beta}.log 2>&1
+    else
+        echo "fedcls start."
+        CUDA_VISIBLE_DEVICES=$device python3 cli.py \
+        --train_examples ${train_examples} \
+        --test_examples ${test_examples} \
+        --unlabeled_examples ${unlabeled_examples} \
+        --method ${method} \
+        --pattern_ids ${pattern_ids} \
+        --data_dir $data_dir/${dataset} \
+        --model_type ${model_type} \
+        --model_name_or_path ${model_name_or_path} \
+        --task_name ${task_name} \
+        --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients}_${beta} \
+        --ipet_scale_factor 1 \
+        --ipet_generations ${iteration} \
+        --pet_num_train_epochs ${epochs} \
+        --pet_repetitions 1 \
+        --pet_per_gpu_train_batch_size 4 \
+        --sc_num_train_epochs ${epochs} \
+        --sc_repetitions ${iteration} \
+        --beta ${beta} \
+        --do_train \
+        --do_eval \
+        --vanilla > log/${dataset}/${method}_${train_examples}_${clients}_${beta}.log 2>&1
+    fi
 fi
+
 
 # local pet
 # conda activate ptpretrain && CUDA_VISIBLE_DEVICES=4 python3 cli.py --train_examples 40 --method fedpet --pattern_ids 1 --data_dir ./data/ --model_type bert --model_name_or_path bert-base-uncased --task_name agnews --output_dir /data/cdq/pet/log_local_pet_2_40_10 --ipet_scale_factor 2 --ipet_generations 100 --pet_num_train_epochs 10 --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --do_train --do_eval >> log_local_pet_2_40_10.log 2>&1
