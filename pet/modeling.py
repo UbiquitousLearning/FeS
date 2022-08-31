@@ -34,6 +34,8 @@ import collections
 import transformers
 transformers.logging.set_verbosity_error()
 
+import gc
+
 process_id = os.getpid()
 logging.getLogger().setLevel(logging.INFO)
 logging.basicConfig(level=logging.INFO,
@@ -122,6 +124,7 @@ def seperate_clients(train_data, unlabeled_data, eval_data, beta, seed, client_n
     unlabeled_data_seperate = np.split(unlabeled_data,client_num_in_total)
     eval_data_seperate = np.split(eval_data,client_num_in_total)
     return train_data_sperate, unlabeled_data_seperate, eval_data_seperate
+
 def eval_softlabel(ipet_data, train_data, replace=False):
     if replace:
             logging.info("Correct button is on.")
@@ -443,7 +446,7 @@ def train_fedpet(ensemble_model_config: WrapperConfig, ensemble_train_config: Tr
     """
 
     client_num_in_total = client_num_in_total
-    num_clients = min(10, client_num_in_total) 
+    num_clients = min(5, client_num_in_total) 
     train_data_sperate, unlabeled_data_seperate, eval_data_seperate = seperate_clients(train_data, unlabeled_data, eval_data, beta, seed, client_num_in_total)
 
     # Calculate the samples numbers of all clients involved in training
@@ -474,12 +477,15 @@ def train_fedpet(ensemble_model_config: WrapperConfig, ensemble_train_config: Tr
                 for i in range(num_clients):
                     pattern_iter_input_dir = os.path.join(output_dir, f'g{gen-1}',f'client{i}')
                     models_path.append(pattern_iter_input_dir)
-                models, fl_model = aggregate(models_path=models_path, sample_num_list=sample_num_list)
+                fl_model = aggregate(models_path=models_path, sample_num_list=sample_num_list)
                 wrapper = init_model(ensemble_model_config)
                 wrapper.model = fl_model
 
                 logging.info("Saving aggregated trained model at {}...".format(aggregated_model_path))
                 wrapper.save(aggregated_model_path)   
+
+                del wrapper
+                gc.collect()
 
             for client in range(num_clients):
                 client_idx = client_indexes[client]
@@ -493,7 +499,7 @@ def train_fedpet(ensemble_model_config: WrapperConfig, ensemble_train_config: Tr
                                 repetitions=1, train_data=train_data, unlabeled_data=unlabeled_data,
                                 eval_data=eval_data, do_train=do_train, do_eval=do_eval, save_unlabeled_logits=False,aggregated_model_path=aggregated_model_path)
     else:
-        for gen in range(ipet_config.generations): # debug mode: start from 2nd iteration; defalut is 0
+        for gen in range(1, ipet_config.generations): # debug mode: start from 2nd iteration; defalut is 0
             delete_cache(gen, output_dir)
             # Select clients
             aggregated_model_path = None
@@ -529,11 +535,14 @@ def train_fedpet(ensemble_model_config: WrapperConfig, ensemble_train_config: Tr
                             pattern_iter_input_dir = os.path.join(output_dir, f'g{gen-1}',f'client{i}')
                             models_path.append(pattern_iter_input_dir)
 
-                        models, fl_model = aggregate(models_path=models_path, sample_num_list=sample_num_list)
+                        fl_model = aggregate(models_path=models_path, sample_num_list=sample_num_list)
                         wrapper = init_model(ensemble_model_config)
                         wrapper.model = fl_model
                         logging.info("Saving aggregated trained model at {}...".format(aggregated_model_path))
                         wrapper.save(aggregated_model_path) 
+                        
+                        del wrapper
+                        gc.collect()
 
                     if augmentation: # 是否利用unlabeled data
                         if fed: # 是否和其它方联合训练
@@ -546,7 +555,7 @@ def train_fedpet(ensemble_model_config: WrapperConfig, ensemble_train_config: Tr
                                     pattern_iter_input_dir = os.path.join(output_dir, f'g{gen-1}',f'client{i}')
                                     models_path.append(pattern_iter_input_dir)
 
-                                models, fl_model = aggregate(models_path=models_path, sample_num_list=sample_num_list)
+                                fl_model = aggregate(models_path=models_path, sample_num_list=sample_num_list)
                                 wrapper = init_model(ensemble_model_config)
                                 wrapper.model = fl_model
                                 logging.info("Saving aggregated trained model at {}...".format(aggregated_model_path))
@@ -557,8 +566,8 @@ def train_fedpet(ensemble_model_config: WrapperConfig, ensemble_train_config: Tr
                                 
 
                                 original_data_size = len(train_data) if train_data else 10 / ipet_config.scale_factor
-                                # num_new_examples = 10 - len(train_data)
-                                num_new_examples = int(original_data_size * (ipet_config.scale_factor ** (gen + 1)) - len(train_data)) # 由原先的**级别增长，降至*级别增长
+                                num_new_examples = 100 - len(train_data)
+                                # num_new_examples = int(original_data_size * (ipet_config.scale_factor ** (gen + 1)) - len(train_data)) # 由原先的**级别增长，降至*级别增长
                                 generate_fedipet_train_sets(train_data=train_data, unlabeled_data=unlabeled_data,
                                                     labels=ensemble_model_config.label_list, logits_dir=os.path.join(output_dir, f'g{gen-1}'),
                                                     output_dir=os.path.join(output_dir, f'g{gen}', f'client{client}', 'this-gen-train-data'), reduction=reduction,
@@ -592,7 +601,7 @@ def train_fedpet(ensemble_model_config: WrapperConfig, ensemble_train_config: Tr
                             pattern_iter_input_dir = os.path.join(output_dir, f'g{gen-1}',f'client{client_idx}')
                             models_path.append(pattern_iter_input_dir)
 
-                            models, fl_model = aggregate(models_path=models_path, sample_num_list=sample_num_list)
+                            fl_model = aggregate(models_path=models_path, sample_num_list=sample_num_list)
                             wrapper = init_model(ensemble_model_config)
                             wrapper.model = fl_model
                             logits = evaluate(wrapper, unlabeled_data, ensemble_eval_config)['logits']
@@ -665,7 +674,7 @@ def train_fedclassifier(model_config: WrapperConfig, train_config: TrainConfig, 
 
     train_config.use_logits=False # !!!!!!!!!!!! to be the same with sequence classifer
     client_num_in_total = client_num_in_total
-    num_clients = min(10, client_num_in_total) 
+    num_clients = min(5, client_num_in_total) 
     
     train_data_sperate, unlabeled_data_seperate, eval_data_seperate = seperate_clients(train_data, unlabeled_data, eval_data, beta, seed, client_num_in_total)
 
@@ -690,7 +699,7 @@ def train_fedclassifier(model_config: WrapperConfig, train_config: TrainConfig, 
             for i in range(num_clients):
                 pattern_iter_input_dir = os.path.join(output_dir, f'g{gen-1}',f'client{i}')
                 models_path.append(pattern_iter_input_dir)
-            models, fl_model = aggregate(models_path=models_path, sample_num_list=sample_num_list)
+            fl_model = aggregate(models_path=models_path, sample_num_list=sample_num_list)
             wrapper = init_model(model_config)
             wrapper.model = fl_model
 
@@ -895,6 +904,14 @@ def train_single_model(model: TransformerModelWrapper, train_data: List[InputExa
 
         
         logging.info('init acc: val acc before training is {}'.format(results_dict['train_set_before_training']))
+
+    logging.info("--------------------------------------------")
+    logging.info("train_data is:")
+    logging.info(train_data)
+
+    logging.info("--------------------------------------------")
+    logging.info("ipet_train_data is:")
+    logging.info(ipet_train_data)
 
     all_train_data = train_data + ipet_train_data
 
@@ -1348,10 +1365,16 @@ def aggregate(models_path=None, sample_num_list=None):
         for i in range(len(models)):
             key_sum = key_sum + worker_state_dict[i][key] * sample_num_list[i]
         fed_state_dict[key]= key_sum / np.sum(sample_num_list)
+    
+    del models
+    gc.collect()
+
     #### update fed weights to fl model
     fl_model = TransformerModelWrapper.from_pretrained(models_path[0]).model
     fl_model.load_state_dict(fed_state_dict)
-    return models, fl_model
+
+    
+    return fl_model
 
 def compare_model(m1, m2):
     worker_state_dict = [m1.state_dict(), m2.state_dict()]
