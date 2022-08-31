@@ -1,154 +1,0 @@
-57602 - Wed, 31 Aug 2022 11:06:21 cli.py[line:233] INFO Parameters: Namespace(adam_epsilon=1e-08, aggregated=True, alpha=0.9999, augmentation=True, beta=None, cache_dir='', data_dir='/data2/cdq/pet_data/data/agnews/', decoding_strategy='default', do_eval=True, do_train=True, eval_set='dev', fed=True, ipet_generations=100, ipet_logits_percentage=0.25, ipet_n_most_likely=-1, ipet_scale_factor=2.0, learning_rate=1e-05, lm_training=False, logging_steps=5000, max_grad_norm=1.0, method='fedpet', model_name_or_path='bert-base-uncased', model_type='bert', no_cuda=False, no_distillation=False, output_dir='/data2/cdq/pet/log_fedpet_augmentation_10', overwrite_output_dir=False, pattern_ids=[1], pet_gradient_accumulation_steps=1, pet_max_seq_length=256, pet_max_steps=-1, pet_num_train_epochs=10.0, pet_per_gpu_eval_batch_size=8, pet_per_gpu_train_batch_size=4, pet_per_gpu_unlabeled_batch_size=4, pet_repetitions=1, priming=False, reduction='mean', sc_gradient_accumulation_steps=1, sc_max_seq_length=256, sc_max_steps=-1, sc_num_train_epochs=3, sc_per_gpu_eval_batch_size=8, sc_per_gpu_train_batch_size=4, sc_per_gpu_unlabeled_batch_size=4, sc_repetitions=1, seed=42, split_examples_evenly=False, task_name='agnews', temperature=2, test_examples=-1, train_examples=10, unlabeled_examples=-1, vanilla=False, verbalizer_file=None, warmup_steps=0, weight_decay=0.01, wrapper_type='mlm')
-57602 - Wed, 31 Aug 2022 11:06:21 tasks.py[line:827] INFO Creating features from dataset file at /data2/cdq/pet_data/data/agnews/ (num_examples=10, set_type=train)
-57602 - Wed, 31 Aug 2022 11:06:22 tasks.py[line:853] INFO Returning 10 train examples with label dist.: [('1', 3), ('4', 4), ('2', 2), ('3', 1)]
-57602 - Wed, 31 Aug 2022 11:06:22 tasks.py[line:827] INFO Creating features from dataset file at /data2/cdq/pet_data/data/agnews/ (num_examples=-1, set_type=dev)
-57602 - Wed, 31 Aug 2022 11:06:22 tasks.py[line:853] INFO Returning 7600 dev examples with label dist.: [('3', 1900), ('4', 1900), ('2', 1900), ('1', 1900)]
-57602 - Wed, 31 Aug 2022 11:06:22 tasks.py[line:827] INFO Creating features from dataset file at /data2/cdq/pet_data/data/agnews/ (num_examples=-1, set_type=unlabeled)
-57602 - Wed, 31 Aug 2022 11:06:23 tasks.py[line:853] INFO Returning 120000 unlabeled examples with label dist.: [('1', 120000)]
-57602 - Wed, 31 Aug 2022 11:06:23 cli.py[line:272] INFO Parameters after setting: Namespace(adam_epsilon=1e-08, aggregated=True, alpha=0.9999, augmentation=True, beta=None, cache_dir='', data_dir='/data2/cdq/pet_data/data/agnews/', decoding_strategy='default', device='cuda', do_eval=True, do_train=True, eval_set='dev', fed=True, ipet_generations=100, ipet_logits_percentage=0.25, ipet_n_most_likely=-1, ipet_scale_factor=2.0, label_list=['1', '2', '3', '4'], learning_rate=1e-05, lm_training=False, logging_steps=5000, max_grad_norm=1.0, method='fedpet', metrics=['acc'], model_name_or_path='bert-base-uncased', model_type='bert', n_gpu=1, no_cuda=False, no_distillation=False, output_dir='/data2/cdq/pet/log_fedpet_augmentation_10', overwrite_output_dir=False, pattern_ids=[1], pet_gradient_accumulation_steps=1, pet_max_seq_length=256, pet_max_steps=-1, pet_num_train_epochs=10.0, pet_per_gpu_eval_batch_size=8, pet_per_gpu_train_batch_size=4, pet_per_gpu_unlabeled_batch_size=4, pet_repetitions=1, priming=False, reduction='mean', sc_gradient_accumulation_steps=1, sc_max_seq_length=256, sc_max_steps=-1, sc_num_train_epochs=3, sc_per_gpu_eval_batch_size=8, sc_per_gpu_train_batch_size=4, sc_per_gpu_unlabeled_batch_size=4, sc_repetitions=1, seed=42, split_examples_evenly=False, task_name='agnews', temperature=2, test_examples=-1, train_examples=10, unlabeled_examples=-1, vanilla=False, verbalizer_file=None, warmup_steps=0, weight_decay=0.01, wrapper_type='mlm')
-57602 - Wed, 31 Aug 2022 11:06:23 modeling.py[line:448] INFO All clients: sample_num_list is [1. 1. 1. 1. 1. 1. 1. 1. 1. 1.]
-57602 - Wed, 31 Aug 2022 11:06:23 modeling.py[line:502] INFO Gen 0: client_indexes is [2 8 4 9 1]
-57602 - Wed, 31 Aug 2022 11:06:23 modeling.py[line:507] INFO Gen0: sample_num_list is [1. 1. 1. 1. 1.]
-57602 - Wed, 31 Aug 2022 11:06:35 modeling.py[line:907] INFO len of all_train_data: 1
-2022-08-31 11:06:35,281 - INFO - wrapper - CDQ: n_gpu: 1, per_gpu_train_batch_size: 4, train_batch_size: 4
-57602 - Wed, 31 Aug 2022 11:06:35 wrapper.py[line:234] INFO CDQ: n_gpu: 1, per_gpu_train_batch_size: 4, train_batch_size: 4
-2022-08-31 11:06:35,281 - INFO - wrapper - Writing example 0
-57602 - Wed, 31 Aug 2022 11:06:35 wrapper.py[line:433] INFO Writing example 0
-/home/cdq/.conda/envs/ptpretrain/lib/python3.7/site-packages/transformers/optimization.py:309: FutureWarning: This implementation of AdamW is deprecated and will be removed in a future version. Use the PyTorch implementation torch.optim.AdamW instead, or set `no_deprecation_warning=True` to disable this warning
-  FutureWarning,
-Epoch:   0%|          | 0/10 [00:00<?, ?it/s]Epoch:  10%|█         | 1/10 [00:00<00:01,  8.09it/s]Epoch:  30%|███       | 3/10 [00:00<00:00,  9.34it/s]Epoch:  50%|█████     | 5/10 [00:00<00:00, 10.61it/s]Epoch:  70%|███████   | 7/10 [00:00<00:00, 11.89it/s]Epoch:  90%|█████████ | 9/10 [00:00<00:00, 12.95it/s]Epoch: 100%|██████████| 10/10 [00:00<00:00, 14.40it/s]
-2022-08-31 11:06:35,991 - INFO - wrapper - Writing example 0
-57602 - Wed, 31 Aug 2022 11:06:35 wrapper.py[line:433] INFO Writing example 0
-/home/cdq/.conda/envs/ptpretrain/lib/python3.7/site-packages/transformers/data/metrics/__init__.py:36: FutureWarning: This metric will be removed from the library soon, metrics should be handled with the 🤗 Datasets library. You can have a look at this example script for pointers: https://github.com/huggingface/transformers/blob/main/examples/pytorch/text-classification/run_glue.py
-  warnings.warn(DEPRECATION_WARNING, FutureWarning)
-57602 - Wed, 31 Aug 2022 11:06:36 modeling.py[line:811] INFO Saving trained model at /data2/cdq/pet/log_fedpet_augmentation_10/g0/client0...
-57602 - Wed, 31 Aug 2022 11:06:36 modeling.py[line:815] INFO Saving complete
-2022-08-31 11:06:36,571 - INFO - wrapper - Writing example 0
-57602 - Wed, 31 Aug 2022 11:06:36 wrapper.py[line:433] INFO Writing example 0
-2022-08-31 11:06:50,489 - INFO - wrapper - Writing example 10000
-57602 - Wed, 31 Aug 2022 11:06:50 wrapper.py[line:433] INFO Writing example 10000
-57602 - Wed, 31 Aug 2022 11:11:21 modeling.py[line:828] INFO Starting evaluation...
-2022-08-31 11:11:21,372 - INFO - wrapper - Writing example 0
-57602 - Wed, 31 Aug 2022 11:11:21 wrapper.py[line:433] INFO Writing example 0
-57602 - Wed, 31 Aug 2022 11:11:38 modeling.py[line:850] INFO --- RESULT (pattern_id=1, iteration=0) ---
-57602 - Wed, 31 Aug 2022 11:11:38 modeling.py[line:851] INFO {'acc': 0.3013157894736842}
-57602 - Wed, 31 Aug 2022 11:11:38 modeling.py[line:852] INFO /data2/cdq/pet/log_fedpet_augmentation_10/g0/client0
-57602 - Wed, 31 Aug 2022 11:11:38 modeling.py[line:866] INFO === OVERALL RESULTS ===
-57602 - Wed, 31 Aug 2022 11:11:38 modeling.py[line:991] INFO acc-p1: 0.3013157894736842 +- 0
-57602 - Wed, 31 Aug 2022 11:11:38 modeling.py[line:999] INFO acc-all-p: 0.3013157894736842 +- 0
-57602 - Wed, 31 Aug 2022 11:11:48 modeling.py[line:907] INFO len of all_train_data: 1
-2022-08-31 11:11:48,112 - INFO - wrapper - CDQ: n_gpu: 1, per_gpu_train_batch_size: 4, train_batch_size: 4
-57602 - Wed, 31 Aug 2022 11:11:48 wrapper.py[line:234] INFO CDQ: n_gpu: 1, per_gpu_train_batch_size: 4, train_batch_size: 4
-2022-08-31 11:11:48,112 - INFO - wrapper - Writing example 0
-57602 - Wed, 31 Aug 2022 11:11:48 wrapper.py[line:433] INFO Writing example 0
-Epoch:   0%|          | 0/10 [00:00<?, ?it/s]Epoch:  10%|█         | 1/10 [00:00<00:01,  5.50it/s]Epoch:  20%|██        | 2/10 [00:00<00:01,  5.27it/s]Epoch:  30%|███       | 3/10 [00:00<00:01,  5.02it/s]Epoch:  40%|████      | 4/10 [00:00<00:01,  4.87it/s]Epoch:  50%|█████     | 5/10 [00:01<00:01,  4.80it/s]Epoch:  60%|██████    | 6/10 [00:01<00:00,  5.27it/s]Epoch:  70%|███████   | 7/10 [00:01<00:00,  5.24it/s]Epoch:  80%|████████  | 8/10 [00:01<00:00,  5.36it/s]Epoch:  90%|█████████ | 9/10 [00:01<00:00,  5.05it/s]Epoch: 100%|██████████| 10/10 [00:02<00:00,  4.86it/s]Epoch: 100%|██████████| 10/10 [00:02<00:00,  4.97it/s]
-2022-08-31 11:11:50,134 - INFO - wrapper - Writing example 0
-57602 - Wed, 31 Aug 2022 11:11:50 wrapper.py[line:433] INFO Writing example 0
-57602 - Wed, 31 Aug 2022 11:11:50 modeling.py[line:811] INFO Saving trained model at /data2/cdq/pet/log_fedpet_augmentation_10/g0/client1...
-57602 - Wed, 31 Aug 2022 11:11:50 modeling.py[line:815] INFO Saving complete
-2022-08-31 11:11:50,614 - INFO - wrapper - Writing example 0
-57602 - Wed, 31 Aug 2022 11:11:50 wrapper.py[line:433] INFO Writing example 0
-2022-08-31 11:12:04,423 - INFO - wrapper - Writing example 10000
-57602 - Wed, 31 Aug 2022 11:12:04 wrapper.py[line:433] INFO Writing example 10000
-57602 - Wed, 31 Aug 2022 11:18:08 modeling.py[line:828] INFO Starting evaluation...
-2022-08-31 11:18:08,920 - INFO - wrapper - Writing example 0
-57602 - Wed, 31 Aug 2022 11:18:08 wrapper.py[line:433] INFO Writing example 0
-57602 - Wed, 31 Aug 2022 11:18:30 modeling.py[line:850] INFO --- RESULT (pattern_id=1, iteration=0) ---
-57602 - Wed, 31 Aug 2022 11:18:30 modeling.py[line:851] INFO {'acc': 0.2578947368421053}
-57602 - Wed, 31 Aug 2022 11:18:30 modeling.py[line:852] INFO /data2/cdq/pet/log_fedpet_augmentation_10/g0/client1
-57602 - Wed, 31 Aug 2022 11:18:31 modeling.py[line:866] INFO === OVERALL RESULTS ===
-57602 - Wed, 31 Aug 2022 11:18:31 modeling.py[line:991] INFO acc-p1: 0.2578947368421053 +- 0
-57602 - Wed, 31 Aug 2022 11:18:31 modeling.py[line:999] INFO acc-all-p: 0.2578947368421053 +- 0
-57602 - Wed, 31 Aug 2022 11:18:40 modeling.py[line:907] INFO len of all_train_data: 1
-2022-08-31 11:18:40,355 - INFO - wrapper - CDQ: n_gpu: 1, per_gpu_train_batch_size: 4, train_batch_size: 4
-57602 - Wed, 31 Aug 2022 11:18:40 wrapper.py[line:234] INFO CDQ: n_gpu: 1, per_gpu_train_batch_size: 4, train_batch_size: 4
-2022-08-31 11:18:40,355 - INFO - wrapper - Writing example 0
-57602 - Wed, 31 Aug 2022 11:18:40 wrapper.py[line:433] INFO Writing example 0
-Epoch:   0%|          | 0/10 [00:00<?, ?it/s]Epoch:  10%|█         | 1/10 [00:00<00:02,  3.96it/s]Epoch:  20%|██        | 2/10 [00:00<00:01,  4.06it/s]Epoch:  30%|███       | 3/10 [00:00<00:01,  4.42it/s]Epoch:  40%|████      | 4/10 [00:00<00:01,  4.87it/s]Epoch:  50%|█████     | 5/10 [00:01<00:01,  4.87it/s]Epoch:  60%|██████    | 6/10 [00:01<00:00,  4.79it/s]Epoch:  70%|███████   | 7/10 [00:01<00:00,  4.71it/s]Epoch:  80%|████████  | 8/10 [00:01<00:00,  4.90it/s]Epoch:  90%|█████████ | 9/10 [00:01<00:00,  4.94it/s]Epoch: 100%|██████████| 10/10 [00:02<00:00,  4.98it/s]Epoch: 100%|██████████| 10/10 [00:02<00:00,  4.89it/s]
-2022-08-31 11:18:42,409 - INFO - wrapper - Writing example 0
-57602 - Wed, 31 Aug 2022 11:18:42 wrapper.py[line:433] INFO Writing example 0
-57602 - Wed, 31 Aug 2022 11:18:42 modeling.py[line:811] INFO Saving trained model at /data2/cdq/pet/log_fedpet_augmentation_10/g0/client2...
-57602 - Wed, 31 Aug 2022 11:18:42 modeling.py[line:815] INFO Saving complete
-2022-08-31 11:18:42,969 - INFO - wrapper - Writing example 0
-57602 - Wed, 31 Aug 2022 11:18:42 wrapper.py[line:433] INFO Writing example 0
-2022-08-31 11:18:56,828 - INFO - wrapper - Writing example 10000
-57602 - Wed, 31 Aug 2022 11:18:56 wrapper.py[line:433] INFO Writing example 10000
-57602 - Wed, 31 Aug 2022 11:24:47 modeling.py[line:828] INFO Starting evaluation...
-2022-08-31 11:24:47,760 - INFO - wrapper - Writing example 0
-57602 - Wed, 31 Aug 2022 11:24:47 wrapper.py[line:433] INFO Writing example 0
-57602 - Wed, 31 Aug 2022 11:25:14 modeling.py[line:850] INFO --- RESULT (pattern_id=1, iteration=0) ---
-57602 - Wed, 31 Aug 2022 11:25:14 modeling.py[line:851] INFO {'acc': 0.3026315789473684}
-57602 - Wed, 31 Aug 2022 11:25:14 modeling.py[line:852] INFO /data2/cdq/pet/log_fedpet_augmentation_10/g0/client2
-57602 - Wed, 31 Aug 2022 11:25:14 modeling.py[line:866] INFO === OVERALL RESULTS ===
-57602 - Wed, 31 Aug 2022 11:25:14 modeling.py[line:991] INFO acc-p1: 0.3026315789473684 +- 0
-57602 - Wed, 31 Aug 2022 11:25:14 modeling.py[line:999] INFO acc-all-p: 0.3026315789473684 +- 0
-57602 - Wed, 31 Aug 2022 11:25:23 modeling.py[line:907] INFO len of all_train_data: 1
-2022-08-31 11:25:23,771 - INFO - wrapper - CDQ: n_gpu: 1, per_gpu_train_batch_size: 4, train_batch_size: 4
-57602 - Wed, 31 Aug 2022 11:25:23 wrapper.py[line:234] INFO CDQ: n_gpu: 1, per_gpu_train_batch_size: 4, train_batch_size: 4
-2022-08-31 11:25:23,771 - INFO - wrapper - Writing example 0
-57602 - Wed, 31 Aug 2022 11:25:23 wrapper.py[line:433] INFO Writing example 0
-Epoch:   0%|          | 0/10 [00:00<?, ?it/s]Epoch:  10%|█         | 1/10 [00:00<00:02,  4.22it/s]Epoch:  20%|██        | 2/10 [00:00<00:01,  4.37it/s]Epoch:  30%|███       | 3/10 [00:00<00:01,  4.22it/s]Epoch:  40%|████      | 4/10 [00:00<00:01,  4.10it/s]Epoch:  50%|█████     | 5/10 [00:01<00:01,  4.13it/s]Epoch:  60%|██████    | 6/10 [00:01<00:00,  4.37it/s]Epoch:  70%|███████   | 7/10 [00:01<00:00,  4.24it/s]Epoch:  80%|████████  | 8/10 [00:01<00:00,  4.21it/s]Epoch:  90%|█████████ | 9/10 [00:02<00:00,  4.06it/s]Epoch: 100%|██████████| 10/10 [00:02<00:00,  3.92it/s]Epoch: 100%|██████████| 10/10 [00:02<00:00,  4.10it/s]
-2022-08-31 11:25:26,217 - INFO - wrapper - Writing example 0
-57602 - Wed, 31 Aug 2022 11:25:26 wrapper.py[line:433] INFO Writing example 0
-57602 - Wed, 31 Aug 2022 11:25:26 modeling.py[line:811] INFO Saving trained model at /data2/cdq/pet/log_fedpet_augmentation_10/g0/client3...
-57602 - Wed, 31 Aug 2022 11:25:26 modeling.py[line:815] INFO Saving complete
-2022-08-31 11:25:26,747 - INFO - wrapper - Writing example 0
-57602 - Wed, 31 Aug 2022 11:25:26 wrapper.py[line:433] INFO Writing example 0
-2022-08-31 11:25:40,444 - INFO - wrapper - Writing example 10000
-57602 - Wed, 31 Aug 2022 11:25:40 wrapper.py[line:433] INFO Writing example 10000
-57602 - Wed, 31 Aug 2022 11:31:24 modeling.py[line:828] INFO Starting evaluation...
-2022-08-31 11:31:24,250 - INFO - wrapper - Writing example 0
-57602 - Wed, 31 Aug 2022 11:31:24 wrapper.py[line:433] INFO Writing example 0
-57602 - Wed, 31 Aug 2022 11:31:51 modeling.py[line:850] INFO --- RESULT (pattern_id=1, iteration=0) ---
-57602 - Wed, 31 Aug 2022 11:31:51 modeling.py[line:851] INFO {'acc': 0.325}
-57602 - Wed, 31 Aug 2022 11:31:51 modeling.py[line:852] INFO /data2/cdq/pet/log_fedpet_augmentation_10/g0/client3
-57602 - Wed, 31 Aug 2022 11:31:51 modeling.py[line:866] INFO === OVERALL RESULTS ===
-57602 - Wed, 31 Aug 2022 11:31:51 modeling.py[line:991] INFO acc-p1: 0.325 +- 0
-57602 - Wed, 31 Aug 2022 11:31:51 modeling.py[line:999] INFO acc-all-p: 0.325 +- 0
-57602 - Wed, 31 Aug 2022 11:32:01 modeling.py[line:907] INFO len of all_train_data: 1
-2022-08-31 11:32:01,085 - INFO - wrapper - CDQ: n_gpu: 1, per_gpu_train_batch_size: 4, train_batch_size: 4
-57602 - Wed, 31 Aug 2022 11:32:01 wrapper.py[line:234] INFO CDQ: n_gpu: 1, per_gpu_train_batch_size: 4, train_batch_size: 4
-2022-08-31 11:32:01,085 - INFO - wrapper - Writing example 0
-57602 - Wed, 31 Aug 2022 11:32:01 wrapper.py[line:433] INFO Writing example 0
-Epoch:   0%|          | 0/10 [00:00<?, ?it/s]Epoch:  10%|█         | 1/10 [00:00<00:02,  3.99it/s]Epoch:  20%|██        | 2/10 [00:00<00:01,  4.12it/s]Epoch:  30%|███       | 3/10 [00:00<00:01,  4.01it/s]Epoch:  40%|████      | 4/10 [00:00<00:01,  4.22it/s]Epoch:  50%|█████     | 5/10 [00:01<00:01,  4.27it/s]Epoch:  60%|██████    | 6/10 [00:01<00:00,  4.24it/s]Epoch:  70%|███████   | 7/10 [00:01<00:00,  4.12it/s]Epoch:  80%|████████  | 8/10 [00:01<00:00,  4.15it/s]Epoch:  90%|█████████ | 9/10 [00:02<00:00,  4.32it/s]Epoch: 100%|██████████| 10/10 [00:02<00:00,  4.38it/s]Epoch: 100%|██████████| 10/10 [00:02<00:00,  4.27it/s]
-2022-08-31 11:32:03,436 - INFO - wrapper - Writing example 0
-57602 - Wed, 31 Aug 2022 11:32:03 wrapper.py[line:433] INFO Writing example 0
-57602 - Wed, 31 Aug 2022 11:32:03 modeling.py[line:811] INFO Saving trained model at /data2/cdq/pet/log_fedpet_augmentation_10/g0/client4...
-57602 - Wed, 31 Aug 2022 11:32:03 modeling.py[line:815] INFO Saving complete
-2022-08-31 11:32:03,996 - INFO - wrapper - Writing example 0
-57602 - Wed, 31 Aug 2022 11:32:03 wrapper.py[line:433] INFO Writing example 0
-2022-08-31 11:32:17,631 - INFO - wrapper - Writing example 10000
-57602 - Wed, 31 Aug 2022 11:32:17 wrapper.py[line:433] INFO Writing example 10000
-57602 - Wed, 31 Aug 2022 11:37:33 modeling.py[line:828] INFO Starting evaluation...
-2022-08-31 11:37:33,202 - INFO - wrapper - Writing example 0
-57602 - Wed, 31 Aug 2022 11:37:33 wrapper.py[line:433] INFO Writing example 0
-57602 - Wed, 31 Aug 2022 11:37:44 modeling.py[line:850] INFO --- RESULT (pattern_id=1, iteration=0) ---
-57602 - Wed, 31 Aug 2022 11:37:44 modeling.py[line:851] INFO {'acc': 0.4618421052631579}
-57602 - Wed, 31 Aug 2022 11:37:44 modeling.py[line:852] INFO /data2/cdq/pet/log_fedpet_augmentation_10/g0/client4
-57602 - Wed, 31 Aug 2022 11:37:44 modeling.py[line:866] INFO === OVERALL RESULTS ===
-57602 - Wed, 31 Aug 2022 11:37:44 modeling.py[line:991] INFO acc-p1: 0.4618421052631579 +- 0
-57602 - Wed, 31 Aug 2022 11:37:44 modeling.py[line:999] INFO acc-all-p: 0.4618421052631579 +- 0
-57602 - Wed, 31 Aug 2022 11:37:44 modeling.py[line:502] INFO Gen 1: client_indexes is [2 9 6 4 0]
-57602 - Wed, 31 Aug 2022 11:37:44 modeling.py[line:507] INFO Gen1: sample_num_list is [1. 1. 1. 1. 1.]
-57602 - Wed, 31 Aug 2022 11:38:01 modeling.py[line:530] INFO Saving aggregated trained model at /data2/cdq/pet/log_fedpet_augmentation_10/g0/aggregated...
-57602 - Wed, 31 Aug 2022 11:38:18 modeling.py[line:547] INFO Saving aggregated trained model at /data2/cdq/pet/log_fedpet_augmentation_10/g0/aggregated...
-2022-08-31 11:38:19,179 - INFO - wrapper - Writing example 0
-57602 - Wed, 31 Aug 2022 11:38:19 wrapper.py[line:433] INFO Writing example 0
-2022-08-31 11:38:32,849 - INFO - wrapper - Writing example 10000
-57602 - Wed, 31 Aug 2022 11:38:32 wrapper.py[line:433] INFO Writing example 10000
-Traceback (most recent call last):
-  File "cli.py", line 311, in <module>
-    main()
-  File "cli.py", line 299, in main
-    eval_data=eval_data, do_train=args.do_train, do_eval=args.do_eval, seed=args.seed, aggregated=args.aggregated, vanilla=args.vanilla, fed=args.fed, augmentation=args.augmentation, beta=args.beta)
-  File "/home/cdq/FedPet/pet/modeling.py", line 549, in train_fedpet
-    logits = evaluate(wrapper, unlabeled_data, ensemble_eval_config)['logits']
-  File "/home/cdq/FedPet/pet/modeling.py", line 962, in evaluate
-    results = model.eval(eval_data, device, per_gpu_eval_batch_size=config.per_gpu_eval_batch_size,
-  File "/home/cdq/FedPet/pet/wrapper.py", line 386, in eval
-    logits = EVALUATION_STEP_FUNCTIONS[self.config.wrapper_type](self)(batch)
-  File "/home/cdq/FedPet/pet/wrapper.py", line 535, in mlm_eval_step
-    return self.preprocessor.pvp.convert_mlm_logits_to_cls_logits(batch['mlm_labels'], outputs[0])
-  File "/home/cdq/FedPet/pet/pvp.py", line 216, in convert_mlm_logits_to_cls_logits
-    masked_logits = logits[mlm_labels >= 0]
-KeyboardInterrupt

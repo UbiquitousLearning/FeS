@@ -13,3 +13,6 @@ data/*
 fig/*
 log/*
 .vscode
+
+*.log
+run*

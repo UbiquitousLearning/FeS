@@ -1,840 +1,0 @@
-73828 - Wed, 31 Aug 2022 12:16:18 cli.py[line:233] INFO Parameters: Namespace(adam_epsilon=1e-08, aggregated=True, alpha=0.9999, augmentation=True, beta=None, cache_dir='', data_dir='/data2/cdq/pet_data/data/agnews/', decoding_strategy='default', do_eval=True, do_train=True, eval_set='dev', fed=True, ipet_generations=100, ipet_logits_percentage=0.25, ipet_n_most_likely=-1, ipet_scale_factor=2.0, learning_rate=1e-05, lm_training=False, logging_steps=5000, max_grad_norm=1.0, method='fedpet', model_name_or_path='bert-base-uncased', model_type='bert', no_cuda=False, no_distillation=False, output_dir='/data2/cdq/pet/log_fedpet_augmentation_10', overwrite_output_dir=False, pattern_ids=[1], pet_gradient_accumulation_steps=1, pet_max_seq_length=256, pet_max_steps=-1, pet_num_train_epochs=10.0, pet_per_gpu_eval_batch_size=8, pet_per_gpu_train_batch_size=4, pet_per_gpu_unlabeled_batch_size=4, pet_repetitions=1, priming=False, reduction='mean', sc_gradient_accumulation_steps=1, sc_max_seq_length=256, sc_max_steps=-1, sc_num_train_epochs=3, sc_per_gpu_eval_batch_size=8, sc_per_gpu_train_batch_size=4, sc_per_gpu_unlabeled_batch_size=4, sc_repetitions=1, seed=42, split_examples_evenly=False, task_name='agnews', temperature=2, test_examples=-1, train_examples=10, unlabeled_examples=-1, vanilla=False, verbalizer_file=None, warmup_steps=0, weight_decay=0.01, wrapper_type='mlm')
-73828 - Wed, 31 Aug 2022 12:16:18 tasks.py[line:827] INFO Creating features from dataset file at /data2/cdq/pet_data/data/agnews/ (num_examples=10, set_type=train)
-73828 - Wed, 31 Aug 2022 12:16:19 tasks.py[line:853] INFO Returning 10 train examples with label dist.: [('1', 3), ('4', 4), ('2', 2), ('3', 1)]
-73828 - Wed, 31 Aug 2022 12:16:19 tasks.py[line:827] INFO Creating features from dataset file at /data2/cdq/pet_data/data/agnews/ (num_examples=-1, set_type=dev)
-73828 - Wed, 31 Aug 2022 12:16:19 tasks.py[line:853] INFO Returning 7600 dev examples with label dist.: [('3', 1900), ('4', 1900), ('2', 1900), ('1', 1900)]
-73828 - Wed, 31 Aug 2022 12:16:19 tasks.py[line:827] INFO Creating features from dataset file at /data2/cdq/pet_data/data/agnews/ (num_examples=-1, set_type=unlabeled)
-73828 - Wed, 31 Aug 2022 12:16:20 tasks.py[line:853] INFO Returning 120000 unlabeled examples with label dist.: [('1', 120000)]
-73828 - Wed, 31 Aug 2022 12:16:20 cli.py[line:272] INFO Parameters after setting: Namespace(adam_epsilon=1e-08, aggregated=True, alpha=0.9999, augmentation=True, beta=None, cache_dir='', data_dir='/data2/cdq/pet_data/data/agnews/', decoding_strategy='default', device='cuda', do_eval=True, do_train=True, eval_set='dev', fed=True, ipet_generations=100, ipet_logits_percentage=0.25, ipet_n_most_likely=-1, ipet_scale_factor=2.0, label_list=['1', '2', '3', '4'], learning_rate=1e-05, lm_training=False, logging_steps=5000, max_grad_norm=1.0, method='fedpet', metrics=['acc'], model_name_or_path='bert-base-uncased', model_type='bert', n_gpu=1, no_cuda=False, no_distillation=False, output_dir='/data2/cdq/pet/log_fedpet_augmentation_10', overwrite_output_dir=False, pattern_ids=[1], pet_gradient_accumulation_steps=1, pet_max_seq_length=256, pet_max_steps=-1, pet_num_train_epochs=10.0, pet_per_gpu_eval_batch_size=8, pet_per_gpu_train_batch_size=4, pet_per_gpu_unlabeled_batch_size=4, pet_repetitions=1, priming=False, reduction='mean', sc_gradient_accumulation_steps=1, sc_max_seq_length=256, sc_max_steps=-1, sc_num_train_epochs=3, sc_per_gpu_eval_batch_size=8, sc_per_gpu_train_batch_size=4, sc_per_gpu_unlabeled_batch_size=4, sc_repetitions=1, seed=42, split_examples_evenly=False, task_name='agnews', temperature=2, test_examples=-1, train_examples=10, unlabeled_examples=-1, vanilla=False, verbalizer_file=None, warmup_steps=0, weight_decay=0.01, wrapper_type='mlm')
-73828 - Wed, 31 Aug 2022 12:16:20 modeling.py[line:448] INFO All clients: sample_num_list is [1. 1. 1. 1. 1. 1. 1. 1. 1. 1.]
-73828 - Wed, 31 Aug 2022 12:16:20 modeling.py[line:502] INFO Gen 0: client_indexes is [2 8 4 9 1]
-73828 - Wed, 31 Aug 2022 12:16:20 modeling.py[line:507] INFO Gen0: sample_num_list is [1. 1. 1. 1. 1.]
-73828 - Wed, 31 Aug 2022 12:16:35 wrapper.py[line:438] INFO Writing example 0
-/home/cdq/.conda/envs/ptpretrain/lib/python3.7/site-packages/transformers/data/metrics/__init__.py:36: FutureWarning: This metric will be removed from the library soon, metrics should be handled with the 🤗 Datasets library. You can have a look at this example script for pointers: https://github.com/huggingface/transformers/blob/main/examples/pytorch/text-classification/run_glue.py
-  warnings.warn(DEPRECATION_WARNING, FutureWarning)
-73828 - Wed, 31 Aug 2022 12:16:52 modeling.py[line:904] INFO init acc: val acc before training is 0.5921052631578947
-73828 - Wed, 31 Aug 2022 12:16:52 modeling.py[line:908] INFO len of all_train_data: 1
-73828 - Wed, 31 Aug 2022 12:16:52 wrapper.py[line:239] INFO CDQ: n_gpu: 1, per_gpu_train_batch_size: 4, train_batch_size: 4
-73828 - Wed, 31 Aug 2022 12:16:52 wrapper.py[line:438] INFO Writing example 0
-/home/cdq/.conda/envs/ptpretrain/lib/python3.7/site-packages/transformers/optimization.py:309: FutureWarning: This implementation of AdamW is deprecated and will be removed in a future version. Use the PyTorch implementation torch.optim.AdamW instead, or set `no_deprecation_warning=True` to disable this warning
-  FutureWarning,
-Epoch:   0%|          | 0/10 [00:00<?, ?it/s]Epoch:  10%|█         | 1/10 [00:00<00:01,  4.75it/s]Epoch:  20%|██        | 2/10 [00:00<00:01,  4.63it/s]Epoch:  30%|███       | 3/10 [00:00<00:01,  4.61it/s]Epoch:  40%|████      | 4/10 [00:00<00:01,  4.73it/s]Epoch:  50%|█████     | 5/10 [00:01<00:01,  4.81it/s]Epoch:  60%|██████    | 6/10 [00:01<00:00,  4.67it/s]Epoch:  70%|███████   | 7/10 [00:01<00:00,  5.01it/s]Epoch:  80%|████████  | 8/10 [00:01<00:00,  5.04it/s]Epoch:  90%|█████████ | 9/10 [00:01<00:00,  4.88it/s]Epoch: 100%|██████████| 10/10 [00:02<00:00,  4.82it/s]Epoch: 100%|██████████| 10/10 [00:02<00:00,  4.81it/s]
-73828 - Wed, 31 Aug 2022 12:16:54 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 12:16:54 modeling.py[line:812] INFO Saving trained model at /data2/cdq/pet/log_fedpet_augmentation_10/g0/client0...
-73828 - Wed, 31 Aug 2022 12:16:55 modeling.py[line:816] INFO Saving complete
-73828 - Wed, 31 Aug 2022 12:16:55 modeling.py[line:829] INFO Starting evaluation...
-73828 - Wed, 31 Aug 2022 12:16:55 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 12:17:19 modeling.py[line:851] INFO --- RESULT (pattern_id=1, iteration=0) ---
-73828 - Wed, 31 Aug 2022 12:17:19 modeling.py[line:852] INFO {'acc': 0.3013157894736842}
-73828 - Wed, 31 Aug 2022 12:17:19 modeling.py[line:853] INFO /data2/cdq/pet/log_fedpet_augmentation_10/g0/client0
-73828 - Wed, 31 Aug 2022 12:17:19 modeling.py[line:867] INFO === OVERALL RESULTS ===
-73828 - Wed, 31 Aug 2022 12:17:19 modeling.py[line:992] INFO acc-p1: 0.3013157894736842 +- 0
-73828 - Wed, 31 Aug 2022 12:17:19 modeling.py[line:1000] INFO acc-all-p: 0.3013157894736842 +- 0
-73828 - Wed, 31 Aug 2022 12:17:28 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 12:17:51 modeling.py[line:904] INFO init acc: val acc before training is 0.575
-73828 - Wed, 31 Aug 2022 12:17:51 modeling.py[line:908] INFO len of all_train_data: 1
-73828 - Wed, 31 Aug 2022 12:17:51 wrapper.py[line:239] INFO CDQ: n_gpu: 1, per_gpu_train_batch_size: 4, train_batch_size: 4
-73828 - Wed, 31 Aug 2022 12:17:51 wrapper.py[line:438] INFO Writing example 0
-Epoch:   0%|          | 0/10 [00:00<?, ?it/s]Epoch:  10%|█         | 1/10 [00:00<00:02,  3.87it/s]Epoch:  20%|██        | 2/10 [00:00<00:02,  3.83it/s]Epoch:  30%|███       | 3/10 [00:00<00:01,  3.99it/s]Epoch:  40%|████      | 4/10 [00:00<00:01,  4.16it/s]Epoch:  50%|█████     | 5/10 [00:01<00:01,  4.26it/s]Epoch:  60%|██████    | 6/10 [00:01<00:00,  4.20it/s]Epoch:  70%|███████   | 7/10 [00:01<00:00,  4.18it/s]Epoch:  80%|████████  | 8/10 [00:01<00:00,  4.15it/s]Epoch:  90%|█████████ | 9/10 [00:02<00:00,  4.15it/s]Epoch: 100%|██████████| 10/10 [00:02<00:00,  4.35it/s]Epoch: 100%|██████████| 10/10 [00:02<00:00,  4.22it/s]
-73828 - Wed, 31 Aug 2022 12:17:53 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 12:17:53 modeling.py[line:812] INFO Saving trained model at /data2/cdq/pet/log_fedpet_augmentation_10/g0/client1...
-73828 - Wed, 31 Aug 2022 12:17:54 modeling.py[line:816] INFO Saving complete
-73828 - Wed, 31 Aug 2022 12:17:54 modeling.py[line:829] INFO Starting evaluation...
-73828 - Wed, 31 Aug 2022 12:17:54 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 12:18:21 modeling.py[line:851] INFO --- RESULT (pattern_id=1, iteration=0) ---
-73828 - Wed, 31 Aug 2022 12:18:21 modeling.py[line:852] INFO {'acc': 0.2578947368421053}
-73828 - Wed, 31 Aug 2022 12:18:21 modeling.py[line:853] INFO /data2/cdq/pet/log_fedpet_augmentation_10/g0/client1
-73828 - Wed, 31 Aug 2022 12:18:21 modeling.py[line:867] INFO === OVERALL RESULTS ===
-73828 - Wed, 31 Aug 2022 12:18:21 modeling.py[line:992] INFO acc-p1: 0.2578947368421053 +- 0
-73828 - Wed, 31 Aug 2022 12:18:21 modeling.py[line:1000] INFO acc-all-p: 0.2578947368421053 +- 0
-73828 - Wed, 31 Aug 2022 12:18:31 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 12:18:53 modeling.py[line:904] INFO init acc: val acc before training is 0.5947368421052631
-73828 - Wed, 31 Aug 2022 12:18:53 modeling.py[line:908] INFO len of all_train_data: 1
-73828 - Wed, 31 Aug 2022 12:18:53 wrapper.py[line:239] INFO CDQ: n_gpu: 1, per_gpu_train_batch_size: 4, train_batch_size: 4
-73828 - Wed, 31 Aug 2022 12:18:53 wrapper.py[line:438] INFO Writing example 0
-Epoch:   0%|          | 0/10 [00:00<?, ?it/s]Epoch:  10%|█         | 1/10 [00:00<00:02,  3.90it/s]Epoch:  20%|██        | 2/10 [00:00<00:02,  3.81it/s]Epoch:  30%|███       | 3/10 [00:00<00:01,  4.06it/s]Epoch:  40%|████      | 4/10 [00:00<00:01,  4.06it/s]Epoch:  50%|█████     | 5/10 [00:01<00:01,  4.02it/s]Epoch:  60%|██████    | 6/10 [00:01<00:01,  3.97it/s]Epoch:  70%|███████   | 7/10 [00:01<00:00,  3.87it/s]Epoch:  80%|████████  | 8/10 [00:02<00:00,  3.91it/s]Epoch:  90%|█████████ | 9/10 [00:02<00:00,  4.08it/s]Epoch: 100%|██████████| 10/10 [00:02<00:00,  4.23it/s]Epoch: 100%|██████████| 10/10 [00:02<00:00,  4.06it/s]
-73828 - Wed, 31 Aug 2022 12:18:56 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 12:18:56 modeling.py[line:812] INFO Saving trained model at /data2/cdq/pet/log_fedpet_augmentation_10/g0/client2...
-73828 - Wed, 31 Aug 2022 12:18:56 modeling.py[line:816] INFO Saving complete
-73828 - Wed, 31 Aug 2022 12:18:56 modeling.py[line:829] INFO Starting evaluation...
-73828 - Wed, 31 Aug 2022 12:18:56 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 12:19:23 modeling.py[line:851] INFO --- RESULT (pattern_id=1, iteration=0) ---
-73828 - Wed, 31 Aug 2022 12:19:23 modeling.py[line:852] INFO {'acc': 0.3026315789473684}
-73828 - Wed, 31 Aug 2022 12:19:23 modeling.py[line:853] INFO /data2/cdq/pet/log_fedpet_augmentation_10/g0/client2
-73828 - Wed, 31 Aug 2022 12:19:23 modeling.py[line:867] INFO === OVERALL RESULTS ===
-73828 - Wed, 31 Aug 2022 12:19:23 modeling.py[line:992] INFO acc-p1: 0.3026315789473684 +- 0
-73828 - Wed, 31 Aug 2022 12:19:23 modeling.py[line:1000] INFO acc-all-p: 0.3026315789473684 +- 0
-73828 - Wed, 31 Aug 2022 12:19:33 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 12:19:56 modeling.py[line:904] INFO init acc: val acc before training is 0.5710526315789474
-73828 - Wed, 31 Aug 2022 12:19:56 modeling.py[line:908] INFO len of all_train_data: 1
-73828 - Wed, 31 Aug 2022 12:19:56 wrapper.py[line:239] INFO CDQ: n_gpu: 1, per_gpu_train_batch_size: 4, train_batch_size: 4
-73828 - Wed, 31 Aug 2022 12:19:56 wrapper.py[line:438] INFO Writing example 0
-Epoch:   0%|          | 0/10 [00:00<?, ?it/s]Epoch:  10%|█         | 1/10 [00:00<00:02,  4.33it/s]Epoch:  20%|██        | 2/10 [00:00<00:01,  4.10it/s]Epoch:  30%|███       | 3/10 [00:00<00:01,  4.00it/s]Epoch:  40%|████      | 4/10 [00:01<00:01,  4.03it/s]Epoch:  50%|█████     | 5/10 [00:01<00:01,  4.17it/s]Epoch:  60%|██████    | 6/10 [00:01<00:00,  4.31it/s]Epoch:  70%|███████   | 7/10 [00:01<00:00,  4.09it/s]Epoch:  80%|████████  | 8/10 [00:01<00:00,  4.01it/s]Epoch:  90%|█████████ | 9/10 [00:02<00:00,  4.06it/s]Epoch: 100%|██████████| 10/10 [00:02<00:00,  4.04it/s]Epoch: 100%|██████████| 10/10 [00:02<00:00,  4.05it/s]
-73828 - Wed, 31 Aug 2022 12:19:59 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 12:19:59 modeling.py[line:812] INFO Saving trained model at /data2/cdq/pet/log_fedpet_augmentation_10/g0/client3...
-73828 - Wed, 31 Aug 2022 12:19:59 modeling.py[line:816] INFO Saving complete
-73828 - Wed, 31 Aug 2022 12:19:59 modeling.py[line:829] INFO Starting evaluation...
-73828 - Wed, 31 Aug 2022 12:19:59 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 12:20:27 modeling.py[line:851] INFO --- RESULT (pattern_id=1, iteration=0) ---
-73828 - Wed, 31 Aug 2022 12:20:27 modeling.py[line:852] INFO {'acc': 0.325}
-73828 - Wed, 31 Aug 2022 12:20:27 modeling.py[line:853] INFO /data2/cdq/pet/log_fedpet_augmentation_10/g0/client3
-73828 - Wed, 31 Aug 2022 12:20:27 modeling.py[line:867] INFO === OVERALL RESULTS ===
-73828 - Wed, 31 Aug 2022 12:20:27 modeling.py[line:992] INFO acc-p1: 0.325 +- 0
-73828 - Wed, 31 Aug 2022 12:20:27 modeling.py[line:1000] INFO acc-all-p: 0.325 +- 0
-73828 - Wed, 31 Aug 2022 12:20:37 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 12:20:57 modeling.py[line:904] INFO init acc: val acc before training is 0.5894736842105263
-73828 - Wed, 31 Aug 2022 12:20:57 modeling.py[line:908] INFO len of all_train_data: 1
-73828 - Wed, 31 Aug 2022 12:20:57 wrapper.py[line:239] INFO CDQ: n_gpu: 1, per_gpu_train_batch_size: 4, train_batch_size: 4
-73828 - Wed, 31 Aug 2022 12:20:57 wrapper.py[line:438] INFO Writing example 0
-Epoch:   0%|          | 0/10 [00:00<?, ?it/s]Epoch:  10%|█         | 1/10 [00:00<00:01,  5.16it/s]Epoch:  20%|██        | 2/10 [00:00<00:01,  5.15it/s]Epoch:  30%|███       | 3/10 [00:00<00:01,  5.20it/s]Epoch:  40%|████      | 4/10 [00:00<00:01,  5.10it/s]Epoch:  50%|█████     | 5/10 [00:00<00:00,  5.53it/s]Epoch:  60%|██████    | 6/10 [00:01<00:00,  5.90it/s]Epoch:  70%|███████   | 7/10 [00:01<00:00,  6.24it/s]Epoch:  80%|████████  | 8/10 [00:01<00:00,  6.05it/s]Epoch:  90%|█████████ | 9/10 [00:01<00:00,  6.13it/s]Epoch: 100%|██████████| 10/10 [00:01<00:00,  5.90it/s]Epoch: 100%|██████████| 10/10 [00:01<00:00,  5.78it/s]
-73828 - Wed, 31 Aug 2022 12:20:59 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 12:20:59 modeling.py[line:812] INFO Saving trained model at /data2/cdq/pet/log_fedpet_augmentation_10/g0/client4...
-73828 - Wed, 31 Aug 2022 12:20:59 modeling.py[line:816] INFO Saving complete
-73828 - Wed, 31 Aug 2022 12:20:59 modeling.py[line:829] INFO Starting evaluation...
-73828 - Wed, 31 Aug 2022 12:20:59 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 12:21:16 modeling.py[line:851] INFO --- RESULT (pattern_id=1, iteration=0) ---
-73828 - Wed, 31 Aug 2022 12:21:16 modeling.py[line:852] INFO {'acc': 0.4618421052631579}
-73828 - Wed, 31 Aug 2022 12:21:16 modeling.py[line:853] INFO /data2/cdq/pet/log_fedpet_augmentation_10/g0/client4
-73828 - Wed, 31 Aug 2022 12:21:16 modeling.py[line:867] INFO === OVERALL RESULTS ===
-73828 - Wed, 31 Aug 2022 12:21:16 modeling.py[line:992] INFO acc-p1: 0.4618421052631579 +- 0
-73828 - Wed, 31 Aug 2022 12:21:16 modeling.py[line:1000] INFO acc-all-p: 0.4618421052631579 +- 0
-73828 - Wed, 31 Aug 2022 12:21:16 modeling.py[line:502] INFO Gen 1: client_indexes is [2 9 6 4 0]
-73828 - Wed, 31 Aug 2022 12:21:16 modeling.py[line:507] INFO Gen1: sample_num_list is [1. 1. 1. 1. 1.]
-73828 - Wed, 31 Aug 2022 12:21:34 modeling.py[line:530] INFO Saving aggregated trained model at /data2/cdq/pet/log_fedpet_augmentation_10/g0/aggregated...
-73828 - Wed, 31 Aug 2022 12:21:52 modeling.py[line:547] INFO Saving aggregated trained model at /data2/cdq/pet/log_fedpet_augmentation_10/g0/aggregated...
-73828 - Wed, 31 Aug 2022 12:21:53 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 12:22:07 wrapper.py[line:438] INFO Writing example 10000
-73828 - Wed, 31 Aug 2022 12:28:21 modeling.py[line:1102] INFO Found the following 6 subdirectories: ['client4', 'client1', 'aggregated', 'client3', 'client2', 'client0']
-73828 - Wed, 31 Aug 2022 12:28:21 modeling.py[line:1108] INFO Example distribution in the original dataset: [0, 0, 0, 1]
-73828 - Wed, 31 Aug 2022 12:28:21 modeling.py[line:1112] INFO Target distribution for the new dataset: [0, 0, 0, 3]
-73828 - Wed, 31 Aug 2022 12:28:21 modeling.py[line:1148] INFO File /data2/cdq/pet/log_fedpet_augmentation_10/g0/client0/results.txt: Score = 1, #Logits = 12000, #Labels = 4
-73828 - Wed, 31 Aug 2022 12:28:21 modeling.py[line:1303] INFO There are 2437 examples for label 1
-73828 - Wed, 31 Aug 2022 12:28:21 modeling.py[line:1303] INFO There are 3218 examples for label 2
-73828 - Wed, 31 Aug 2022 12:28:21 modeling.py[line:1303] INFO There are 1596 examples for label 3
-73828 - Wed, 31 Aug 2022 12:28:21 modeling.py[line:1303] INFO There are 4749 examples for label 4
-73828 - Wed, 31 Aug 2022 12:28:30 modeling.py[line:776] INFO Loading previous aggregated trained model from /data2/cdq/pet/log_fedpet_augmentation_10/g0/aggregated
-73828 - Wed, 31 Aug 2022 12:28:32 modeling.py[line:797] INFO Evaluating soft label~
-73828 - Wed, 31 Aug 2022 12:28:32 modeling.py[line:122] INFO Data train-18253 is tagged correctly as 4.
-73828 - Wed, 31 Aug 2022 12:28:32 modeling.py[line:122] INFO Data train-42564 is tagged correctly as 4.
-73828 - Wed, 31 Aug 2022 12:28:32 modeling.py[line:122] INFO Data train-27966 is tagged correctly as 4.
-73828 - Wed, 31 Aug 2022 12:28:32 modeling.py[line:131] INFO Inference correct ratio is 1.0
-73828 - Wed, 31 Aug 2022 12:28:32 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 12:28:47 modeling.py[line:904] INFO init acc: val acc before training is 0.7421052631578947
-73828 - Wed, 31 Aug 2022 12:28:47 modeling.py[line:908] INFO len of all_train_data: 4
-73828 - Wed, 31 Aug 2022 12:28:47 wrapper.py[line:239] INFO CDQ: n_gpu: 1, per_gpu_train_batch_size: 4, train_batch_size: 4
-73828 - Wed, 31 Aug 2022 12:28:47 wrapper.py[line:438] INFO Writing example 0
-Epoch:   0%|          | 0/10 [00:00<?, ?it/s]Epoch:  10%|█         | 1/10 [00:00<00:02,  3.81it/s]Epoch:  20%|██        | 2/10 [00:00<00:02,  3.82it/s]Epoch:  30%|███       | 3/10 [00:00<00:01,  3.71it/s]Epoch:  40%|████      | 4/10 [00:01<00:01,  3.74it/s]Epoch:  50%|█████     | 5/10 [00:01<00:01,  3.73it/s]Epoch:  60%|██████    | 6/10 [00:01<00:01,  3.59it/s]Epoch:  70%|███████   | 7/10 [00:01<00:00,  3.48it/s]Epoch:  80%|████████  | 8/10 [00:02<00:00,  3.52it/s]Epoch:  90%|█████████ | 9/10 [00:02<00:00,  3.50it/s]Epoch: 100%|██████████| 10/10 [00:02<00:00,  3.46it/s]Epoch: 100%|██████████| 10/10 [00:02<00:00,  3.55it/s]
-73828 - Wed, 31 Aug 2022 12:28:50 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 12:28:50 modeling.py[line:812] INFO Saving trained model at /data2/cdq/pet/log_fedpet_augmentation_10/g1/client0...
-73828 - Wed, 31 Aug 2022 12:28:50 modeling.py[line:816] INFO Saving complete
-73828 - Wed, 31 Aug 2022 12:28:50 modeling.py[line:829] INFO Starting evaluation...
-73828 - Wed, 31 Aug 2022 12:28:50 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 12:29:05 modeling.py[line:851] INFO --- RESULT (pattern_id=1, iteration=0) ---
-73828 - Wed, 31 Aug 2022 12:29:05 modeling.py[line:852] INFO {'acc': 0.2657894736842105}
-73828 - Wed, 31 Aug 2022 12:29:05 modeling.py[line:853] INFO /data2/cdq/pet/log_fedpet_augmentation_10/g1/client0
-73828 - Wed, 31 Aug 2022 12:29:05 modeling.py[line:867] INFO === OVERALL RESULTS ===
-73828 - Wed, 31 Aug 2022 12:29:05 modeling.py[line:992] INFO acc-p1: 0.2657894736842105 +- 0
-73828 - Wed, 31 Aug 2022 12:29:05 modeling.py[line:1000] INFO acc-all-p: 0.2657894736842105 +- 0
-73828 - Wed, 31 Aug 2022 12:29:22 modeling.py[line:530] INFO Saving aggregated trained model at /data2/cdq/pet/log_fedpet_augmentation_10/g0/aggregated...
-73828 - Wed, 31 Aug 2022 12:29:39 modeling.py[line:547] INFO Saving aggregated trained model at /data2/cdq/pet/log_fedpet_augmentation_10/g0/aggregated...
-73828 - Wed, 31 Aug 2022 12:29:40 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 12:29:54 wrapper.py[line:438] INFO Writing example 10000
-73828 - Wed, 31 Aug 2022 12:36:03 modeling.py[line:1102] INFO Found the following 6 subdirectories: ['client4', 'client1', 'aggregated', 'client3', 'client2', 'client0']
-73828 - Wed, 31 Aug 2022 12:36:03 modeling.py[line:1108] INFO Example distribution in the original dataset: [0, 0, 0, 1]
-73828 - Wed, 31 Aug 2022 12:36:03 modeling.py[line:1112] INFO Target distribution for the new dataset: [0, 0, 0, 3]
-73828 - Wed, 31 Aug 2022 12:36:03 modeling.py[line:1148] INFO File /data2/cdq/pet/log_fedpet_augmentation_10/g0/client0/results.txt: Score = 1, #Logits = 12000, #Labels = 4
-73828 - Wed, 31 Aug 2022 12:36:03 modeling.py[line:1303] INFO There are 2312 examples for label 1
-73828 - Wed, 31 Aug 2022 12:36:03 modeling.py[line:1303] INFO There are 3319 examples for label 2
-73828 - Wed, 31 Aug 2022 12:36:03 modeling.py[line:1303] INFO There are 1622 examples for label 3
-73828 - Wed, 31 Aug 2022 12:36:03 modeling.py[line:1303] INFO There are 4747 examples for label 4
-73828 - Wed, 31 Aug 2022 12:36:12 modeling.py[line:776] INFO Loading previous aggregated trained model from /data2/cdq/pet/log_fedpet_augmentation_10/g0/aggregated
-73828 - Wed, 31 Aug 2022 12:36:13 modeling.py[line:797] INFO Evaluating soft label~
-73828 - Wed, 31 Aug 2022 12:36:13 modeling.py[line:122] INFO Data train-52041 is tagged correctly as 4.
-73828 - Wed, 31 Aug 2022 12:36:13 modeling.py[line:122] INFO Data train-109392 is tagged correctly as 4.
-73828 - Wed, 31 Aug 2022 12:36:13 modeling.py[line:122] INFO Data train-37880 is tagged correctly as 4.
-73828 - Wed, 31 Aug 2022 12:36:13 modeling.py[line:131] INFO Inference correct ratio is 1.0
-73828 - Wed, 31 Aug 2022 12:36:14 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 12:36:35 modeling.py[line:904] INFO init acc: val acc before training is 0.675
-73828 - Wed, 31 Aug 2022 12:36:35 modeling.py[line:908] INFO len of all_train_data: 4
-73828 - Wed, 31 Aug 2022 12:36:35 wrapper.py[line:239] INFO CDQ: n_gpu: 1, per_gpu_train_batch_size: 4, train_batch_size: 4
-73828 - Wed, 31 Aug 2022 12:36:35 wrapper.py[line:438] INFO Writing example 0
-Epoch:   0%|          | 0/10 [00:00<?, ?it/s]Epoch:  10%|█         | 1/10 [00:00<00:04,  2.15it/s]Epoch:  20%|██        | 2/10 [00:00<00:03,  2.18it/s]Epoch:  30%|███       | 3/10 [00:01<00:03,  2.20it/s]Epoch:  40%|████      | 4/10 [00:01<00:02,  2.24it/s]Epoch:  50%|█████     | 5/10 [00:02<00:02,  2.22it/s]Epoch:  60%|██████    | 6/10 [00:02<00:01,  2.24it/s]Epoch:  70%|███████   | 7/10 [00:03<00:01,  2.24it/s]Epoch:  80%|████████  | 8/10 [00:03<00:00,  2.20it/s]Epoch:  90%|█████████ | 9/10 [00:03<00:00,  2.28it/s]Epoch: 100%|██████████| 10/10 [00:04<00:00,  2.36it/s]Epoch: 100%|██████████| 10/10 [00:04<00:00,  2.28it/s]
-73828 - Wed, 31 Aug 2022 12:36:39 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 12:36:40 modeling.py[line:812] INFO Saving trained model at /data2/cdq/pet/log_fedpet_augmentation_10/g1/client1...
-73828 - Wed, 31 Aug 2022 12:36:40 modeling.py[line:816] INFO Saving complete
-73828 - Wed, 31 Aug 2022 12:36:40 modeling.py[line:829] INFO Starting evaluation...
-73828 - Wed, 31 Aug 2022 12:36:40 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 12:36:58 modeling.py[line:851] INFO --- RESULT (pattern_id=1, iteration=0) ---
-73828 - Wed, 31 Aug 2022 12:36:58 modeling.py[line:852] INFO {'acc': 0.2565789473684211}
-73828 - Wed, 31 Aug 2022 12:36:58 modeling.py[line:853] INFO /data2/cdq/pet/log_fedpet_augmentation_10/g1/client1
-73828 - Wed, 31 Aug 2022 12:36:58 modeling.py[line:867] INFO === OVERALL RESULTS ===
-73828 - Wed, 31 Aug 2022 12:36:58 modeling.py[line:992] INFO acc-p1: 0.2565789473684211 +- 0
-73828 - Wed, 31 Aug 2022 12:36:58 modeling.py[line:1000] INFO acc-all-p: 0.2565789473684211 +- 0
-73828 - Wed, 31 Aug 2022 12:37:15 modeling.py[line:530] INFO Saving aggregated trained model at /data2/cdq/pet/log_fedpet_augmentation_10/g0/aggregated...
-73828 - Wed, 31 Aug 2022 12:37:32 modeling.py[line:547] INFO Saving aggregated trained model at /data2/cdq/pet/log_fedpet_augmentation_10/g0/aggregated...
-73828 - Wed, 31 Aug 2022 12:37:33 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 12:37:47 wrapper.py[line:438] INFO Writing example 10000
-73828 - Wed, 31 Aug 2022 12:43:58 modeling.py[line:1102] INFO Found the following 6 subdirectories: ['client4', 'client1', 'aggregated', 'client3', 'client2', 'client0']
-73828 - Wed, 31 Aug 2022 12:43:58 modeling.py[line:1108] INFO Example distribution in the original dataset: [0, 0, 0, 1]
-73828 - Wed, 31 Aug 2022 12:43:58 modeling.py[line:1112] INFO Target distribution for the new dataset: [0, 0, 0, 3]
-73828 - Wed, 31 Aug 2022 12:43:58 modeling.py[line:1148] INFO File /data2/cdq/pet/log_fedpet_augmentation_10/g0/client0/results.txt: Score = 1, #Logits = 12000, #Labels = 4
-73828 - Wed, 31 Aug 2022 12:43:58 modeling.py[line:1303] INFO There are 2303 examples for label 1
-73828 - Wed, 31 Aug 2022 12:43:58 modeling.py[line:1303] INFO There are 3141 examples for label 2
-73828 - Wed, 31 Aug 2022 12:43:58 modeling.py[line:1303] INFO There are 1657 examples for label 3
-73828 - Wed, 31 Aug 2022 12:43:58 modeling.py[line:1303] INFO There are 4899 examples for label 4
-73828 - Wed, 31 Aug 2022 12:44:07 modeling.py[line:776] INFO Loading previous aggregated trained model from /data2/cdq/pet/log_fedpet_augmentation_10/g0/aggregated
-73828 - Wed, 31 Aug 2022 12:44:08 modeling.py[line:797] INFO Evaluating soft label~
-73828 - Wed, 31 Aug 2022 12:44:08 modeling.py[line:122] INFO Data train-18687 is tagged correctly as 4.
-73828 - Wed, 31 Aug 2022 12:44:08 modeling.py[line:122] INFO Data train-60791 is tagged correctly as 4.
-73828 - Wed, 31 Aug 2022 12:44:08 modeling.py[line:122] INFO Data train-84427 is tagged correctly as 4.
-73828 - Wed, 31 Aug 2022 12:44:08 modeling.py[line:131] INFO Inference correct ratio is 1.0
-73828 - Wed, 31 Aug 2022 12:44:09 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 12:44:27 modeling.py[line:904] INFO init acc: val acc before training is 0.7026315789473684
-73828 - Wed, 31 Aug 2022 12:44:27 modeling.py[line:908] INFO len of all_train_data: 4
-73828 - Wed, 31 Aug 2022 12:44:27 wrapper.py[line:239] INFO CDQ: n_gpu: 1, per_gpu_train_batch_size: 4, train_batch_size: 4
-73828 - Wed, 31 Aug 2022 12:44:27 wrapper.py[line:438] INFO Writing example 0
-Epoch:   0%|          | 0/10 [00:00<?, ?it/s]Epoch:  10%|█         | 1/10 [00:00<00:03,  2.77it/s]Epoch:  20%|██        | 2/10 [00:00<00:02,  2.97it/s]Epoch:  30%|███       | 3/10 [00:00<00:02,  2.98it/s]Epoch:  40%|████      | 4/10 [00:01<00:01,  3.14it/s]Epoch:  50%|█████     | 5/10 [00:01<00:01,  3.24it/s]Epoch:  60%|██████    | 6/10 [00:01<00:01,  3.21it/s]Epoch:  70%|███████   | 7/10 [00:02<00:00,  3.24it/s]Epoch:  80%|████████  | 8/10 [00:02<00:00,  3.22it/s]Epoch:  90%|█████████ | 9/10 [00:02<00:00,  3.46it/s]Epoch: 100%|██████████| 10/10 [00:03<00:00,  3.44it/s]Epoch: 100%|██████████| 10/10 [00:03<00:00,  3.33it/s]
-73828 - Wed, 31 Aug 2022 12:44:30 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 12:44:30 modeling.py[line:812] INFO Saving trained model at /data2/cdq/pet/log_fedpet_augmentation_10/g1/client2...
-73828 - Wed, 31 Aug 2022 12:44:31 modeling.py[line:816] INFO Saving complete
-73828 - Wed, 31 Aug 2022 12:44:31 modeling.py[line:829] INFO Starting evaluation...
-73828 - Wed, 31 Aug 2022 12:44:31 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 12:44:47 modeling.py[line:851] INFO --- RESULT (pattern_id=1, iteration=0) ---
-73828 - Wed, 31 Aug 2022 12:44:47 modeling.py[line:852] INFO {'acc': 0.2881578947368421}
-73828 - Wed, 31 Aug 2022 12:44:47 modeling.py[line:853] INFO /data2/cdq/pet/log_fedpet_augmentation_10/g1/client2
-73828 - Wed, 31 Aug 2022 12:44:47 modeling.py[line:867] INFO === OVERALL RESULTS ===
-73828 - Wed, 31 Aug 2022 12:44:47 modeling.py[line:992] INFO acc-p1: 0.2881578947368421 +- 0
-73828 - Wed, 31 Aug 2022 12:44:47 modeling.py[line:1000] INFO acc-all-p: 0.2881578947368421 +- 0
-73828 - Wed, 31 Aug 2022 12:45:04 modeling.py[line:530] INFO Saving aggregated trained model at /data2/cdq/pet/log_fedpet_augmentation_10/g0/aggregated...
-73828 - Wed, 31 Aug 2022 12:45:21 modeling.py[line:547] INFO Saving aggregated trained model at /data2/cdq/pet/log_fedpet_augmentation_10/g0/aggregated...
-73828 - Wed, 31 Aug 2022 12:45:21 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 12:45:35 wrapper.py[line:438] INFO Writing example 10000
-73828 - Wed, 31 Aug 2022 12:51:44 modeling.py[line:1102] INFO Found the following 6 subdirectories: ['client4', 'client1', 'aggregated', 'client3', 'client2', 'client0']
-73828 - Wed, 31 Aug 2022 12:51:44 modeling.py[line:1108] INFO Example distribution in the original dataset: [0, 1, 0, 0]
-73828 - Wed, 31 Aug 2022 12:51:44 modeling.py[line:1112] INFO Target distribution for the new dataset: [0, 3, 0, 0]
-73828 - Wed, 31 Aug 2022 12:51:44 modeling.py[line:1148] INFO File /data2/cdq/pet/log_fedpet_augmentation_10/g0/client0/results.txt: Score = 1, #Logits = 12000, #Labels = 4
-73828 - Wed, 31 Aug 2022 12:51:44 modeling.py[line:1303] INFO There are 2337 examples for label 1
-73828 - Wed, 31 Aug 2022 12:51:44 modeling.py[line:1303] INFO There are 3238 examples for label 2
-73828 - Wed, 31 Aug 2022 12:51:44 modeling.py[line:1303] INFO There are 1674 examples for label 3
-73828 - Wed, 31 Aug 2022 12:51:44 modeling.py[line:1303] INFO There are 4751 examples for label 4
-73828 - Wed, 31 Aug 2022 12:51:53 modeling.py[line:776] INFO Loading previous aggregated trained model from /data2/cdq/pet/log_fedpet_augmentation_10/g0/aggregated
-73828 - Wed, 31 Aug 2022 12:51:54 modeling.py[line:797] INFO Evaluating soft label~
-73828 - Wed, 31 Aug 2022 12:51:54 modeling.py[line:122] INFO Data train-85412 is tagged correctly as 2.
-73828 - Wed, 31 Aug 2022 12:51:54 modeling.py[line:122] INFO Data train-34092 is tagged correctly as 2.
-73828 - Wed, 31 Aug 2022 12:51:54 modeling.py[line:122] INFO Data train-47389 is tagged correctly as 2.
-73828 - Wed, 31 Aug 2022 12:51:54 modeling.py[line:131] INFO Inference correct ratio is 1.0
-73828 - Wed, 31 Aug 2022 12:51:55 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 12:52:11 modeling.py[line:904] INFO init acc: val acc before training is 0.7276315789473684
-73828 - Wed, 31 Aug 2022 12:52:11 modeling.py[line:908] INFO len of all_train_data: 4
-73828 - Wed, 31 Aug 2022 12:52:11 wrapper.py[line:239] INFO CDQ: n_gpu: 1, per_gpu_train_batch_size: 4, train_batch_size: 4
-73828 - Wed, 31 Aug 2022 12:52:11 wrapper.py[line:438] INFO Writing example 0
-Epoch:   0%|          | 0/10 [00:00<?, ?it/s]Epoch:  10%|█         | 1/10 [00:00<00:02,  3.24it/s]Epoch:  20%|██        | 2/10 [00:00<00:02,  3.16it/s]Epoch:  30%|███       | 3/10 [00:00<00:02,  3.19it/s]Epoch:  40%|████      | 4/10 [00:01<00:01,  3.26it/s]Epoch:  50%|█████     | 5/10 [00:01<00:01,  3.32it/s]Epoch:  60%|██████    | 6/10 [00:01<00:01,  3.11it/s]Epoch:  70%|███████   | 7/10 [00:02<00:01,  2.99it/s]Epoch:  80%|████████  | 8/10 [00:02<00:00,  2.85it/s]Epoch:  90%|█████████ | 9/10 [00:02<00:00,  2.88it/s]Epoch: 100%|██████████| 10/10 [00:03<00:00,  2.68it/s]Epoch: 100%|██████████| 10/10 [00:03<00:00,  2.92it/s]
-73828 - Wed, 31 Aug 2022 12:52:14 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 12:52:14 modeling.py[line:812] INFO Saving trained model at /data2/cdq/pet/log_fedpet_augmentation_10/g1/client3...
-73828 - Wed, 31 Aug 2022 12:52:15 modeling.py[line:816] INFO Saving complete
-73828 - Wed, 31 Aug 2022 12:52:15 modeling.py[line:829] INFO Starting evaluation...
-73828 - Wed, 31 Aug 2022 12:52:15 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 12:52:34 modeling.py[line:851] INFO --- RESULT (pattern_id=1, iteration=0) ---
-73828 - Wed, 31 Aug 2022 12:52:34 modeling.py[line:852] INFO {'acc': 0.29736842105263156}
-73828 - Wed, 31 Aug 2022 12:52:34 modeling.py[line:853] INFO /data2/cdq/pet/log_fedpet_augmentation_10/g1/client3
-73828 - Wed, 31 Aug 2022 12:52:34 modeling.py[line:867] INFO === OVERALL RESULTS ===
-73828 - Wed, 31 Aug 2022 12:52:34 modeling.py[line:992] INFO acc-p1: 0.29736842105263156 +- 0
-73828 - Wed, 31 Aug 2022 12:52:34 modeling.py[line:1000] INFO acc-all-p: 0.29736842105263156 +- 0
-73828 - Wed, 31 Aug 2022 12:52:50 modeling.py[line:530] INFO Saving aggregated trained model at /data2/cdq/pet/log_fedpet_augmentation_10/g0/aggregated...
-73828 - Wed, 31 Aug 2022 12:53:07 modeling.py[line:547] INFO Saving aggregated trained model at /data2/cdq/pet/log_fedpet_augmentation_10/g0/aggregated...
-73828 - Wed, 31 Aug 2022 12:53:08 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 12:53:22 wrapper.py[line:438] INFO Writing example 10000
-73828 - Wed, 31 Aug 2022 12:59:22 modeling.py[line:1102] INFO Found the following 6 subdirectories: ['client4', 'client1', 'aggregated', 'client3', 'client2', 'client0']
-73828 - Wed, 31 Aug 2022 12:59:22 modeling.py[line:1108] INFO Example distribution in the original dataset: [1, 0, 0, 0]
-73828 - Wed, 31 Aug 2022 12:59:22 modeling.py[line:1112] INFO Target distribution for the new dataset: [3, 0, 0, 0]
-73828 - Wed, 31 Aug 2022 12:59:22 modeling.py[line:1148] INFO File /data2/cdq/pet/log_fedpet_augmentation_10/g0/client0/results.txt: Score = 1, #Logits = 12000, #Labels = 4
-73828 - Wed, 31 Aug 2022 12:59:23 modeling.py[line:1303] INFO There are 2398 examples for label 1
-73828 - Wed, 31 Aug 2022 12:59:23 modeling.py[line:1303] INFO There are 3142 examples for label 2
-73828 - Wed, 31 Aug 2022 12:59:23 modeling.py[line:1303] INFO There are 1674 examples for label 3
-73828 - Wed, 31 Aug 2022 12:59:23 modeling.py[line:1303] INFO There are 4786 examples for label 4
-73828 - Wed, 31 Aug 2022 12:59:31 modeling.py[line:776] INFO Loading previous aggregated trained model from /data2/cdq/pet/log_fedpet_augmentation_10/g0/aggregated
-73828 - Wed, 31 Aug 2022 12:59:33 modeling.py[line:797] INFO Evaluating soft label~
-73828 - Wed, 31 Aug 2022 12:59:33 modeling.py[line:122] INFO Data train-44511 is tagged correctly as 1.
-73828 - Wed, 31 Aug 2022 12:59:33 modeling.py[line:122] INFO Data train-113612 is tagged correctly as 1.
-73828 - Wed, 31 Aug 2022 12:59:33 modeling.py[line:122] INFO Data train-25580 is tagged correctly as 1.
-73828 - Wed, 31 Aug 2022 12:59:33 modeling.py[line:131] INFO Inference correct ratio is 1.0
-73828 - Wed, 31 Aug 2022 12:59:33 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 12:59:52 modeling.py[line:904] INFO init acc: val acc before training is 0.6973684210526315
-73828 - Wed, 31 Aug 2022 12:59:52 modeling.py[line:908] INFO len of all_train_data: 4
-73828 - Wed, 31 Aug 2022 12:59:52 wrapper.py[line:239] INFO CDQ: n_gpu: 1, per_gpu_train_batch_size: 4, train_batch_size: 4
-73828 - Wed, 31 Aug 2022 12:59:52 wrapper.py[line:438] INFO Writing example 0
-Epoch:   0%|          | 0/10 [00:00<?, ?it/s]Epoch:  10%|█         | 1/10 [00:00<00:03,  2.52it/s]Epoch:  20%|██        | 2/10 [00:00<00:03,  2.39it/s]Epoch:  30%|███       | 3/10 [00:01<00:02,  2.44it/s]Epoch:  40%|████      | 4/10 [00:01<00:02,  2.41it/s]Epoch:  50%|█████     | 5/10 [00:02<00:02,  2.38it/s]Epoch:  60%|██████    | 6/10 [00:02<00:01,  2.33it/s]Epoch:  70%|███████   | 7/10 [00:02<00:01,  2.35it/s]Epoch:  80%|████████  | 8/10 [00:03<00:00,  2.34it/s]Epoch:  90%|█████████ | 9/10 [00:03<00:00,  2.34it/s]Epoch: 100%|██████████| 10/10 [00:04<00:00,  2.36it/s]Epoch: 100%|██████████| 10/10 [00:04<00:00,  2.35it/s]
-73828 - Wed, 31 Aug 2022 12:59:56 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 12:59:56 modeling.py[line:812] INFO Saving trained model at /data2/cdq/pet/log_fedpet_augmentation_10/g1/client4...
-73828 - Wed, 31 Aug 2022 12:59:57 modeling.py[line:816] INFO Saving complete
-73828 - Wed, 31 Aug 2022 12:59:57 modeling.py[line:829] INFO Starting evaluation...
-73828 - Wed, 31 Aug 2022 12:59:57 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 13:00:20 modeling.py[line:851] INFO --- RESULT (pattern_id=1, iteration=0) ---
-73828 - Wed, 31 Aug 2022 13:00:20 modeling.py[line:852] INFO {'acc': 0.29473684210526313}
-73828 - Wed, 31 Aug 2022 13:00:20 modeling.py[line:853] INFO /data2/cdq/pet/log_fedpet_augmentation_10/g1/client4
-73828 - Wed, 31 Aug 2022 13:00:20 modeling.py[line:867] INFO === OVERALL RESULTS ===
-73828 - Wed, 31 Aug 2022 13:00:20 modeling.py[line:992] INFO acc-p1: 0.29473684210526313 +- 0
-73828 - Wed, 31 Aug 2022 13:00:20 modeling.py[line:1000] INFO acc-all-p: 0.29473684210526313 +- 0
-73828 - Wed, 31 Aug 2022 13:00:20 modeling.py[line:502] INFO Gen 2: client_indexes is [4 1 5 0 7]
-73828 - Wed, 31 Aug 2022 13:00:20 modeling.py[line:507] INFO Gen2: sample_num_list is [1. 1. 1. 1. 1.]
-73828 - Wed, 31 Aug 2022 13:00:37 modeling.py[line:530] INFO Saving aggregated trained model at /data2/cdq/pet/log_fedpet_augmentation_10/g1/aggregated...
-73828 - Wed, 31 Aug 2022 13:00:53 modeling.py[line:547] INFO Saving aggregated trained model at /data2/cdq/pet/log_fedpet_augmentation_10/g1/aggregated...
-73828 - Wed, 31 Aug 2022 13:00:54 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 13:01:08 wrapper.py[line:438] INFO Writing example 10000
-73828 - Wed, 31 Aug 2022 13:06:58 modeling.py[line:1102] INFO Found the following 6 subdirectories: ['client4', 'client1', 'aggregated', 'client3', 'client2', 'client0']
-73828 - Wed, 31 Aug 2022 13:06:58 modeling.py[line:1108] INFO Example distribution in the original dataset: [0, 1, 0, 0]
-73828 - Wed, 31 Aug 2022 13:06:58 modeling.py[line:1112] INFO Target distribution for the new dataset: [0, 7, 0, 0]
-73828 - Wed, 31 Aug 2022 13:06:59 modeling.py[line:1148] INFO File /data2/cdq/pet/log_fedpet_augmentation_10/g1/client0/results.txt: Score = 1, #Logits = 12000, #Labels = 4
-73828 - Wed, 31 Aug 2022 13:06:59 modeling.py[line:1303] INFO There are 176 examples for label 1
-73828 - Wed, 31 Aug 2022 13:06:59 modeling.py[line:1303] INFO There are 1853 examples for label 2
-73828 - Wed, 31 Aug 2022 13:06:59 modeling.py[line:1303] INFO There are 6 examples for label 3
-73828 - Wed, 31 Aug 2022 13:06:59 modeling.py[line:1303] INFO There are 9965 examples for label 4
-73828 - Wed, 31 Aug 2022 13:07:08 modeling.py[line:776] INFO Loading previous aggregated trained model from /data2/cdq/pet/log_fedpet_augmentation_10/g1/aggregated
-73828 - Wed, 31 Aug 2022 13:07:09 modeling.py[line:797] INFO Evaluating soft label~
-73828 - Wed, 31 Aug 2022 13:07:09 modeling.py[line:122] INFO Data train-51540 is tagged correctly as 2.
-73828 - Wed, 31 Aug 2022 13:07:09 modeling.py[line:122] INFO Data train-30489 is tagged correctly as 2.
-73828 - Wed, 31 Aug 2022 13:07:09 modeling.py[line:122] INFO Data train-80867 is tagged correctly as 2.
-73828 - Wed, 31 Aug 2022 13:07:09 modeling.py[line:122] INFO Data train-12294 is tagged correctly as 2.
-73828 - Wed, 31 Aug 2022 13:07:09 modeling.py[line:122] INFO Data train-77694 is tagged correctly as 2.
-73828 - Wed, 31 Aug 2022 13:07:09 modeling.py[line:122] INFO Data train-31716 is tagged correctly as 2.
-73828 - Wed, 31 Aug 2022 13:07:09 modeling.py[line:122] INFO Data train-28470 is tagged correctly as 2.
-73828 - Wed, 31 Aug 2022 13:07:09 modeling.py[line:131] INFO Inference correct ratio is 1.0
-73828 - Wed, 31 Aug 2022 13:07:09 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 13:07:32 modeling.py[line:904] INFO init acc: val acc before training is 0.40657894736842104
-73828 - Wed, 31 Aug 2022 13:07:32 modeling.py[line:908] INFO len of all_train_data: 8
-73828 - Wed, 31 Aug 2022 13:07:32 wrapper.py[line:239] INFO CDQ: n_gpu: 1, per_gpu_train_batch_size: 4, train_batch_size: 4
-73828 - Wed, 31 Aug 2022 13:07:32 wrapper.py[line:438] INFO Writing example 0
-Epoch:   0%|          | 0/10 [00:00<?, ?it/s]Epoch:  10%|█         | 1/10 [00:00<00:08,  1.09it/s]Epoch:  20%|██        | 2/10 [00:01<00:07,  1.13it/s]Epoch:  30%|███       | 3/10 [00:02<00:06,  1.14it/s]Epoch:  40%|████      | 4/10 [00:03<00:05,  1.14it/s]Epoch:  50%|█████     | 5/10 [00:04<00:04,  1.14it/s]Epoch:  60%|██████    | 6/10 [00:05<00:03,  1.14it/s]Epoch:  70%|███████   | 7/10 [00:06<00:02,  1.14it/s]Epoch:  80%|████████  | 8/10 [00:06<00:01,  1.14it/s]Epoch:  90%|█████████ | 9/10 [00:07<00:00,  1.15it/s]Epoch: 100%|██████████| 10/10 [00:08<00:00,  1.16it/s]Epoch: 100%|██████████| 10/10 [00:08<00:00,  1.15it/s]
-73828 - Wed, 31 Aug 2022 13:07:41 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 13:07:41 modeling.py[line:812] INFO Saving trained model at /data2/cdq/pet/log_fedpet_augmentation_10/g2/client0...
-73828 - Wed, 31 Aug 2022 13:07:42 modeling.py[line:816] INFO Saving complete
-73828 - Wed, 31 Aug 2022 13:07:42 modeling.py[line:829] INFO Starting evaluation...
-73828 - Wed, 31 Aug 2022 13:07:42 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 13:08:04 modeling.py[line:851] INFO --- RESULT (pattern_id=1, iteration=0) ---
-73828 - Wed, 31 Aug 2022 13:08:04 modeling.py[line:852] INFO {'acc': 0.29078947368421054}
-73828 - Wed, 31 Aug 2022 13:08:04 modeling.py[line:853] INFO /data2/cdq/pet/log_fedpet_augmentation_10/g2/client0
-73828 - Wed, 31 Aug 2022 13:08:04 modeling.py[line:867] INFO === OVERALL RESULTS ===
-73828 - Wed, 31 Aug 2022 13:08:04 modeling.py[line:992] INFO acc-p1: 0.29078947368421054 +- 0
-73828 - Wed, 31 Aug 2022 13:08:04 modeling.py[line:1000] INFO acc-all-p: 0.29078947368421054 +- 0
-73828 - Wed, 31 Aug 2022 13:08:21 modeling.py[line:530] INFO Saving aggregated trained model at /data2/cdq/pet/log_fedpet_augmentation_10/g1/aggregated...
-73828 - Wed, 31 Aug 2022 13:08:38 modeling.py[line:547] INFO Saving aggregated trained model at /data2/cdq/pet/log_fedpet_augmentation_10/g1/aggregated...
-73828 - Wed, 31 Aug 2022 13:08:39 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 13:08:53 wrapper.py[line:438] INFO Writing example 10000
-73828 - Wed, 31 Aug 2022 13:14:40 modeling.py[line:1102] INFO Found the following 6 subdirectories: ['client4', 'client1', 'aggregated', 'client3', 'client2', 'client0']
-73828 - Wed, 31 Aug 2022 13:14:40 modeling.py[line:1108] INFO Example distribution in the original dataset: [0, 0, 0, 1]
-73828 - Wed, 31 Aug 2022 13:14:40 modeling.py[line:1112] INFO Target distribution for the new dataset: [0, 0, 0, 7]
-73828 - Wed, 31 Aug 2022 13:14:40 modeling.py[line:1148] INFO File /data2/cdq/pet/log_fedpet_augmentation_10/g1/client0/results.txt: Score = 1, #Logits = 12000, #Labels = 4
-73828 - Wed, 31 Aug 2022 13:14:40 modeling.py[line:1303] INFO There are 224 examples for label 1
-73828 - Wed, 31 Aug 2022 13:14:40 modeling.py[line:1303] INFO There are 1876 examples for label 2
-73828 - Wed, 31 Aug 2022 13:14:40 modeling.py[line:1303] INFO There are 4 examples for label 3
-73828 - Wed, 31 Aug 2022 13:14:40 modeling.py[line:1303] INFO There are 9896 examples for label 4
-73828 - Wed, 31 Aug 2022 13:14:49 modeling.py[line:776] INFO Loading previous aggregated trained model from /data2/cdq/pet/log_fedpet_augmentation_10/g1/aggregated
-73828 - Wed, 31 Aug 2022 13:14:50 modeling.py[line:797] INFO Evaluating soft label~
-73828 - Wed, 31 Aug 2022 13:14:50 modeling.py[line:122] INFO Data train-37476 is tagged correctly as 4.
-73828 - Wed, 31 Aug 2022 13:14:50 modeling.py[line:122] INFO Data train-22528 is tagged correctly as 4.
-73828 - Wed, 31 Aug 2022 13:14:50 modeling.py[line:122] INFO Data train-96594 is tagged correctly as 4.
-73828 - Wed, 31 Aug 2022 13:14:50 modeling.py[line:122] INFO Data train-42546 is tagged correctly as 4.
-73828 - Wed, 31 Aug 2022 13:14:50 modeling.py[line:122] INFO Data train-65752 is tagged correctly as 4.
-73828 - Wed, 31 Aug 2022 13:14:50 modeling.py[line:122] INFO Data train-44732 is tagged correctly as 4.
-73828 - Wed, 31 Aug 2022 13:14:50 modeling.py[line:122] INFO Data train-96137 is tagged correctly as 4.
-73828 - Wed, 31 Aug 2022 13:14:50 modeling.py[line:131] INFO Inference correct ratio is 1.0
-73828 - Wed, 31 Aug 2022 13:14:51 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 13:15:14 modeling.py[line:904] INFO init acc: val acc before training is 0.3881578947368421
-73828 - Wed, 31 Aug 2022 13:15:14 modeling.py[line:908] INFO len of all_train_data: 8
-73828 - Wed, 31 Aug 2022 13:15:14 wrapper.py[line:239] INFO CDQ: n_gpu: 1, per_gpu_train_batch_size: 4, train_batch_size: 4
-73828 - Wed, 31 Aug 2022 13:15:14 wrapper.py[line:438] INFO Writing example 0
-Epoch:   0%|          | 0/10 [00:00<?, ?it/s]Epoch:  10%|█         | 1/10 [00:00<00:07,  1.16it/s]Epoch:  20%|██        | 2/10 [00:01<00:06,  1.16it/s]Epoch:  30%|███       | 3/10 [00:02<00:06,  1.16it/s]Epoch:  40%|████      | 4/10 [00:03<00:05,  1.16it/s]Epoch:  50%|█████     | 5/10 [00:04<00:04,  1.16it/s]Epoch:  60%|██████    | 6/10 [00:05<00:03,  1.15it/s]Epoch:  70%|███████   | 7/10 [00:06<00:02,  1.16it/s]Epoch:  80%|████████  | 8/10 [00:06<00:01,  1.16it/s]Epoch:  90%|█████████ | 9/10 [00:07<00:00,  1.16it/s]Epoch: 100%|██████████| 10/10 [00:08<00:00,  1.17it/s]Epoch: 100%|██████████| 10/10 [00:08<00:00,  1.16it/s]
-73828 - Wed, 31 Aug 2022 13:15:23 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 13:15:23 modeling.py[line:812] INFO Saving trained model at /data2/cdq/pet/log_fedpet_augmentation_10/g2/client1...
-73828 - Wed, 31 Aug 2022 13:15:23 modeling.py[line:816] INFO Saving complete
-73828 - Wed, 31 Aug 2022 13:15:23 modeling.py[line:829] INFO Starting evaluation...
-73828 - Wed, 31 Aug 2022 13:15:23 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 13:15:46 modeling.py[line:851] INFO --- RESULT (pattern_id=1, iteration=0) ---
-73828 - Wed, 31 Aug 2022 13:15:46 modeling.py[line:852] INFO {'acc': 0.23421052631578948}
-73828 - Wed, 31 Aug 2022 13:15:46 modeling.py[line:853] INFO /data2/cdq/pet/log_fedpet_augmentation_10/g2/client1
-73828 - Wed, 31 Aug 2022 13:15:46 modeling.py[line:867] INFO === OVERALL RESULTS ===
-73828 - Wed, 31 Aug 2022 13:15:46 modeling.py[line:992] INFO acc-p1: 0.23421052631578948 +- 0
-73828 - Wed, 31 Aug 2022 13:15:46 modeling.py[line:1000] INFO acc-all-p: 0.23421052631578948 +- 0
-73828 - Wed, 31 Aug 2022 13:16:03 modeling.py[line:530] INFO Saving aggregated trained model at /data2/cdq/pet/log_fedpet_augmentation_10/g1/aggregated...
-73828 - Wed, 31 Aug 2022 13:16:19 modeling.py[line:547] INFO Saving aggregated trained model at /data2/cdq/pet/log_fedpet_augmentation_10/g1/aggregated...
-73828 - Wed, 31 Aug 2022 13:16:20 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 13:16:34 wrapper.py[line:438] INFO Writing example 10000
-73828 - Wed, 31 Aug 2022 13:22:06 modeling.py[line:1102] INFO Found the following 6 subdirectories: ['client4', 'client1', 'aggregated', 'client3', 'client2', 'client0']
-73828 - Wed, 31 Aug 2022 13:22:06 modeling.py[line:1108] INFO Example distribution in the original dataset: [0, 0, 1, 0]
-73828 - Wed, 31 Aug 2022 13:22:06 modeling.py[line:1112] INFO Target distribution for the new dataset: [0, 0, 7, 0]
-73828 - Wed, 31 Aug 2022 13:22:06 modeling.py[line:1148] INFO File /data2/cdq/pet/log_fedpet_augmentation_10/g1/client0/results.txt: Score = 1, #Logits = 12000, #Labels = 4
-73828 - Wed, 31 Aug 2022 13:22:06 modeling.py[line:1303] INFO There are 206 examples for label 1
-73828 - Wed, 31 Aug 2022 13:22:06 modeling.py[line:1303] INFO There are 1875 examples for label 2
-73828 - Wed, 31 Aug 2022 13:22:06 modeling.py[line:1303] INFO There are 12 examples for label 3
-73828 - Wed, 31 Aug 2022 13:22:06 modeling.py[line:1303] INFO There are 9907 examples for label 4
-73828 - Wed, 31 Aug 2022 13:22:15 modeling.py[line:776] INFO Loading previous aggregated trained model from /data2/cdq/pet/log_fedpet_augmentation_10/g1/aggregated
-73828 - Wed, 31 Aug 2022 13:22:16 modeling.py[line:797] INFO Evaluating soft label~
-73828 - Wed, 31 Aug 2022 13:22:16 modeling.py[line:122] INFO Data train-112090 is tagged correctly as 3.
-73828 - Wed, 31 Aug 2022 13:22:16 modeling.py[line:122] INFO Data train-76088 is tagged correctly as 3.
-73828 - Wed, 31 Aug 2022 13:22:16 modeling.py[line:122] INFO Data train-118581 is tagged correctly as 3.
-73828 - Wed, 31 Aug 2022 13:22:16 modeling.py[line:122] INFO Data train-81581 is tagged correctly as 3.
-73828 - Wed, 31 Aug 2022 13:22:16 modeling.py[line:122] INFO Data train-52955 is tagged correctly as 3.
-73828 - Wed, 31 Aug 2022 13:22:16 modeling.py[line:122] INFO Data train-86672 is tagged correctly as 3.
-73828 - Wed, 31 Aug 2022 13:22:16 modeling.py[line:122] INFO Data train-30896 is tagged correctly as 3.
-73828 - Wed, 31 Aug 2022 13:22:16 modeling.py[line:131] INFO Inference correct ratio is 1.0
-73828 - Wed, 31 Aug 2022 13:22:16 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 13:22:39 modeling.py[line:904] INFO init acc: val acc before training is 0.4144736842105263
-73828 - Wed, 31 Aug 2022 13:22:39 modeling.py[line:908] INFO len of all_train_data: 8
-73828 - Wed, 31 Aug 2022 13:22:39 wrapper.py[line:239] INFO CDQ: n_gpu: 1, per_gpu_train_batch_size: 4, train_batch_size: 4
-73828 - Wed, 31 Aug 2022 13:22:39 wrapper.py[line:438] INFO Writing example 0
-Epoch:   0%|          | 0/10 [00:00<?, ?it/s]Epoch:  10%|█         | 1/10 [00:00<00:08,  1.12it/s]Epoch:  20%|██        | 2/10 [00:01<00:07,  1.12it/s]Epoch:  30%|███       | 3/10 [00:02<00:06,  1.15it/s]Epoch:  40%|████      | 4/10 [00:03<00:05,  1.13it/s]Epoch:  50%|█████     | 5/10 [00:04<00:04,  1.15it/s]Epoch:  60%|██████    | 6/10 [00:05<00:03,  1.15it/s]Epoch:  70%|███████   | 7/10 [00:06<00:02,  1.15it/s]Epoch:  80%|████████  | 8/10 [00:06<00:01,  1.14it/s]Epoch:  90%|█████████ | 9/10 [00:07<00:00,  1.16it/s]Epoch: 100%|██████████| 10/10 [00:08<00:00,  1.15it/s]Epoch: 100%|██████████| 10/10 [00:08<00:00,  1.15it/s]
-73828 - Wed, 31 Aug 2022 13:22:48 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 13:22:48 modeling.py[line:812] INFO Saving trained model at /data2/cdq/pet/log_fedpet_augmentation_10/g2/client2...
-73828 - Wed, 31 Aug 2022 13:22:48 modeling.py[line:816] INFO Saving complete
-73828 - Wed, 31 Aug 2022 13:22:48 modeling.py[line:829] INFO Starting evaluation...
-73828 - Wed, 31 Aug 2022 13:22:48 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 13:23:11 modeling.py[line:851] INFO --- RESULT (pattern_id=1, iteration=0) ---
-73828 - Wed, 31 Aug 2022 13:23:11 modeling.py[line:852] INFO {'acc': 0.34078947368421053}
-73828 - Wed, 31 Aug 2022 13:23:11 modeling.py[line:853] INFO /data2/cdq/pet/log_fedpet_augmentation_10/g2/client2
-73828 - Wed, 31 Aug 2022 13:23:11 modeling.py[line:867] INFO === OVERALL RESULTS ===
-73828 - Wed, 31 Aug 2022 13:23:11 modeling.py[line:992] INFO acc-p1: 0.34078947368421053 +- 0
-73828 - Wed, 31 Aug 2022 13:23:11 modeling.py[line:1000] INFO acc-all-p: 0.34078947368421053 +- 0
-73828 - Wed, 31 Aug 2022 13:23:27 modeling.py[line:530] INFO Saving aggregated trained model at /data2/cdq/pet/log_fedpet_augmentation_10/g1/aggregated...
-73828 - Wed, 31 Aug 2022 13:23:53 modeling.py[line:547] INFO Saving aggregated trained model at /data2/cdq/pet/log_fedpet_augmentation_10/g1/aggregated...
-73828 - Wed, 31 Aug 2022 13:23:54 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 13:24:08 wrapper.py[line:438] INFO Writing example 10000
-73828 - Wed, 31 Aug 2022 13:29:38 modeling.py[line:1102] INFO Found the following 6 subdirectories: ['client4', 'client1', 'aggregated', 'client3', 'client2', 'client0']
-73828 - Wed, 31 Aug 2022 13:29:38 modeling.py[line:1108] INFO Example distribution in the original dataset: [1, 0, 0, 0]
-73828 - Wed, 31 Aug 2022 13:29:38 modeling.py[line:1112] INFO Target distribution for the new dataset: [7, 0, 0, 0]
-73828 - Wed, 31 Aug 2022 13:29:38 modeling.py[line:1148] INFO File /data2/cdq/pet/log_fedpet_augmentation_10/g1/client0/results.txt: Score = 1, #Logits = 12000, #Labels = 4
-73828 - Wed, 31 Aug 2022 13:29:38 modeling.py[line:1303] INFO There are 217 examples for label 1
-73828 - Wed, 31 Aug 2022 13:29:38 modeling.py[line:1303] INFO There are 1812 examples for label 2
-73828 - Wed, 31 Aug 2022 13:29:38 modeling.py[line:1303] INFO There are 7 examples for label 3
-73828 - Wed, 31 Aug 2022 13:29:38 modeling.py[line:1303] INFO There are 9964 examples for label 4
-73828 - Wed, 31 Aug 2022 13:29:46 modeling.py[line:776] INFO Loading previous aggregated trained model from /data2/cdq/pet/log_fedpet_augmentation_10/g1/aggregated
-73828 - Wed, 31 Aug 2022 13:29:48 modeling.py[line:797] INFO Evaluating soft label~
-73828 - Wed, 31 Aug 2022 13:29:48 modeling.py[line:122] INFO Data train-50704 is tagged correctly as 1.
-73828 - Wed, 31 Aug 2022 13:29:48 modeling.py[line:122] INFO Data train-50403 is tagged correctly as 1.
-73828 - Wed, 31 Aug 2022 13:29:48 modeling.py[line:122] INFO Data train-2532 is tagged correctly as 1.
-73828 - Wed, 31 Aug 2022 13:29:48 modeling.py[line:122] INFO Data train-113764 is tagged correctly as 1.
-73828 - Wed, 31 Aug 2022 13:29:48 modeling.py[line:122] INFO Data train-96558 is tagged correctly as 1.
-73828 - Wed, 31 Aug 2022 13:29:48 modeling.py[line:122] INFO Data train-62211 is tagged correctly as 1.
-73828 - Wed, 31 Aug 2022 13:29:48 modeling.py[line:122] INFO Data train-21280 is tagged correctly as 1.
-73828 - Wed, 31 Aug 2022 13:29:48 modeling.py[line:131] INFO Inference correct ratio is 1.0
-73828 - Wed, 31 Aug 2022 13:29:48 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 13:30:11 modeling.py[line:904] INFO init acc: val acc before training is 0.4052631578947368
-73828 - Wed, 31 Aug 2022 13:30:11 modeling.py[line:908] INFO len of all_train_data: 8
-73828 - Wed, 31 Aug 2022 13:30:11 wrapper.py[line:239] INFO CDQ: n_gpu: 1, per_gpu_train_batch_size: 4, train_batch_size: 4
-73828 - Wed, 31 Aug 2022 13:30:11 wrapper.py[line:438] INFO Writing example 0
-Epoch:   0%|          | 0/10 [00:00<?, ?it/s]Epoch:  10%|█         | 1/10 [00:00<00:08,  1.10it/s]Epoch:  20%|██        | 2/10 [00:01<00:07,  1.12it/s]Epoch:  30%|███       | 3/10 [00:02<00:06,  1.12it/s]Epoch:  40%|████      | 4/10 [00:03<00:05,  1.13it/s]Epoch:  50%|█████     | 5/10 [00:04<00:04,  1.14it/s]Epoch:  60%|██████    | 6/10 [00:05<00:03,  1.15it/s]Epoch:  70%|███████   | 7/10 [00:06<00:02,  1.15it/s]Epoch:  80%|████████  | 8/10 [00:06<00:01,  1.18it/s]Epoch:  90%|█████████ | 9/10 [00:07<00:00,  1.18it/s]Epoch: 100%|██████████| 10/10 [00:08<00:00,  1.19it/s]Epoch: 100%|██████████| 10/10 [00:08<00:00,  1.17it/s]
-73828 - Wed, 31 Aug 2022 13:30:20 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 13:30:20 modeling.py[line:812] INFO Saving trained model at /data2/cdq/pet/log_fedpet_augmentation_10/g2/client3...
-73828 - Wed, 31 Aug 2022 13:30:20 modeling.py[line:816] INFO Saving complete
-73828 - Wed, 31 Aug 2022 13:30:20 modeling.py[line:829] INFO Starting evaluation...
-73828 - Wed, 31 Aug 2022 13:30:20 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 13:30:43 modeling.py[line:851] INFO --- RESULT (pattern_id=1, iteration=0) ---
-73828 - Wed, 31 Aug 2022 13:30:43 modeling.py[line:852] INFO {'acc': 0.2776315789473684}
-73828 - Wed, 31 Aug 2022 13:30:43 modeling.py[line:853] INFO /data2/cdq/pet/log_fedpet_augmentation_10/g2/client3
-73828 - Wed, 31 Aug 2022 13:30:43 modeling.py[line:867] INFO === OVERALL RESULTS ===
-73828 - Wed, 31 Aug 2022 13:30:43 modeling.py[line:992] INFO acc-p1: 0.2776315789473684 +- 0
-73828 - Wed, 31 Aug 2022 13:30:43 modeling.py[line:1000] INFO acc-all-p: 0.2776315789473684 +- 0
-73828 - Wed, 31 Aug 2022 13:30:59 modeling.py[line:530] INFO Saving aggregated trained model at /data2/cdq/pet/log_fedpet_augmentation_10/g1/aggregated...
-73828 - Wed, 31 Aug 2022 13:31:17 modeling.py[line:547] INFO Saving aggregated trained model at /data2/cdq/pet/log_fedpet_augmentation_10/g1/aggregated...
-73828 - Wed, 31 Aug 2022 13:31:18 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 13:31:32 wrapper.py[line:438] INFO Writing example 10000
-73828 - Wed, 31 Aug 2022 13:37:03 modeling.py[line:1102] INFO Found the following 6 subdirectories: ['client4', 'client1', 'aggregated', 'client3', 'client2', 'client0']
-73828 - Wed, 31 Aug 2022 13:37:03 modeling.py[line:1108] INFO Example distribution in the original dataset: [1, 0, 0, 0]
-73828 - Wed, 31 Aug 2022 13:37:03 modeling.py[line:1112] INFO Target distribution for the new dataset: [7, 0, 0, 0]
-73828 - Wed, 31 Aug 2022 13:37:03 modeling.py[line:1148] INFO File /data2/cdq/pet/log_fedpet_augmentation_10/g1/client0/results.txt: Score = 1, #Logits = 12000, #Labels = 4
-73828 - Wed, 31 Aug 2022 13:37:03 modeling.py[line:1303] INFO There are 189 examples for label 1
-73828 - Wed, 31 Aug 2022 13:37:04 modeling.py[line:1303] INFO There are 1854 examples for label 2
-73828 - Wed, 31 Aug 2022 13:37:04 modeling.py[line:1303] INFO There are 8 examples for label 3
-73828 - Wed, 31 Aug 2022 13:37:04 modeling.py[line:1303] INFO There are 9949 examples for label 4
-73828 - Wed, 31 Aug 2022 13:37:12 modeling.py[line:776] INFO Loading previous aggregated trained model from /data2/cdq/pet/log_fedpet_augmentation_10/g1/aggregated
-73828 - Wed, 31 Aug 2022 13:37:14 modeling.py[line:797] INFO Evaluating soft label~
-73828 - Wed, 31 Aug 2022 13:37:14 modeling.py[line:122] INFO Data train-39355 is tagged correctly as 1.
-73828 - Wed, 31 Aug 2022 13:37:14 modeling.py[line:122] INFO Data train-16223 is tagged correctly as 1.
-73828 - Wed, 31 Aug 2022 13:37:14 modeling.py[line:122] INFO Data train-94875 is tagged correctly as 1.
-73828 - Wed, 31 Aug 2022 13:37:14 modeling.py[line:122] INFO Data train-75355 is tagged correctly as 1.
-73828 - Wed, 31 Aug 2022 13:37:14 modeling.py[line:122] INFO Data train-43440 is tagged correctly as 1.
-73828 - Wed, 31 Aug 2022 13:37:14 modeling.py[line:122] INFO Data train-19124 is tagged correctly as 1.
-73828 - Wed, 31 Aug 2022 13:37:14 modeling.py[line:122] INFO Data train-37283 is tagged correctly as 1.
-73828 - Wed, 31 Aug 2022 13:37:14 modeling.py[line:131] INFO Inference correct ratio is 1.0
-73828 - Wed, 31 Aug 2022 13:37:14 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 13:37:37 modeling.py[line:904] INFO init acc: val acc before training is 0.40131578947368424
-73828 - Wed, 31 Aug 2022 13:37:37 modeling.py[line:908] INFO len of all_train_data: 8
-73828 - Wed, 31 Aug 2022 13:37:37 wrapper.py[line:239] INFO CDQ: n_gpu: 1, per_gpu_train_batch_size: 4, train_batch_size: 4
-73828 - Wed, 31 Aug 2022 13:37:37 wrapper.py[line:438] INFO Writing example 0
-Epoch:   0%|          | 0/10 [00:00<?, ?it/s]Epoch:  10%|█         | 1/10 [00:00<00:07,  1.18it/s]Epoch:  20%|██        | 2/10 [00:01<00:06,  1.17it/s]Epoch:  30%|███       | 3/10 [00:02<00:06,  1.16it/s]Epoch:  40%|████      | 4/10 [00:03<00:05,  1.17it/s]Epoch:  50%|█████     | 5/10 [00:04<00:04,  1.18it/s]Epoch:  60%|██████    | 6/10 [00:05<00:03,  1.17it/s]Epoch:  70%|███████   | 7/10 [00:05<00:02,  1.18it/s]Epoch:  80%|████████  | 8/10 [00:06<00:01,  1.17it/s]Epoch:  90%|█████████ | 9/10 [00:07<00:00,  1.17it/s]Epoch: 100%|██████████| 10/10 [00:08<00:00,  1.19it/s]Epoch: 100%|██████████| 10/10 [00:08<00:00,  1.17it/s]
-73828 - Wed, 31 Aug 2022 13:37:45 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 13:37:46 modeling.py[line:812] INFO Saving trained model at /data2/cdq/pet/log_fedpet_augmentation_10/g2/client4...
-73828 - Wed, 31 Aug 2022 13:37:46 modeling.py[line:816] INFO Saving complete
-73828 - Wed, 31 Aug 2022 13:37:46 modeling.py[line:829] INFO Starting evaluation...
-73828 - Wed, 31 Aug 2022 13:37:46 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 13:38:09 modeling.py[line:851] INFO --- RESULT (pattern_id=1, iteration=0) ---
-73828 - Wed, 31 Aug 2022 13:38:09 modeling.py[line:852] INFO {'acc': 0.26973684210526316}
-73828 - Wed, 31 Aug 2022 13:38:09 modeling.py[line:853] INFO /data2/cdq/pet/log_fedpet_augmentation_10/g2/client4
-73828 - Wed, 31 Aug 2022 13:38:09 modeling.py[line:867] INFO === OVERALL RESULTS ===
-73828 - Wed, 31 Aug 2022 13:38:09 modeling.py[line:992] INFO acc-p1: 0.26973684210526316 +- 0
-73828 - Wed, 31 Aug 2022 13:38:09 modeling.py[line:1000] INFO acc-all-p: 0.26973684210526316 +- 0
-73828 - Wed, 31 Aug 2022 13:38:09 modeling.py[line:502] INFO Gen 3: client_indexes is [5 4 1 2 9]
-73828 - Wed, 31 Aug 2022 13:38:09 modeling.py[line:507] INFO Gen3: sample_num_list is [1. 1. 1. 1. 1.]
-73828 - Wed, 31 Aug 2022 13:38:25 modeling.py[line:530] INFO Saving aggregated trained model at /data2/cdq/pet/log_fedpet_augmentation_10/g2/aggregated...
-73828 - Wed, 31 Aug 2022 13:38:42 modeling.py[line:547] INFO Saving aggregated trained model at /data2/cdq/pet/log_fedpet_augmentation_10/g2/aggregated...
-73828 - Wed, 31 Aug 2022 13:38:43 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 13:38:57 wrapper.py[line:438] INFO Writing example 10000
-73828 - Wed, 31 Aug 2022 13:44:28 modeling.py[line:1102] INFO Found the following 6 subdirectories: ['client4', 'client1', 'aggregated', 'client3', 'client2', 'client0']
-73828 - Wed, 31 Aug 2022 13:44:28 modeling.py[line:1108] INFO Example distribution in the original dataset: [0, 0, 1, 0]
-73828 - Wed, 31 Aug 2022 13:44:28 modeling.py[line:1112] INFO Target distribution for the new dataset: [0, 0, 15, 0]
-73828 - Wed, 31 Aug 2022 13:44:28 modeling.py[line:1148] INFO File /data2/cdq/pet/log_fedpet_augmentation_10/g2/client0/results.txt: Score = 1, #Logits = 12000, #Labels = 4
-73828 - Wed, 31 Aug 2022 13:44:29 modeling.py[line:1303] INFO There are 3429 examples for label 1
-73828 - Wed, 31 Aug 2022 13:44:29 modeling.py[line:1303] INFO There are 3455 examples for label 2
-73828 - Wed, 31 Aug 2022 13:44:29 modeling.py[line:1303] INFO There are 2022 examples for label 3
-73828 - Wed, 31 Aug 2022 13:44:29 modeling.py[line:1303] INFO There are 3094 examples for label 4
-73828 - Wed, 31 Aug 2022 13:44:38 modeling.py[line:776] INFO Loading previous aggregated trained model from /data2/cdq/pet/log_fedpet_augmentation_10/g2/aggregated
-73828 - Wed, 31 Aug 2022 13:44:39 modeling.py[line:797] INFO Evaluating soft label~
-73828 - Wed, 31 Aug 2022 13:44:39 modeling.py[line:122] INFO Data train-54560 is tagged correctly as 3.
-73828 - Wed, 31 Aug 2022 13:44:39 modeling.py[line:122] INFO Data train-12041 is tagged correctly as 3.
-73828 - Wed, 31 Aug 2022 13:44:39 modeling.py[line:122] INFO Data train-38982 is tagged correctly as 3.
-73828 - Wed, 31 Aug 2022 13:44:39 modeling.py[line:122] INFO Data train-104195 is tagged correctly as 3.
-73828 - Wed, 31 Aug 2022 13:44:39 modeling.py[line:122] INFO Data train-98766 is tagged correctly as 3.
-73828 - Wed, 31 Aug 2022 13:44:39 modeling.py[line:122] INFO Data train-51767 is tagged correctly as 3.
-73828 - Wed, 31 Aug 2022 13:44:39 modeling.py[line:122] INFO Data train-49195 is tagged correctly as 3.
-73828 - Wed, 31 Aug 2022 13:44:39 modeling.py[line:122] INFO Data train-95054 is tagged correctly as 3.
-73828 - Wed, 31 Aug 2022 13:44:39 modeling.py[line:122] INFO Data train-59334 is tagged correctly as 3.
-73828 - Wed, 31 Aug 2022 13:44:39 modeling.py[line:122] INFO Data train-57190 is tagged correctly as 3.
-73828 - Wed, 31 Aug 2022 13:44:39 modeling.py[line:122] INFO Data train-98686 is tagged correctly as 3.
-73828 - Wed, 31 Aug 2022 13:44:39 modeling.py[line:122] INFO Data train-51986 is tagged correctly as 3.
-73828 - Wed, 31 Aug 2022 13:44:39 modeling.py[line:122] INFO Data train-91624 is tagged correctly as 3.
-73828 - Wed, 31 Aug 2022 13:44:39 modeling.py[line:122] INFO Data train-99855 is tagged correctly as 3.
-73828 - Wed, 31 Aug 2022 13:44:39 modeling.py[line:122] INFO Data train-33102 is tagged correctly as 3.
-73828 - Wed, 31 Aug 2022 13:44:39 modeling.py[line:131] INFO Inference correct ratio is 1.0
-73828 - Wed, 31 Aug 2022 13:44:39 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 13:45:02 modeling.py[line:904] INFO init acc: val acc before training is 0.7894736842105263
-73828 - Wed, 31 Aug 2022 13:45:02 modeling.py[line:908] INFO len of all_train_data: 16
-73828 - Wed, 31 Aug 2022 13:45:02 wrapper.py[line:239] INFO CDQ: n_gpu: 1, per_gpu_train_batch_size: 4, train_batch_size: 4
-73828 - Wed, 31 Aug 2022 13:45:02 wrapper.py[line:438] INFO Writing example 0
-Epoch:   0%|          | 0/10 [00:00<?, ?it/s]Epoch:  10%|█         | 1/10 [00:01<00:15,  1.75s/it]Epoch:  20%|██        | 2/10 [00:03<00:13,  1.73s/it]Epoch:  30%|███       | 3/10 [00:05<00:11,  1.70s/it]Epoch:  40%|████      | 4/10 [00:06<00:10,  1.70s/it]Epoch:  50%|█████     | 5/10 [00:08<00:08,  1.70s/it]Epoch:  60%|██████    | 6/10 [00:10<00:06,  1.68s/it]Epoch:  70%|███████   | 7/10 [00:11<00:05,  1.69s/it]Epoch:  80%|████████  | 8/10 [00:13<00:03,  1.70s/it]Epoch:  90%|█████████ | 9/10 [00:15<00:01,  1.70s/it]Epoch: 100%|██████████| 10/10 [00:16<00:00,  1.71s/it]Epoch: 100%|██████████| 10/10 [00:16<00:00,  1.69s/it]
-73828 - Wed, 31 Aug 2022 13:45:19 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 13:45:19 modeling.py[line:812] INFO Saving trained model at /data2/cdq/pet/log_fedpet_augmentation_10/g3/client0...
-73828 - Wed, 31 Aug 2022 13:45:19 modeling.py[line:816] INFO Saving complete
-73828 - Wed, 31 Aug 2022 13:45:19 modeling.py[line:829] INFO Starting evaluation...
-73828 - Wed, 31 Aug 2022 13:45:19 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 13:45:44 modeling.py[line:851] INFO --- RESULT (pattern_id=1, iteration=0) ---
-73828 - Wed, 31 Aug 2022 13:45:44 modeling.py[line:852] INFO {'acc': 0.25}
-73828 - Wed, 31 Aug 2022 13:45:44 modeling.py[line:853] INFO /data2/cdq/pet/log_fedpet_augmentation_10/g3/client0
-73828 - Wed, 31 Aug 2022 13:45:44 modeling.py[line:867] INFO === OVERALL RESULTS ===
-73828 - Wed, 31 Aug 2022 13:45:44 modeling.py[line:992] INFO acc-p1: 0.25 +- 0
-73828 - Wed, 31 Aug 2022 13:45:44 modeling.py[line:1000] INFO acc-all-p: 0.25 +- 0
-73828 - Wed, 31 Aug 2022 13:46:00 modeling.py[line:530] INFO Saving aggregated trained model at /data2/cdq/pet/log_fedpet_augmentation_10/g2/aggregated...
-73828 - Wed, 31 Aug 2022 13:46:16 modeling.py[line:547] INFO Saving aggregated trained model at /data2/cdq/pet/log_fedpet_augmentation_10/g2/aggregated...
-73828 - Wed, 31 Aug 2022 13:46:17 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 13:46:31 wrapper.py[line:438] INFO Writing example 10000
-73828 - Wed, 31 Aug 2022 13:52:00 modeling.py[line:1102] INFO Found the following 6 subdirectories: ['client4', 'client1', 'aggregated', 'client3', 'client2', 'client0']
-73828 - Wed, 31 Aug 2022 13:52:00 modeling.py[line:1108] INFO Example distribution in the original dataset: [0, 1, 0, 0]
-73828 - Wed, 31 Aug 2022 13:52:00 modeling.py[line:1112] INFO Target distribution for the new dataset: [0, 15, 0, 0]
-73828 - Wed, 31 Aug 2022 13:52:00 modeling.py[line:1148] INFO File /data2/cdq/pet/log_fedpet_augmentation_10/g2/client0/results.txt: Score = 1, #Logits = 12000, #Labels = 4
-73828 - Wed, 31 Aug 2022 13:52:00 modeling.py[line:1303] INFO There are 3443 examples for label 1
-73828 - Wed, 31 Aug 2022 13:52:00 modeling.py[line:1303] INFO There are 3444 examples for label 2
-73828 - Wed, 31 Aug 2022 13:52:00 modeling.py[line:1303] INFO There are 2124 examples for label 3
-73828 - Wed, 31 Aug 2022 13:52:00 modeling.py[line:1303] INFO There are 2989 examples for label 4
-73828 - Wed, 31 Aug 2022 13:52:10 modeling.py[line:776] INFO Loading previous aggregated trained model from /data2/cdq/pet/log_fedpet_augmentation_10/g2/aggregated
-73828 - Wed, 31 Aug 2022 13:52:12 modeling.py[line:797] INFO Evaluating soft label~
-73828 - Wed, 31 Aug 2022 13:52:12 modeling.py[line:122] INFO Data train-85412 is tagged correctly as 2.
-73828 - Wed, 31 Aug 2022 13:52:12 modeling.py[line:122] INFO Data train-27247 is tagged correctly as 2.
-73828 - Wed, 31 Aug 2022 13:52:12 modeling.py[line:122] INFO Data train-74522 is tagged correctly as 2.
-73828 - Wed, 31 Aug 2022 13:52:12 modeling.py[line:122] INFO Data train-26189 is tagged correctly as 2.
-73828 - Wed, 31 Aug 2022 13:52:12 modeling.py[line:122] INFO Data train-17948 is tagged correctly as 2.
-73828 - Wed, 31 Aug 2022 13:52:12 modeling.py[line:122] INFO Data train-31993 is tagged correctly as 2.
-73828 - Wed, 31 Aug 2022 13:52:12 modeling.py[line:122] INFO Data train-22790 is tagged correctly as 2.
-73828 - Wed, 31 Aug 2022 13:52:12 modeling.py[line:122] INFO Data train-109558 is tagged correctly as 2.
-73828 - Wed, 31 Aug 2022 13:52:12 modeling.py[line:122] INFO Data train-47430 is tagged correctly as 2.
-73828 - Wed, 31 Aug 2022 13:52:12 modeling.py[line:122] INFO Data train-101136 is tagged correctly as 2.
-73828 - Wed, 31 Aug 2022 13:52:12 modeling.py[line:122] INFO Data train-43112 is tagged correctly as 2.
-73828 - Wed, 31 Aug 2022 13:52:12 modeling.py[line:122] INFO Data train-114651 is tagged correctly as 2.
-73828 - Wed, 31 Aug 2022 13:52:12 modeling.py[line:122] INFO Data train-65747 is tagged correctly as 2.
-73828 - Wed, 31 Aug 2022 13:52:12 modeling.py[line:122] INFO Data train-42199 is tagged correctly as 2.
-73828 - Wed, 31 Aug 2022 13:52:12 modeling.py[line:122] INFO Data train-55616 is tagged correctly as 2.
-73828 - Wed, 31 Aug 2022 13:52:12 modeling.py[line:131] INFO Inference correct ratio is 1.0
-73828 - Wed, 31 Aug 2022 13:52:12 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 13:52:35 modeling.py[line:904] INFO init acc: val acc before training is 0.8052631578947368
-73828 - Wed, 31 Aug 2022 13:52:35 modeling.py[line:908] INFO len of all_train_data: 16
-73828 - Wed, 31 Aug 2022 13:52:35 wrapper.py[line:239] INFO CDQ: n_gpu: 1, per_gpu_train_batch_size: 4, train_batch_size: 4
-73828 - Wed, 31 Aug 2022 13:52:35 wrapper.py[line:438] INFO Writing example 0
-Epoch:   0%|          | 0/10 [00:00<?, ?it/s]Epoch:  10%|█         | 1/10 [00:01<00:15,  1.77s/it]Epoch:  20%|██        | 2/10 [00:03<00:14,  1.76s/it]Epoch:  30%|███       | 3/10 [00:05<00:12,  1.74s/it]Epoch:  40%|████      | 4/10 [00:06<00:10,  1.74s/it]Epoch:  50%|█████     | 5/10 [00:08<00:08,  1.73s/it]Epoch:  60%|██████    | 6/10 [00:10<00:06,  1.73s/it]Epoch:  70%|███████   | 7/10 [00:12<00:05,  1.73s/it]Epoch:  80%|████████  | 8/10 [00:13<00:03,  1.75s/it]Epoch:  90%|█████████ | 9/10 [00:15<00:01,  1.81s/it]Epoch: 100%|██████████| 10/10 [00:17<00:00,  1.89s/it]Epoch: 100%|██████████| 10/10 [00:17<00:00,  1.79s/it]
-73828 - Wed, 31 Aug 2022 13:52:53 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 13:52:53 modeling.py[line:812] INFO Saving trained model at /data2/cdq/pet/log_fedpet_augmentation_10/g3/client1...
-73828 - Wed, 31 Aug 2022 13:52:54 modeling.py[line:816] INFO Saving complete
-73828 - Wed, 31 Aug 2022 13:52:54 modeling.py[line:829] INFO Starting evaluation...
-73828 - Wed, 31 Aug 2022 13:52:54 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 13:53:21 modeling.py[line:851] INFO --- RESULT (pattern_id=1, iteration=0) ---
-73828 - Wed, 31 Aug 2022 13:53:21 modeling.py[line:852] INFO {'acc': 0.29078947368421054}
-73828 - Wed, 31 Aug 2022 13:53:21 modeling.py[line:853] INFO /data2/cdq/pet/log_fedpet_augmentation_10/g3/client1
-73828 - Wed, 31 Aug 2022 13:53:21 modeling.py[line:867] INFO === OVERALL RESULTS ===
-73828 - Wed, 31 Aug 2022 13:53:21 modeling.py[line:992] INFO acc-p1: 0.29078947368421054 +- 0
-73828 - Wed, 31 Aug 2022 13:53:21 modeling.py[line:1000] INFO acc-all-p: 0.29078947368421054 +- 0
-73828 - Wed, 31 Aug 2022 13:53:37 modeling.py[line:530] INFO Saving aggregated trained model at /data2/cdq/pet/log_fedpet_augmentation_10/g2/aggregated...
-73828 - Wed, 31 Aug 2022 13:53:54 modeling.py[line:547] INFO Saving aggregated trained model at /data2/cdq/pet/log_fedpet_augmentation_10/g2/aggregated...
-73828 - Wed, 31 Aug 2022 13:53:54 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 13:54:08 wrapper.py[line:438] INFO Writing example 10000
-73828 - Wed, 31 Aug 2022 13:59:33 modeling.py[line:1102] INFO Found the following 6 subdirectories: ['client4', 'client1', 'aggregated', 'client3', 'client2', 'client0']
-73828 - Wed, 31 Aug 2022 13:59:33 modeling.py[line:1108] INFO Example distribution in the original dataset: [0, 0, 0, 1]
-73828 - Wed, 31 Aug 2022 13:59:33 modeling.py[line:1112] INFO Target distribution for the new dataset: [0, 0, 0, 15]
-73828 - Wed, 31 Aug 2022 13:59:33 modeling.py[line:1148] INFO File /data2/cdq/pet/log_fedpet_augmentation_10/g2/client0/results.txt: Score = 1, #Logits = 12000, #Labels = 4
-73828 - Wed, 31 Aug 2022 13:59:33 modeling.py[line:1303] INFO There are 3372 examples for label 1
-73828 - Wed, 31 Aug 2022 13:59:33 modeling.py[line:1303] INFO There are 3460 examples for label 2
-73828 - Wed, 31 Aug 2022 13:59:33 modeling.py[line:1303] INFO There are 2078 examples for label 3
-73828 - Wed, 31 Aug 2022 13:59:33 modeling.py[line:1303] INFO There are 3090 examples for label 4
-73828 - Wed, 31 Aug 2022 13:59:42 modeling.py[line:776] INFO Loading previous aggregated trained model from /data2/cdq/pet/log_fedpet_augmentation_10/g2/aggregated
-73828 - Wed, 31 Aug 2022 13:59:43 modeling.py[line:797] INFO Evaluating soft label~
-73828 - Wed, 31 Aug 2022 13:59:43 modeling.py[line:122] INFO Data train-10951 is tagged correctly as 4.
-73828 - Wed, 31 Aug 2022 13:59:43 modeling.py[line:122] INFO Data train-63987 is tagged correctly as 4.
-73828 - Wed, 31 Aug 2022 13:59:43 modeling.py[line:122] INFO Data train-66305 is tagged correctly as 4.
-73828 - Wed, 31 Aug 2022 13:59:43 modeling.py[line:122] INFO Data train-74064 is tagged correctly as 4.
-73828 - Wed, 31 Aug 2022 13:59:43 modeling.py[line:122] INFO Data train-89248 is tagged correctly as 4.
-73828 - Wed, 31 Aug 2022 13:59:43 modeling.py[line:122] INFO Data train-54434 is tagged correctly as 4.
-73828 - Wed, 31 Aug 2022 13:59:43 modeling.py[line:122] INFO Data train-35710 is tagged correctly as 4.
-73828 - Wed, 31 Aug 2022 13:59:43 modeling.py[line:122] INFO Data train-22234 is tagged correctly as 4.
-73828 - Wed, 31 Aug 2022 13:59:43 modeling.py[line:122] INFO Data train-22785 is tagged correctly as 4.
-73828 - Wed, 31 Aug 2022 13:59:43 modeling.py[line:122] INFO Data train-30054 is tagged correctly as 4.
-73828 - Wed, 31 Aug 2022 13:59:43 modeling.py[line:122] INFO Data train-82302 is tagged correctly as 4.
-73828 - Wed, 31 Aug 2022 13:59:43 modeling.py[line:122] INFO Data train-94190 is tagged correctly as 4.
-73828 - Wed, 31 Aug 2022 13:59:43 modeling.py[line:122] INFO Data train-58097 is tagged correctly as 4.
-73828 - Wed, 31 Aug 2022 13:59:43 modeling.py[line:122] INFO Data train-100080 is tagged correctly as 4.
-73828 - Wed, 31 Aug 2022 13:59:43 modeling.py[line:122] INFO Data train-101487 is tagged correctly as 4.
-73828 - Wed, 31 Aug 2022 13:59:43 modeling.py[line:131] INFO Inference correct ratio is 1.0
-73828 - Wed, 31 Aug 2022 13:59:43 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 14:00:06 modeling.py[line:904] INFO init acc: val acc before training is 0.7552631578947369
-73828 - Wed, 31 Aug 2022 14:00:06 modeling.py[line:908] INFO len of all_train_data: 16
-73828 - Wed, 31 Aug 2022 14:00:06 wrapper.py[line:239] INFO CDQ: n_gpu: 1, per_gpu_train_batch_size: 4, train_batch_size: 4
-73828 - Wed, 31 Aug 2022 14:00:06 wrapper.py[line:438] INFO Writing example 0
-Epoch:   0%|          | 0/10 [00:00<?, ?it/s]Epoch:  10%|█         | 1/10 [00:01<00:15,  1.72s/it]Epoch:  20%|██        | 2/10 [00:03<00:13,  1.74s/it]Epoch:  30%|███       | 3/10 [00:05<00:12,  1.75s/it]Epoch:  40%|████      | 4/10 [00:07<00:10,  1.77s/it]Epoch:  50%|█████     | 5/10 [00:09<00:09,  1.89s/it]Epoch:  60%|██████    | 6/10 [00:11<00:07,  1.94s/it]Epoch:  70%|███████   | 7/10 [00:13<00:05,  1.98s/it]Epoch:  80%|████████  | 8/10 [00:15<00:04,  2.00s/it]Epoch:  90%|█████████ | 9/10 [00:17<00:02,  2.06s/it]Epoch: 100%|██████████| 10/10 [00:19<00:00,  2.07s/it]Epoch: 100%|██████████| 10/10 [00:19<00:00,  1.97s/it]
-73828 - Wed, 31 Aug 2022 14:00:26 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 14:00:26 modeling.py[line:812] INFO Saving trained model at /data2/cdq/pet/log_fedpet_augmentation_10/g3/client2...
-73828 - Wed, 31 Aug 2022 14:00:27 modeling.py[line:816] INFO Saving complete
-73828 - Wed, 31 Aug 2022 14:00:27 modeling.py[line:829] INFO Starting evaluation...
-73828 - Wed, 31 Aug 2022 14:00:27 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 14:00:54 modeling.py[line:851] INFO --- RESULT (pattern_id=1, iteration=0) ---
-73828 - Wed, 31 Aug 2022 14:00:54 modeling.py[line:852] INFO {'acc': 0.2355263157894737}
-73828 - Wed, 31 Aug 2022 14:00:54 modeling.py[line:853] INFO /data2/cdq/pet/log_fedpet_augmentation_10/g3/client2
-73828 - Wed, 31 Aug 2022 14:00:54 modeling.py[line:867] INFO === OVERALL RESULTS ===
-73828 - Wed, 31 Aug 2022 14:00:54 modeling.py[line:992] INFO acc-p1: 0.2355263157894737 +- 0
-73828 - Wed, 31 Aug 2022 14:00:54 modeling.py[line:1000] INFO acc-all-p: 0.2355263157894737 +- 0
-73828 - Wed, 31 Aug 2022 14:01:10 modeling.py[line:530] INFO Saving aggregated trained model at /data2/cdq/pet/log_fedpet_augmentation_10/g2/aggregated...
-73828 - Wed, 31 Aug 2022 14:01:26 modeling.py[line:547] INFO Saving aggregated trained model at /data2/cdq/pet/log_fedpet_augmentation_10/g2/aggregated...
-73828 - Wed, 31 Aug 2022 14:01:27 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 14:01:41 wrapper.py[line:438] INFO Writing example 10000
-73828 - Wed, 31 Aug 2022 14:07:04 modeling.py[line:1102] INFO Found the following 6 subdirectories: ['client4', 'client1', 'aggregated', 'client3', 'client2', 'client0']
-73828 - Wed, 31 Aug 2022 14:07:04 modeling.py[line:1108] INFO Example distribution in the original dataset: [0, 0, 0, 1]
-73828 - Wed, 31 Aug 2022 14:07:04 modeling.py[line:1112] INFO Target distribution for the new dataset: [0, 0, 0, 15]
-73828 - Wed, 31 Aug 2022 14:07:04 modeling.py[line:1148] INFO File /data2/cdq/pet/log_fedpet_augmentation_10/g2/client0/results.txt: Score = 1, #Logits = 12000, #Labels = 4
-73828 - Wed, 31 Aug 2022 14:07:04 modeling.py[line:1303] INFO There are 3479 examples for label 1
-73828 - Wed, 31 Aug 2022 14:07:04 modeling.py[line:1303] INFO There are 3424 examples for label 2
-73828 - Wed, 31 Aug 2022 14:07:04 modeling.py[line:1303] INFO There are 2032 examples for label 3
-73828 - Wed, 31 Aug 2022 14:07:04 modeling.py[line:1303] INFO There are 3065 examples for label 4
-73828 - Wed, 31 Aug 2022 14:07:13 modeling.py[line:776] INFO Loading previous aggregated trained model from /data2/cdq/pet/log_fedpet_augmentation_10/g2/aggregated
-73828 - Wed, 31 Aug 2022 14:07:14 modeling.py[line:797] INFO Evaluating soft label~
-73828 - Wed, 31 Aug 2022 14:07:14 modeling.py[line:122] INFO Data train-33573 is tagged correctly as 4.
-73828 - Wed, 31 Aug 2022 14:07:14 modeling.py[line:122] INFO Data train-3434 is tagged correctly as 4.
-73828 - Wed, 31 Aug 2022 14:07:14 modeling.py[line:122] INFO Data train-27220 is tagged correctly as 4.
-73828 - Wed, 31 Aug 2022 14:07:14 modeling.py[line:122] INFO Data train-79449 is tagged correctly as 4.
-73828 - Wed, 31 Aug 2022 14:07:14 modeling.py[line:122] INFO Data train-67989 is tagged correctly as 4.
-73828 - Wed, 31 Aug 2022 14:07:14 modeling.py[line:122] INFO Data train-117520 is tagged correctly as 4.
-73828 - Wed, 31 Aug 2022 14:07:14 modeling.py[line:122] INFO Data train-37020 is tagged correctly as 4.
-73828 - Wed, 31 Aug 2022 14:07:14 modeling.py[line:122] INFO Data train-63383 is tagged correctly as 4.
-73828 - Wed, 31 Aug 2022 14:07:14 modeling.py[line:122] INFO Data train-85021 is tagged correctly as 4.
-73828 - Wed, 31 Aug 2022 14:07:14 modeling.py[line:122] INFO Data train-4437 is tagged correctly as 4.
-73828 - Wed, 31 Aug 2022 14:07:14 modeling.py[line:122] INFO Data train-76227 is tagged correctly as 4.
-73828 - Wed, 31 Aug 2022 14:07:14 modeling.py[line:122] INFO Data train-109495 is tagged correctly as 4.
-73828 - Wed, 31 Aug 2022 14:07:14 modeling.py[line:122] INFO Data train-102104 is tagged correctly as 4.
-73828 - Wed, 31 Aug 2022 14:07:14 modeling.py[line:122] INFO Data train-84697 is tagged correctly as 4.
-73828 - Wed, 31 Aug 2022 14:07:14 modeling.py[line:122] INFO Data train-55625 is tagged correctly as 4.
-73828 - Wed, 31 Aug 2022 14:07:14 modeling.py[line:131] INFO Inference correct ratio is 1.0
-73828 - Wed, 31 Aug 2022 14:07:15 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 14:07:37 modeling.py[line:904] INFO init acc: val acc before training is 0.8223684210526315
-73828 - Wed, 31 Aug 2022 14:07:37 modeling.py[line:908] INFO len of all_train_data: 16
-73828 - Wed, 31 Aug 2022 14:07:37 wrapper.py[line:239] INFO CDQ: n_gpu: 1, per_gpu_train_batch_size: 4, train_batch_size: 4
-73828 - Wed, 31 Aug 2022 14:07:37 wrapper.py[line:438] INFO Writing example 0
-Epoch:   0%|          | 0/10 [00:00<?, ?it/s]Epoch:  10%|█         | 1/10 [00:01<00:16,  1.81s/it]Epoch:  20%|██        | 2/10 [00:03<00:14,  1.86s/it]Epoch:  30%|███       | 3/10 [00:05<00:13,  1.90s/it]Epoch:  40%|████      | 4/10 [00:07<00:11,  1.96s/it]Epoch:  50%|█████     | 5/10 [00:09<00:09,  1.98s/it]Epoch:  60%|██████    | 6/10 [00:11<00:08,  2.01s/it]Epoch:  70%|███████   | 7/10 [00:14<00:06,  2.03s/it]Epoch:  80%|████████  | 8/10 [00:16<00:04,  2.05s/it]Epoch:  90%|█████████ | 9/10 [00:18<00:02,  2.05s/it]Epoch: 100%|██████████| 10/10 [00:20<00:00,  2.07s/it]Epoch: 100%|██████████| 10/10 [00:20<00:00,  2.03s/it]
-73828 - Wed, 31 Aug 2022 14:07:58 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 14:07:58 modeling.py[line:812] INFO Saving trained model at /data2/cdq/pet/log_fedpet_augmentation_10/g3/client3...
-73828 - Wed, 31 Aug 2022 14:07:58 modeling.py[line:816] INFO Saving complete
-73828 - Wed, 31 Aug 2022 14:07:58 modeling.py[line:829] INFO Starting evaluation...
-73828 - Wed, 31 Aug 2022 14:07:58 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 14:08:25 modeling.py[line:851] INFO --- RESULT (pattern_id=1, iteration=0) ---
-73828 - Wed, 31 Aug 2022 14:08:25 modeling.py[line:852] INFO {'acc': 0.2657894736842105}
-73828 - Wed, 31 Aug 2022 14:08:25 modeling.py[line:853] INFO /data2/cdq/pet/log_fedpet_augmentation_10/g3/client3
-73828 - Wed, 31 Aug 2022 14:08:25 modeling.py[line:867] INFO === OVERALL RESULTS ===
-73828 - Wed, 31 Aug 2022 14:08:25 modeling.py[line:992] INFO acc-p1: 0.2657894736842105 +- 0
-73828 - Wed, 31 Aug 2022 14:08:25 modeling.py[line:1000] INFO acc-all-p: 0.2657894736842105 +- 0
-73828 - Wed, 31 Aug 2022 14:08:42 modeling.py[line:530] INFO Saving aggregated trained model at /data2/cdq/pet/log_fedpet_augmentation_10/g2/aggregated...
-73828 - Wed, 31 Aug 2022 14:08:58 modeling.py[line:547] INFO Saving aggregated trained model at /data2/cdq/pet/log_fedpet_augmentation_10/g2/aggregated...
-73828 - Wed, 31 Aug 2022 14:08:59 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 14:09:13 wrapper.py[line:438] INFO Writing example 10000
-73828 - Wed, 31 Aug 2022 14:14:14 modeling.py[line:1102] INFO Found the following 6 subdirectories: ['client4', 'client1', 'aggregated', 'client3', 'client2', 'client0']
-73828 - Wed, 31 Aug 2022 14:14:14 modeling.py[line:1108] INFO Example distribution in the original dataset: [0, 0, 0, 1]
-73828 - Wed, 31 Aug 2022 14:14:14 modeling.py[line:1112] INFO Target distribution for the new dataset: [0, 0, 0, 15]
-73828 - Wed, 31 Aug 2022 14:14:14 modeling.py[line:1148] INFO File /data2/cdq/pet/log_fedpet_augmentation_10/g2/client0/results.txt: Score = 1, #Logits = 12000, #Labels = 4
-73828 - Wed, 31 Aug 2022 14:14:14 modeling.py[line:1303] INFO There are 3347 examples for label 1
-73828 - Wed, 31 Aug 2022 14:14:14 modeling.py[line:1303] INFO There are 3550 examples for label 2
-73828 - Wed, 31 Aug 2022 14:14:14 modeling.py[line:1303] INFO There are 2078 examples for label 3
-73828 - Wed, 31 Aug 2022 14:14:14 modeling.py[line:1303] INFO There are 3025 examples for label 4
-73828 - Wed, 31 Aug 2022 14:15:04 modeling.py[line:776] INFO Loading previous aggregated trained model from /data2/cdq/pet/log_fedpet_augmentation_10/g2/aggregated
-73828 - Wed, 31 Aug 2022 14:15:05 modeling.py[line:797] INFO Evaluating soft label~
-73828 - Wed, 31 Aug 2022 14:15:05 modeling.py[line:122] INFO Data train-16389 is tagged correctly as 4.
-73828 - Wed, 31 Aug 2022 14:15:05 modeling.py[line:122] INFO Data train-21178 is tagged correctly as 4.
-73828 - Wed, 31 Aug 2022 14:15:05 modeling.py[line:122] INFO Data train-89226 is tagged correctly as 4.
-73828 - Wed, 31 Aug 2022 14:15:05 modeling.py[line:122] INFO Data train-60960 is tagged correctly as 4.
-73828 - Wed, 31 Aug 2022 14:15:05 modeling.py[line:122] INFO Data train-116892 is tagged correctly as 4.
-73828 - Wed, 31 Aug 2022 14:15:05 modeling.py[line:122] INFO Data train-70966 is tagged correctly as 4.
-73828 - Wed, 31 Aug 2022 14:15:05 modeling.py[line:122] INFO Data train-26039 is tagged correctly as 4.
-73828 - Wed, 31 Aug 2022 14:15:05 modeling.py[line:122] INFO Data train-33289 is tagged correctly as 4.
-73828 - Wed, 31 Aug 2022 14:15:05 modeling.py[line:122] INFO Data train-54967 is tagged correctly as 4.
-73828 - Wed, 31 Aug 2022 14:15:05 modeling.py[line:122] INFO Data train-7292 is tagged correctly as 4.
-73828 - Wed, 31 Aug 2022 14:15:05 modeling.py[line:122] INFO Data train-81764 is tagged correctly as 4.
-73828 - Wed, 31 Aug 2022 14:15:05 modeling.py[line:122] INFO Data train-53883 is tagged correctly as 4.
-73828 - Wed, 31 Aug 2022 14:15:05 modeling.py[line:122] INFO Data train-86079 is tagged correctly as 4.
-73828 - Wed, 31 Aug 2022 14:15:05 modeling.py[line:122] INFO Data train-113358 is tagged correctly as 4.
-73828 - Wed, 31 Aug 2022 14:15:05 modeling.py[line:122] INFO Data train-81123 is tagged correctly as 4.
-73828 - Wed, 31 Aug 2022 14:15:05 modeling.py[line:131] INFO Inference correct ratio is 1.0
-73828 - Wed, 31 Aug 2022 14:15:05 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 14:15:24 modeling.py[line:904] INFO init acc: val acc before training is 0.7697368421052632
-73828 - Wed, 31 Aug 2022 14:15:24 modeling.py[line:908] INFO len of all_train_data: 16
-73828 - Wed, 31 Aug 2022 14:15:24 wrapper.py[line:239] INFO CDQ: n_gpu: 1, per_gpu_train_batch_size: 4, train_batch_size: 4
-73828 - Wed, 31 Aug 2022 14:15:24 wrapper.py[line:438] INFO Writing example 0
-Epoch:   0%|          | 0/10 [00:00<?, ?it/s]Epoch:  10%|█         | 1/10 [00:01<00:13,  1.53s/it]Epoch:  20%|██        | 2/10 [00:03<00:12,  1.52s/it]Epoch:  30%|███       | 3/10 [00:04<00:10,  1.51s/it]Epoch:  40%|████      | 4/10 [00:06<00:09,  1.51s/it]Epoch:  50%|█████     | 5/10 [00:07<00:07,  1.48s/it]Epoch:  60%|██████    | 6/10 [00:08<00:05,  1.46s/it]Epoch:  70%|███████   | 7/10 [00:10<00:04,  1.51s/it]Epoch:  80%|████████  | 8/10 [00:12<00:03,  1.68s/it]Epoch:  90%|█████████ | 9/10 [00:14<00:01,  1.78s/it]Epoch: 100%|██████████| 10/10 [00:16<00:00,  1.88s/it]Epoch: 100%|██████████| 10/10 [00:16<00:00,  1.67s/it]
-73828 - Wed, 31 Aug 2022 14:15:41 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 14:15:41 modeling.py[line:812] INFO Saving trained model at /data2/cdq/pet/log_fedpet_augmentation_10/g3/client4...
-73828 - Wed, 31 Aug 2022 14:15:41 modeling.py[line:816] INFO Saving complete
-73828 - Wed, 31 Aug 2022 14:15:41 modeling.py[line:829] INFO Starting evaluation...
-73828 - Wed, 31 Aug 2022 14:15:41 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 14:16:08 modeling.py[line:851] INFO --- RESULT (pattern_id=1, iteration=0) ---
-73828 - Wed, 31 Aug 2022 14:16:08 modeling.py[line:852] INFO {'acc': 0.2565789473684211}
-73828 - Wed, 31 Aug 2022 14:16:08 modeling.py[line:853] INFO /data2/cdq/pet/log_fedpet_augmentation_10/g3/client4
-73828 - Wed, 31 Aug 2022 14:16:08 modeling.py[line:867] INFO === OVERALL RESULTS ===
-73828 - Wed, 31 Aug 2022 14:16:08 modeling.py[line:992] INFO acc-p1: 0.2565789473684211 +- 0
-73828 - Wed, 31 Aug 2022 14:16:08 modeling.py[line:1000] INFO acc-all-p: 0.2565789473684211 +- 0
-73828 - Wed, 31 Aug 2022 14:16:08 modeling.py[line:502] INFO Gen 4: client_indexes is [3 8 4 9 2]
-73828 - Wed, 31 Aug 2022 14:16:08 modeling.py[line:507] INFO Gen4: sample_num_list is [1. 1. 1. 1. 1.]
-73828 - Wed, 31 Aug 2022 14:16:25 modeling.py[line:530] INFO Saving aggregated trained model at /data2/cdq/pet/log_fedpet_augmentation_10/g3/aggregated...
-73828 - Wed, 31 Aug 2022 14:16:43 modeling.py[line:547] INFO Saving aggregated trained model at /data2/cdq/pet/log_fedpet_augmentation_10/g3/aggregated...
-73828 - Wed, 31 Aug 2022 14:16:43 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 14:16:57 wrapper.py[line:438] INFO Writing example 10000
-73828 - Wed, 31 Aug 2022 14:22:46 modeling.py[line:1102] INFO Found the following 6 subdirectories: ['client4', 'client1', 'aggregated', 'client3', 'client2', 'client0']
-73828 - Wed, 31 Aug 2022 14:22:46 modeling.py[line:1108] INFO Example distribution in the original dataset: [0, 1, 0, 0]
-73828 - Wed, 31 Aug 2022 14:22:46 modeling.py[line:1112] INFO Target distribution for the new dataset: [0, 31, 0, 0]
-73828 - Wed, 31 Aug 2022 14:22:46 modeling.py[line:1148] INFO File /data2/cdq/pet/log_fedpet_augmentation_10/g3/client0/results.txt: Score = 1, #Logits = 12000, #Labels = 4
-73828 - Wed, 31 Aug 2022 14:22:46 modeling.py[line:1303] INFO There are 8 examples for label 1
-73828 - Wed, 31 Aug 2022 14:22:46 modeling.py[line:1303] INFO There are 2047 examples for label 2
-73828 - Wed, 31 Aug 2022 14:22:46 modeling.py[line:1303] INFO There are 6 examples for label 3
-73828 - Wed, 31 Aug 2022 14:22:46 modeling.py[line:1303] INFO There are 9939 examples for label 4
-73828 - Wed, 31 Aug 2022 14:22:55 modeling.py[line:776] INFO Loading previous aggregated trained model from /data2/cdq/pet/log_fedpet_augmentation_10/g3/aggregated
-73828 - Wed, 31 Aug 2022 14:22:57 modeling.py[line:797] INFO Evaluating soft label~
-73828 - Wed, 31 Aug 2022 14:22:57 modeling.py[line:122] INFO Data train-67374 is tagged correctly as 2.
-73828 - Wed, 31 Aug 2022 14:22:57 modeling.py[line:122] INFO Data train-53177 is tagged correctly as 2.
-73828 - Wed, 31 Aug 2022 14:22:57 modeling.py[line:122] INFO Data train-67243 is tagged correctly as 2.
-73828 - Wed, 31 Aug 2022 14:22:57 modeling.py[line:122] INFO Data train-46760 is tagged correctly as 2.
-73828 - Wed, 31 Aug 2022 14:22:57 modeling.py[line:122] INFO Data train-70719 is tagged correctly as 2.
-73828 - Wed, 31 Aug 2022 14:22:57 modeling.py[line:122] INFO Data train-51783 is tagged correctly as 2.
-73828 - Wed, 31 Aug 2022 14:22:57 modeling.py[line:122] INFO Data train-109157 is tagged correctly as 2.
-73828 - Wed, 31 Aug 2022 14:22:57 modeling.py[line:122] INFO Data train-79716 is tagged correctly as 2.
-73828 - Wed, 31 Aug 2022 14:22:57 modeling.py[line:122] INFO Data train-105716 is tagged correctly as 2.
-73828 - Wed, 31 Aug 2022 14:22:57 modeling.py[line:122] INFO Data train-81641 is tagged correctly as 2.
-73828 - Wed, 31 Aug 2022 14:22:57 modeling.py[line:122] INFO Data train-109654 is tagged correctly as 2.
-73828 - Wed, 31 Aug 2022 14:22:57 modeling.py[line:122] INFO Data train-60414 is tagged correctly as 2.
-73828 - Wed, 31 Aug 2022 14:22:57 modeling.py[line:122] INFO Data train-109533 is tagged correctly as 2.
-73828 - Wed, 31 Aug 2022 14:22:57 modeling.py[line:122] INFO Data train-8145 is tagged correctly as 2.
-73828 - Wed, 31 Aug 2022 14:22:57 modeling.py[line:122] INFO Data train-75512 is tagged correctly as 2.
-73828 - Wed, 31 Aug 2022 14:22:57 modeling.py[line:122] INFO Data train-81837 is tagged correctly as 2.
-73828 - Wed, 31 Aug 2022 14:22:57 modeling.py[line:122] INFO Data train-74156 is tagged correctly as 2.
-73828 - Wed, 31 Aug 2022 14:22:57 modeling.py[line:122] INFO Data train-83976 is tagged correctly as 2.
-73828 - Wed, 31 Aug 2022 14:22:57 modeling.py[line:122] INFO Data train-26981 is tagged correctly as 2.
-73828 - Wed, 31 Aug 2022 14:22:57 modeling.py[line:122] INFO Data train-102283 is tagged correctly as 2.
-73828 - Wed, 31 Aug 2022 14:22:57 modeling.py[line:122] INFO Data train-116904 is tagged correctly as 2.
-73828 - Wed, 31 Aug 2022 14:22:57 modeling.py[line:122] INFO Data train-3675 is tagged correctly as 2.
-73828 - Wed, 31 Aug 2022 14:22:57 modeling.py[line:122] INFO Data train-26564 is tagged correctly as 2.
-73828 - Wed, 31 Aug 2022 14:22:57 modeling.py[line:122] INFO Data train-28025 is tagged correctly as 2.
-73828 - Wed, 31 Aug 2022 14:22:57 modeling.py[line:122] INFO Data train-18959 is tagged correctly as 2.
-73828 - Wed, 31 Aug 2022 14:22:57 modeling.py[line:122] INFO Data train-92880 is tagged correctly as 2.
-73828 - Wed, 31 Aug 2022 14:22:57 modeling.py[line:122] INFO Data train-98180 is tagged correctly as 2.
-73828 - Wed, 31 Aug 2022 14:22:57 modeling.py[line:122] INFO Data train-110745 is tagged correctly as 2.
-73828 - Wed, 31 Aug 2022 14:22:57 modeling.py[line:122] INFO Data train-72073 is tagged correctly as 2.
-73828 - Wed, 31 Aug 2022 14:22:57 modeling.py[line:122] INFO Data train-51094 is tagged correctly as 2.
-73828 - Wed, 31 Aug 2022 14:22:57 modeling.py[line:122] INFO Data train-78891 is tagged correctly as 2.
-73828 - Wed, 31 Aug 2022 14:22:57 modeling.py[line:131] INFO Inference correct ratio is 1.0
-73828 - Wed, 31 Aug 2022 14:22:57 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 14:23:17 modeling.py[line:904] INFO init acc: val acc before training is 0.425
-73828 - Wed, 31 Aug 2022 14:23:17 modeling.py[line:908] INFO len of all_train_data: 32
-73828 - Wed, 31 Aug 2022 14:23:17 wrapper.py[line:239] INFO CDQ: n_gpu: 1, per_gpu_train_batch_size: 4, train_batch_size: 4
-73828 - Wed, 31 Aug 2022 14:23:17 wrapper.py[line:438] INFO Writing example 0
-Epoch:   0%|          | 0/10 [00:00<?, ?it/s]Epoch:  10%|█         | 1/10 [00:04<00:37,  4.18s/it]Epoch:  20%|██        | 2/10 [00:08<00:33,  4.19s/it]Epoch:  30%|███       | 3/10 [00:12<00:29,  4.18s/it]Epoch:  40%|████      | 4/10 [00:16<00:24,  4.16s/it]Epoch:  50%|█████     | 5/10 [00:20<00:20,  4.20s/it]Epoch:  60%|██████    | 6/10 [00:24<00:16,  4.12s/it]Epoch:  70%|███████   | 7/10 [00:28<00:11,  3.92s/it]Epoch:  80%|████████  | 8/10 [00:31<00:07,  3.74s/it]Epoch:  90%|█████████ | 9/10 [00:35<00:03,  3.67s/it]Epoch: 100%|██████████| 10/10 [00:38<00:00,  3.60s/it]Epoch: 100%|██████████| 10/10 [00:38<00:00,  3.86s/it]
-73828 - Wed, 31 Aug 2022 14:23:56 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 14:23:56 modeling.py[line:812] INFO Saving trained model at /data2/cdq/pet/log_fedpet_augmentation_10/g4/client0...
-73828 - Wed, 31 Aug 2022 14:23:57 modeling.py[line:816] INFO Saving complete
-73828 - Wed, 31 Aug 2022 14:23:57 modeling.py[line:829] INFO Starting evaluation...
-73828 - Wed, 31 Aug 2022 14:23:57 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 14:24:19 modeling.py[line:851] INFO --- RESULT (pattern_id=1, iteration=0) ---
-73828 - Wed, 31 Aug 2022 14:24:19 modeling.py[line:852] INFO {'acc': 0.2657894736842105}
-73828 - Wed, 31 Aug 2022 14:24:19 modeling.py[line:853] INFO /data2/cdq/pet/log_fedpet_augmentation_10/g4/client0
-73828 - Wed, 31 Aug 2022 14:24:19 modeling.py[line:867] INFO === OVERALL RESULTS ===
-73828 - Wed, 31 Aug 2022 14:24:19 modeling.py[line:992] INFO acc-p1: 0.2657894736842105 +- 0
-73828 - Wed, 31 Aug 2022 14:24:19 modeling.py[line:1000] INFO acc-all-p: 0.2657894736842105 +- 0
-73828 - Wed, 31 Aug 2022 14:24:37 modeling.py[line:530] INFO Saving aggregated trained model at /data2/cdq/pet/log_fedpet_augmentation_10/g3/aggregated...
-73828 - Wed, 31 Aug 2022 14:24:54 modeling.py[line:547] INFO Saving aggregated trained model at /data2/cdq/pet/log_fedpet_augmentation_10/g3/aggregated...
-73828 - Wed, 31 Aug 2022 14:24:55 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 14:25:10 wrapper.py[line:438] INFO Writing example 10000
-73828 - Wed, 31 Aug 2022 14:30:53 modeling.py[line:1102] INFO Found the following 6 subdirectories: ['client4', 'client1', 'aggregated', 'client3', 'client2', 'client0']
-73828 - Wed, 31 Aug 2022 14:30:53 modeling.py[line:1108] INFO Example distribution in the original dataset: [1, 0, 0, 0]
-73828 - Wed, 31 Aug 2022 14:30:53 modeling.py[line:1112] INFO Target distribution for the new dataset: [31, 0, 0, 0]
-73828 - Wed, 31 Aug 2022 14:30:53 modeling.py[line:1148] INFO File /data2/cdq/pet/log_fedpet_augmentation_10/g3/client0/results.txt: Score = 1, #Logits = 12000, #Labels = 4
-73828 - Wed, 31 Aug 2022 14:30:53 modeling.py[line:1303] INFO There are 7 examples for label 1
-73828 - Wed, 31 Aug 2022 14:30:53 modeling.py[line:1303] INFO There are 2069 examples for label 2
-73828 - Wed, 31 Aug 2022 14:30:53 modeling.py[line:1303] INFO There are 9 examples for label 3
-73828 - Wed, 31 Aug 2022 14:30:53 modeling.py[line:1303] INFO There are 9915 examples for label 4
-73828 - Wed, 31 Aug 2022 14:31:06 modeling.py[line:776] INFO Loading previous aggregated trained model from /data2/cdq/pet/log_fedpet_augmentation_10/g3/aggregated
-73828 - Wed, 31 Aug 2022 14:31:07 modeling.py[line:797] INFO Evaluating soft label~
-73828 - Wed, 31 Aug 2022 14:31:07 modeling.py[line:122] INFO Data train-67264 is tagged correctly as 1.
-73828 - Wed, 31 Aug 2022 14:31:07 modeling.py[line:122] INFO Data train-56810 is tagged correctly as 1.
-73828 - Wed, 31 Aug 2022 14:31:07 modeling.py[line:122] INFO Data train-39892 is tagged correctly as 1.
-73828 - Wed, 31 Aug 2022 14:31:07 modeling.py[line:122] INFO Data train-67264 is tagged correctly as 1.
-73828 - Wed, 31 Aug 2022 14:31:07 modeling.py[line:122] INFO Data train-56810 is tagged correctly as 1.
-73828 - Wed, 31 Aug 2022 14:31:07 modeling.py[line:122] INFO Data train-56625 is tagged correctly as 1.
-73828 - Wed, 31 Aug 2022 14:31:07 modeling.py[line:122] INFO Data train-56625 is tagged correctly as 1.
-73828 - Wed, 31 Aug 2022 14:31:07 modeling.py[line:122] INFO Data train-102641 is tagged correctly as 1.
-73828 - Wed, 31 Aug 2022 14:31:07 modeling.py[line:122] INFO Data train-23044 is tagged correctly as 1.
-73828 - Wed, 31 Aug 2022 14:31:07 modeling.py[line:122] INFO Data train-102641 is tagged correctly as 1.
-73828 - Wed, 31 Aug 2022 14:31:07 modeling.py[line:122] INFO Data train-67264 is tagged correctly as 1.
-73828 - Wed, 31 Aug 2022 14:31:07 modeling.py[line:122] INFO Data train-70675 is tagged correctly as 1.
-73828 - Wed, 31 Aug 2022 14:31:07 modeling.py[line:122] INFO Data train-102641 is tagged correctly as 1.
-73828 - Wed, 31 Aug 2022 14:31:07 modeling.py[line:122] INFO Data train-67264 is tagged correctly as 1.
-73828 - Wed, 31 Aug 2022 14:31:07 modeling.py[line:122] INFO Data train-23044 is tagged correctly as 1.
-73828 - Wed, 31 Aug 2022 14:31:07 modeling.py[line:122] INFO Data train-39892 is tagged correctly as 1.
-73828 - Wed, 31 Aug 2022 14:31:07 modeling.py[line:122] INFO Data train-70675 is tagged correctly as 1.
-73828 - Wed, 31 Aug 2022 14:31:07 modeling.py[line:122] INFO Data train-39892 is tagged correctly as 1.
-73828 - Wed, 31 Aug 2022 14:31:07 modeling.py[line:122] INFO Data train-56810 is tagged correctly as 1.
-73828 - Wed, 31 Aug 2022 14:31:07 modeling.py[line:122] INFO Data train-56625 is tagged correctly as 1.
-73828 - Wed, 31 Aug 2022 14:31:07 modeling.py[line:122] INFO Data train-67264 is tagged correctly as 1.
-73828 - Wed, 31 Aug 2022 14:31:07 modeling.py[line:122] INFO Data train-70675 is tagged correctly as 1.
-73828 - Wed, 31 Aug 2022 14:31:07 modeling.py[line:122] INFO Data train-56625 is tagged correctly as 1.
-73828 - Wed, 31 Aug 2022 14:31:07 modeling.py[line:122] INFO Data train-23044 is tagged correctly as 1.
-73828 - Wed, 31 Aug 2022 14:31:07 modeling.py[line:122] INFO Data train-39892 is tagged correctly as 1.
-73828 - Wed, 31 Aug 2022 14:31:07 modeling.py[line:122] INFO Data train-102641 is tagged correctly as 1.
-73828 - Wed, 31 Aug 2022 14:31:07 modeling.py[line:122] INFO Data train-102641 is tagged correctly as 1.
-73828 - Wed, 31 Aug 2022 14:31:07 modeling.py[line:122] INFO Data train-70675 is tagged correctly as 1.
-73828 - Wed, 31 Aug 2022 14:31:07 modeling.py[line:122] INFO Data train-56810 is tagged correctly as 1.
-73828 - Wed, 31 Aug 2022 14:31:07 modeling.py[line:122] INFO Data train-23044 is tagged correctly as 1.
-73828 - Wed, 31 Aug 2022 14:31:07 modeling.py[line:122] INFO Data train-39892 is tagged correctly as 1.
-73828 - Wed, 31 Aug 2022 14:31:07 modeling.py[line:131] INFO Inference correct ratio is 1.0
-73828 - Wed, 31 Aug 2022 14:31:08 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 14:31:31 modeling.py[line:904] INFO init acc: val acc before training is 0.43026315789473685
-73828 - Wed, 31 Aug 2022 14:31:31 modeling.py[line:908] INFO len of all_train_data: 32
-73828 - Wed, 31 Aug 2022 14:31:31 wrapper.py[line:239] INFO CDQ: n_gpu: 1, per_gpu_train_batch_size: 4, train_batch_size: 4
-73828 - Wed, 31 Aug 2022 14:31:31 wrapper.py[line:438] INFO Writing example 0
-Epoch:   0%|          | 0/10 [00:00<?, ?it/s]Epoch:  10%|█         | 1/10 [00:03<00:31,  3.53s/it]Epoch:  20%|██        | 2/10 [00:06<00:27,  3.49s/it]Epoch:  30%|███       | 3/10 [00:10<00:24,  3.46s/it]Epoch:  40%|████      | 4/10 [00:13<00:20,  3.44s/it]Epoch:  50%|█████     | 5/10 [00:17<00:17,  3.43s/it]Epoch:  60%|██████    | 6/10 [00:20<00:13,  3.44s/it]Epoch:  70%|███████   | 7/10 [00:24<00:10,  3.45s/it]Epoch:  80%|████████  | 8/10 [00:27<00:06,  3.46s/it]Epoch:  90%|█████████ | 9/10 [00:31<00:03,  3.47s/it]Epoch: 100%|██████████| 10/10 [00:34<00:00,  3.45s/it]Epoch: 100%|██████████| 10/10 [00:34<00:00,  3.45s/it]
-73828 - Wed, 31 Aug 2022 14:32:05 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 14:32:05 modeling.py[line:812] INFO Saving trained model at /data2/cdq/pet/log_fedpet_augmentation_10/g4/client1...
-73828 - Wed, 31 Aug 2022 14:32:06 modeling.py[line:816] INFO Saving complete
-73828 - Wed, 31 Aug 2022 14:32:06 modeling.py[line:829] INFO Starting evaluation...
-73828 - Wed, 31 Aug 2022 14:32:06 wrapper.py[line:438] INFO Writing example 0
-73828 - Wed, 31 Aug 2022 14:32:31 modeling.py[line:851] INFO --- RESULT (pattern_id=1, iteration=0) ---
-73828 - Wed, 31 Aug 2022 14:32:31 modeling.py[line:852] INFO {'acc': 0.375}
-73828 - Wed, 31 Aug 2022 14:32:31 modeling.py[line:853] INFO /data2/cdq/pet/log_fedpet_augmentation_10/g4/client1
-73828 - Wed, 31 Aug 2022 14:32:31 modeling.py[line:867] INFO === OVERALL RESULTS ===
-73828 - Wed, 31 Aug 2022 14:32:31 modeling.py[line:992] INFO acc-p1: 0.375 +- 0
-73828 - Wed, 31 Aug 2022 14:32:31 modeling.py[line:1000] INFO acc-all-p: 0.375 +- 0
-73828 - Wed, 31 Aug 2022 14:33:52 modeling.py[line:530] INFO Saving aggregated trained model at /data2/cdq/pet/log_fedpet_augmentation_10/g3/aggregated...
