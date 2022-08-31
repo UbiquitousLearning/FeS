@@ -23,10 +23,13 @@ def add_args(parser):
                         help='392700 for mnli')
     parser.add_argument('--beta', type=int, default=0,
                         help='Int  similarity of each client, the larger the beta the similar data for each client. 0 for off')
+    parser.add_argument("--client_num_in_total", type=int, default=10,
+                        help="How many clients owe labeled data?")
+                        
     return parser.parse_args()
 
-def set_hp(dataset, method, device, train_examples, test_examples, unlabeled_examples, beta):
-        hp = dataset + " " + method + " " + str(device) + " " + str(train_examples) + " " + str(test_examples) + " " + str(unlabeled_examples) + " " + str(beta)
+def set_hp(dataset, method, device, train_examples, test_examples, unlabeled_examples, beta, client_num_in_total):
+        hp = dataset + " " + method + " " + str(device) + " " + str(train_examples) + " " + str(test_examples) + " " + str(unlabeled_examples) + " " + str(beta) + " " + str(client_num_in_total)
 
         return hp
 
@@ -57,7 +60,7 @@ args = add_args(parser)
 # bash run_fed.sh yelp-full fedpet 1 40 -1 -1
 # bash run_fed.sh yelp-full fedclassifier 1 40 -1 -1
 
-args.hp = set_hp(args.dataset, args.method, args.device, args.train_examples, args.test_examples, args.unlabeled_examples, args.beta)
+args.hp = set_hp(args.dataset, args.method, args.device, args.train_examples, args.test_examples, args.unlabeled_examples, args.beta, args.client_num_in_total)
 
 logging.info("hp = %s" % args.hp)
 os.system('nohup bash run_fed.sh '

@@ -9,7 +9,7 @@ glue_data/*
 out/*
 venv/*
 
-# data/*
-# fig/*
+data/*
+fig/*
 log/*
 .vscode

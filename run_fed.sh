@@ -28,6 +28,7 @@ train_examples=$4 # done: 40; todo: 10, 100, 1000,
 test_examples=$5 # 8700 for mnli
 unlabeled_examples=$6 # 392700 for mnli
 beta=$7 # niid button, 0 for off.
+client_num_in_total=$8
 
 task_name=${dataset}
 model_type="bert"
@@ -35,8 +36,8 @@ model_name_or_path="bert-base-uncased"
 
 pattern_ids=1
 epochs=10
-iteration=1000
-clients=10
+iteration=100
+clients=${client_num_in_total}
 
 mkdir -p /${output_dir}/log/${dataset}/
 mkdir -p ./log/${dataset}
@@ -62,6 +63,7 @@ if [ $beta == 0 ]; then
         --pet_per_gpu_train_batch_size 4 \
         --sc_num_train_epochs ${epochs} \
         --sc_repetitions ${iteration} \
+        --client_num_in_total ${client_num_in_total} \
         --do_train \
         --do_eval \
         --vanilla > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
@@ -85,6 +87,7 @@ if [ $beta == 0 ]; then
         --pet_per_gpu_train_batch_size 4 \
         --sc_num_train_epochs ${epochs} \
         --sc_repetitions ${iteration} \
+        --client_num_in_total ${client_num_in_total} \
         --do_train \
         --do_eval \
         --vanilla > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
@@ -110,6 +113,7 @@ else
         --pet_per_gpu_train_batch_size 4 \
         --sc_num_train_epochs ${epochs} \
         --sc_repetitions ${iteration} \
+        --client_num_in_total ${client_num_in_total} \
         --beta ${beta} \
         --do_train \
         --do_eval \
@@ -134,6 +138,7 @@ else
         --pet_per_gpu_train_batch_size 4 \
         --sc_num_train_epochs ${epochs} \
         --sc_repetitions ${iteration} \
+        --client_num_in_total ${client_num_in_total} \
         --beta ${beta} \
         --do_train \
         --do_eval \

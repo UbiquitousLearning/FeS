@@ -105,6 +105,23 @@ def delete_cache(gen, output_dir):
     else:
         pass
          
+def seperate_clients(train_data, unlabeled_data, eval_data, beta, seed, client_num_in_total):
+    client_num_in_total = client_num_in_total
+    random.Random(seed).shuffle(train_data)
+    random.Random(seed).shuffle(unlabeled_data) 
+    random.Random(seed).shuffle(eval_data) # shuffle data for spliting
+
+    train_data = np.array(train_data)
+    unlabeled_data = np.array(unlabeled_data)
+    eval_data = np.array(eval_data)
+
+    if beta:
+        train_data_sperate = partition_class_samples_with_dirichlet_distribution(train_data=train_data, beta=beta, client_num=client_num_in_total, seed=seed)
+    else:
+        train_data_sperate = np.split(train_data,client_num_in_total)
+    unlabeled_data_seperate = np.split(unlabeled_data,client_num_in_total)
+    eval_data_seperate = np.split(eval_data,client_num_in_total)
+    return train_data_sperate, unlabeled_data_seperate, eval_data_seperate
 
 class PetConfig(ABC):
     """Abstract class for a PET configuration that can be saved to and loaded from a json file."""
@@ -375,7 +392,7 @@ def train_fedpet(ensemble_model_config: WrapperConfig, ensemble_train_config: Tr
                ensemble_repetitions: int = 3, final_repetitions: int = 1, reduction: str = 'wmean',
                train_data: List[InputExample] = None, unlabeled_data: List[InputExample] = None,
                eval_data: List[InputExample] = None, do_train: bool = True, do_eval: bool = True, seed: int = 42, aggregated: bool = True,
-               augmentation: bool = True, fed: bool = True, vanilla: bool = True, beta: int = None):
+               augmentation: bool = True, fed: bool = True, vanilla: bool = True, beta: int = None, client_num_in_total: int = None):
     """
     Train and evaluate a new fed PET model for a given task.
 
@@ -398,22 +415,10 @@ def train_fedpet(ensemble_model_config: WrapperConfig, ensemble_train_config: Tr
     :param do_eval: whether to perform evaluation
     :param seed: the random seed to use
     """
-    client_num_in_total = 10
-    num_clients = 5 # per round
-    random.Random(seed).shuffle(train_data)
-    random.Random(seed).shuffle(unlabeled_data) 
-    random.Random(seed).shuffle(eval_data) # shuffle data for spliting
 
-    train_data = np.array(train_data)
-    unlabeled_data = np.array(unlabeled_data)
-    eval_data = np.array(eval_data)
-
-    if beta:
-        train_data_sperate = partition_class_samples_with_dirichlet_distribution(train_data=train_data, beta=beta, client_num=client_num_in_total, seed=seed)
-    else:
-        train_data_sperate = np.split(train_data,client_num_in_total)
-    unlabeled_data_seperate = np.split(unlabeled_data,client_num_in_total)
-    eval_data_seperate = np.split(eval_data,client_num_in_total)
+    client_num_in_total = client_num_in_total
+    num_clients = min(10, client_num_in_total) 
+    train_data_sperate, unlabeled_data_seperate, eval_data_seperate = seperate_clients(train_data, unlabeled_data, eval_data, beta, seed, client_num_in_total)
 
     if vanilla:
         for gen in range(ipet_config.generations):
@@ -588,22 +593,22 @@ def train_fedpet(ensemble_model_config: WrapperConfig, ensemble_train_config: Tr
 
 
     # Step 3: Merge the annotations created by each individual model 这一步相当于generate_ipet_train_sets。但是是把所有的unlabeled data都打标签了。如果有多个pattern的话，在本地可以把多个pattern infer出来的logit聚合。现在我们只有一个patter，这一步无用。注：多个client infer出来的logit，由于隐私愿意，其原始数据和中间logits不可以传输。所以没法聚合。
-    logits_dir = os.path.join(output_dir, f'g{ipet_config.generations - 1}')
-    logits_file = os.path.join(logits_dir, 'unlabeled_logits.txt')
-    merge_logits(logits_dir, logits_file, reduction)
-    logits = LogitsList.load(logits_file).logits
-    assert len(logits) == len(unlabeled_data)
-    logging.info("Got {} logits from file {}".format(len(logits), logits_file))
-    for example, example_logits in zip(unlabeled_data, logits):
-        example.logits = example_logits
+    # logits_dir = os.path.join(output_dir, f'g{ipet_config.generations - 1}')
+    # logits_file = os.path.join(logits_dir, 'unlabeled_logits.txt')
+    # merge_logits(logits_dir, logits_file, reduction)
+    # logits = LogitsList.load(logits_file).logits
+    # assert len(logits) == len(unlabeled_data)
+    # logging.info("Got {} logits from file {}".format(len(logits), logits_file))
+    # for example, example_logits in zip(unlabeled_data, logits):
+    #     example.logits = example_logits
 
     # Step 4: Train the final sequence classifier model 这一步会变成，让每个client单独训练一个sc，然后聚合sc模型。和常规的fl一样了。
-    final_model_config.wrapper_type = SEQUENCE_CLASSIFIER_WRAPPER
-    final_train_config.use_logits = True
+    # final_model_config.wrapper_type = SEQUENCE_CLASSIFIER_WRAPPER
+    # final_train_config.use_logits = True
 
-    train_classifier(final_model_config, final_train_config, final_eval_config, os.path.join(output_dir, 'final'),
-                     repetitions=final_repetitions, train_data=train_data, unlabeled_data=unlabeled_data,
-                     eval_data=eval_data, do_train=do_train, do_eval=do_eval)
+    # train_classifier(final_model_config, final_train_config, final_eval_config, os.path.join(output_dir, 'final'),
+    #                  repetitions=final_repetitions, train_data=train_data, unlabeled_data=unlabeled_data,
+    #                  eval_data=eval_data, do_train=do_train, do_eval=do_eval)
 
 def train_fedclassifier(model_config: WrapperConfig, train_config: TrainConfig, eval_config: EvalConfig, output_dir: str,
                      repetitions: int = 3, train_data: List[InputExample] = None,
@@ -626,22 +631,10 @@ def train_fedclassifier(model_config: WrapperConfig, train_config: TrainConfig, 
     """
 
     train_config.use_logits=False # !!!!!!!!!!!! to be the same with sequence classifer
-    client_num_in_total = 10
-    num_clients = 5 # per round
-    random.Random(seed).shuffle(train_data)
-    random.Random(seed).shuffle(unlabeled_data) 
-    random.Random(seed).shuffle(eval_data) # shuffle data for spliting
-
-    train_data = np.array(train_data)
-    unlabeled_data = np.array(unlabeled_data)
-    eval_data = np.array(eval_data)
-
-    if beta:
-        train_data_sperate = partition_class_samples_with_dirichlet_distribution(train_data=train_data, beta=beta, client_num=client_num_in_total, seed=seed)
-    else:
-        train_data_sperate = np.split(train_data,client_num_in_total)
-    unlabeled_data_seperate = np.split(unlabeled_data,client_num_in_total)
-    eval_data_seperate = np.split(eval_data,client_num_in_total)
+    client_num_in_total = client_num_in_total
+    num_clients = min(10, client_num_in_total) 
+    
+    train_data_sperate, unlabeled_data_seperate, eval_data_seperate = seperate_clients(train_data, unlabeled_data, eval_data, beta, seed, client_num_in_total)
 
     for gen in range(repetitions):
         delete_cache(gen, output_dir)

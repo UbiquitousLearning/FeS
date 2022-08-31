@@ -228,6 +228,8 @@ def main():
                         help="Whether to perform fed training or just local training")
     parser.add_argument("--beta", type=int, default=None,
                         help="Int  similarity of each client, the larger the beta the similar data for each client")
+    parser.add_argument("--client_num_in_total", type=int, default=10,
+                        help="How many clients owe labeled data?")
 
     args = parser.parse_args()
     logging.info("Parameters: {}".format(args))
@@ -296,12 +298,12 @@ def main():
                        pattern_ids=args.pattern_ids, output_dir=args.output_dir,
                        ensemble_repetitions=args.pet_repetitions, final_repetitions=args.sc_repetitions,
                        reduction=args.reduction, train_data=train_data, unlabeled_data=unlabeled_data,
-                       eval_data=eval_data, do_train=args.do_train, do_eval=args.do_eval, seed=args.seed, aggregated=args.aggregated, vanilla=args.vanilla, fed=args.fed, augmentation=args.augmentation, beta=args.beta)
+                       eval_data=eval_data, do_train=args.do_train, do_eval=args.do_eval, seed=args.seed, aggregated=args.aggregated, vanilla=args.vanilla, fed=args.fed, augmentation=args.augmentation, beta=args.beta, client_num_in_total=args.client_num_in_total)
 
     elif args.method == 'fedclassifier':
         pet.train_fedclassifier(sc_model_cfg, sc_train_cfg, sc_eval_cfg, output_dir=args.output_dir,
                              repetitions=args.sc_repetitions, train_data=train_data, unlabeled_data=unlabeled_data,
-                             eval_data=eval_data, do_train=args.do_train, do_eval=args.do_eval, seed=args.seed, beta=args.beta)
+                             eval_data=eval_data, do_train=args.do_train, do_eval=args.do_eval, seed=args.seed, beta=args.beta, client_num_in_total=args.client_num_in_total)
 
     else:
         raise ValueError(f"Training method '{args.method}' not implemented")
