@@ -33,7 +33,7 @@ from transformers import InputExample, AdamW, get_linear_schedule_with_warmup, P
 from transformers import __version__ as transformers_version
 from transformers.data.metrics import simple_accuracy
 
-import log
+import logging
 from pet import preprocessor
 from pet.tasks import TASK_HELPERS
 from pet.utils import InputFeatures, DictDataset, distillation_loss
@@ -41,7 +41,12 @@ from pet.utils import InputFeatures, DictDataset, distillation_loss
 import transformers
 transformers.logging.set_verbosity_error()
 
-logger = log.get_logger('root')
+process_id = os.getpid()
+logging.getLogger().setLevel(logging.INFO)
+logging.basicConfig(level=logging.INFO,
+                        format=str(
+                            process_id) + ' - %(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',
+                        datefmt='%a, %d %b %Y %H:%M:%S')
 
 CONFIG_NAME = 'wrapper_config.json'
 SEQUENCE_CLASSIFIER_WRAPPER = "sequence_classifier"
@@ -231,7 +236,7 @@ class TransformerModelWrapper:
         """
 
         train_batch_size = per_gpu_train_batch_size * max(1, n_gpu)
-        logger.info("CDQ: n_gpu: {}, per_gpu_train_batch_size: {}, train_batch_size: {}".format(n_gpu, per_gpu_train_batch_size, train_batch_size))
+        logging.info("CDQ: n_gpu: {}, per_gpu_train_batch_size: {}, train_batch_size: {}".format(n_gpu, per_gpu_train_batch_size, train_batch_size))
         train_dataset = self._generate_dataset(task_train_data)
         train_sampler = RandomSampler(train_dataset)
         train_dataloader = DataLoader(train_dataset, sampler=train_sampler, batch_size=train_batch_size)
@@ -291,7 +296,7 @@ class TransformerModelWrapper:
                         try:
                             unlabeled_batch = unlabeled_iter.__next__()
                         except StopIteration:
-                            logger.info("Resetting unlabeled dataset")
+                            logging.info("Resetting unlabeled dataset")
                             unlabeled_iter = unlabeled_dataloader.__iter__()
 
                     lm_input_ids = unlabeled_batch['input_ids']
@@ -430,14 +435,14 @@ class TransformerModelWrapper:
         features = []
         for (ex_index, example) in enumerate(examples):
             if ex_index % 10000 == 0:
-                logger.info("Writing example {}".format(ex_index))
+                logging.info("Writing example {}".format(ex_index))
             input_features = self.preprocessor.get_input_features(example, labelled=labelled, priming=priming)
             if self.task_helper:
                 self.task_helper.add_special_input_features(example, input_features)
             features.append(input_features)
             if ex_index < 0: # default num is 5; change it to 0 to avoid verbose output
-                logger.info(f'--- Example {ex_index} ---')
-                logger.info(input_features.pretty_print(self.tokenizer))
+                logging.info(f'--- Example {ex_index} ---')
+                logging.info(input_features.pretty_print(self.tokenizer))
         return features
 
     def _mask_tokens(self, input_ids):

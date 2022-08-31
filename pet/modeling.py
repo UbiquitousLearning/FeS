@@ -41,7 +41,7 @@ logging.basicConfig(level=logging.INFO,
                             process_id) + ' - %(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',
                         datefmt='%a, %d %b %Y %H:%M:%S')
 
-debug = False
+debug = True
 # vanilla = False # whether fed vanilla is on, fed vanilla means no augmentation, but is fed, means using ft instead of pl to train local model, and aggregate the model via fedavg
 # aggregated = True # 是否将10个client训练出来的模型fedavg一下，只infer一次;后面的两个函数里也要改一下
 # augmentation = False # 如果不开augmentation，那每个client只能依靠自己的数据来进行训练，而且也不会用到unlabeled data (origin), fed is off
@@ -104,7 +104,7 @@ def delete_cache(gen, output_dir):
         os.system('rm -rf {delete_model_path}'.format(delete_model_path=delete_model_path))
     else:
         pass
-         
+
 def seperate_clients(train_data, unlabeled_data, eval_data, beta, seed, client_num_in_total):
     client_num_in_total = client_num_in_total
     random.Random(seed).shuffle(train_data)
@@ -122,6 +122,32 @@ def seperate_clients(train_data, unlabeled_data, eval_data, beta, seed, client_n
     unlabeled_data_seperate = np.split(unlabeled_data,client_num_in_total)
     eval_data_seperate = np.split(eval_data,client_num_in_total)
     return train_data_sperate, unlabeled_data_seperate, eval_data_seperate
+def eval_softlabel(ipet_data, train_data, replace=False):
+    if replace:
+            logging.info("Correct button is on.")
+
+    data_num = len(ipet_data)
+    correct = 0
+    for data in ipet_data:
+        uid = data.guid
+        
+        true_label = None
+        for labeled_data in train_data:
+            if labeled_data.guid == uid:
+                true_label = labeled_data.label
+        if true_label == data.label:
+            logging.info("Data {} is tagged correctly as {}.".format(uid, data.label))
+            correct = correct + 1
+        else:
+            logging.info("Data {} is tagged wrong. Current label is {}, true label is ".format(uid, data.label ,true_label))
+        
+        if replace:
+            data.label = true_label
+    
+    correct_ratio = correct / data_num
+    logging.info("Inference correct ratio is {}".format(correct_ratio))
+
+    return ipet_data
 
 class PetConfig(ABC):
     """Abstract class for a PET configuration that can be saved to and loaded from a json file."""
@@ -420,6 +446,12 @@ def train_fedpet(ensemble_model_config: WrapperConfig, ensemble_train_config: Tr
     num_clients = min(10, client_num_in_total) 
     train_data_sperate, unlabeled_data_seperate, eval_data_seperate = seperate_clients(train_data, unlabeled_data, eval_data, beta, seed, client_num_in_total)
 
+    # Calculate the samples numbers of all clients involved in training
+    sample_num_list = np.array([])
+    for client in range(client_num_in_total):
+        sample_num_list = np.append(sample_num_list, len(train_data_sperate[client]))
+    logging.info("All clients: sample_num_list is {}".format(sample_num_list))
+
     if vanilla:
         for gen in range(ipet_config.generations):
             delete_cache(gen, output_dir)
@@ -525,7 +557,8 @@ def train_fedpet(ensemble_model_config: WrapperConfig, ensemble_train_config: Tr
                                 
 
                                 original_data_size = len(train_data) if train_data else 10 / ipet_config.scale_factor
-                                num_new_examples = int(original_data_size * (ipet_config.scale_factor * (gen + 1)) - len(train_data)) # 由原先的**级别增长，降至*级别增长
+                                # num_new_examples = 10 - len(train_data)
+                                num_new_examples = int(original_data_size * (ipet_config.scale_factor ** (gen + 1)) - len(train_data)) # 由原先的**级别增长，降至*级别增长
                                 generate_fedipet_train_sets(train_data=train_data, unlabeled_data=unlabeled_data,
                                                     labels=ensemble_model_config.label_list, logits_dir=os.path.join(output_dir, f'g{gen-1}'),
                                                     output_dir=os.path.join(output_dir, f'g{gen}', f'client{client}', 'this-gen-train-data'), reduction=reduction,
@@ -546,7 +579,7 @@ def train_fedpet(ensemble_model_config: WrapperConfig, ensemble_train_config: Tr
                                     save_logits(os.path.join(pattern_iter_input_dir, 'logits.txt'), logits)
 
                                 original_data_size = len(train_data) if train_data else 10 / ipet_config.scale_factor
-                                num_new_examples = int(original_data_size * (ipet_config.scale_factor * (gen + 1)) - len(train_data)) # 由原先的**级别增长，降至*级别增长
+                                num_new_examples = int(original_data_size * (ipet_config.scale_factor ** (gen + 1)) - len(train_data)) # 由原先的**级别增长，降至*级别增长
                                 generate_fedipet_train_sets(train_data=train_data, unlabeled_data=unlabeled_data,
                                                     labels=ensemble_model_config.label_list, logits_dir=os.path.join(output_dir, f'g{gen-1}'),
                                                     output_dir=os.path.join(output_dir, f'g{gen}', f'client{client}', 'this-gen-train-data'), reduction=reduction,
@@ -567,7 +600,7 @@ def train_fedpet(ensemble_model_config: WrapperConfig, ensemble_train_config: Tr
                             save_logits(os.path.join(output_dir, f'g{gen-1}', f'client{0}', 'logits.txt'), logits)
 
                             original_data_size = len(train_data) if train_data else 10 / ipet_config.scale_factor
-                            num_new_examples = int(original_data_size * (ipet_config.scale_factor * (gen + 1)) - len(train_data)) # 由原先的**级别增长，降至*级别增长
+                            num_new_examples = int(original_data_size * (ipet_config.scale_factor ** (gen + 1)) - len(train_data)) # 由原先的**级别增长，降至*级别增长
                             generate_fedipet_train_sets(train_data=train_data, unlabeled_data=unlabeled_data,
                                                 labels=ensemble_model_config.label_list, logits_dir=os.path.join(output_dir, f'g{gen-1}'),
                                                 output_dir=os.path.join(output_dir, f'g{gen}', f'client{client}', 'this-gen-train-data'), reduction=reduction,
@@ -753,6 +786,9 @@ def train_pet_ensemble(model_config: WrapperConfig, train_config: TrainConfig, e
                     ipet_train_data = InputExample.load_examples(p)
                     for example in ipet_train_data:
                         example.logits = None
+                    
+                    logging.info("Evaluating soft label~")
+                    ipet_train_data = eval_softlabel(ipet_train_data, unlabeled_data, replace=False)
                 else:
                     ipet_train_data = None
                 
@@ -772,9 +808,9 @@ def train_pet_ensemble(model_config: WrapperConfig, train_config: TrainConfig, e
                 eval_config.save(os.path.join(pattern_iter_output_dir, 'eval_config.json'))
                 logging.info("Saving complete")
 
-                if save_unlabeled_logits:
-                    logits = evaluate(wrapper, unlabeled_data, eval_config)['logits']
-                    save_logits(os.path.join(pattern_iter_output_dir, 'logits.txt'), logits)
+                # if save_unlabeled_logits:
+                #     logits = evaluate(wrapper, unlabeled_data, eval_config)['logits']
+                #     save_logits(os.path.join(pattern_iter_output_dir, 'logits.txt'), logits)
 
                 if not do_eval:
                     wrapper.model = None

@@ -18,7 +18,7 @@
 
 
 
-output_dir="/data/cdq/pet_data"
+output_dir="/data2/cdq/pet_data"
 data_dir="${output_dir}/data"
 
 dataset=$1 # agnews, mnli, yahoo, yelp-full
@@ -66,7 +66,8 @@ if [ $beta == 0 ]; then
         --client_num_in_total ${client_num_in_total} \
         --do_train \
         --do_eval \
-        --vanilla > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+        --vanilla \
+        --no_cuda > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
     else
         echo "fedcls start."
         CUDA_VISIBLE_DEVICES=$device python3 cli.py \
@@ -90,7 +91,8 @@ if [ $beta == 0 ]; then
         --client_num_in_total ${client_num_in_total} \
         --do_train \
         --do_eval \
-        --vanilla > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+        --vanilla \
+        --no_cuda > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
     fi
 else
     if [ $method == "fedpet" ]; then
@@ -117,7 +119,8 @@ else
         --beta ${beta} \
         --do_train \
         --do_eval \
-        --vanilla > log/${dataset}/${method}_${train_examples}_${clients}_${beta}.log 2>&1
+        --vanilla \
+        --no_cuda > log/${dataset}/${method}_${train_examples}_${clients}_${beta}.log 2>&1
     else
         echo "fedcls start."
         CUDA_VISIBLE_DEVICES=$device python3 cli.py \
@@ -142,7 +145,8 @@ else
         --beta ${beta} \
         --do_train \
         --do_eval \
-        --vanilla > log/${dataset}/${method}_${train_examples}_${clients}_${beta}.log 2>&1
+        --vanilla \
+        --no_cuda > log/${dataset}/${method}_${train_examples}_${clients}_${beta}.log 2>&1
     fi
 fi
 

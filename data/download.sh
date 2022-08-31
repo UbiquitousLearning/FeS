@@ -1,4 +1,4 @@
-data_dir=/data/cdq/pet_data/data
+data_dir=/data2/cdq/pet_data/data
 
 cd ${data_dir}
 
