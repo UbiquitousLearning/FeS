@@ -34,7 +34,7 @@ logging.basicConfig(level=logging.INFO,
                         datefmt='%a, %d %b %Y %H:%M:%S')
 
 
-def _shuffle_and_restrict(examples: List[InputExample], num_examples: int, seed: int = 42) -> List[InputExample]:
+def _shuffle_and_restrict(examples: List[InputExample], num_examples: int, seed: int = 42, train: bool = False, task: str = None) -> List[InputExample]:
     """
     Shuffle a list of examples and restrict it to a given maximum size.
 
@@ -43,9 +43,16 @@ def _shuffle_and_restrict(examples: List[InputExample], num_examples: int, seed:
     :param seed: the random seed for shuffling
     :return: the first ``num_examples`` elements of the shuffled list
     """
+    
     if 0 < num_examples < len(examples):
         random.Random(seed).shuffle(examples)
         examples = examples[:num_examples]
+    elif num_examples == -1:
+        random.Random(seed).shuffle(examples)
+        examples = examples
+    else:
+        logging.info("fatal error!!!!!!!! shuffle fails")
+        
     return examples
 
 

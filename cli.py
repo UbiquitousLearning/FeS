@@ -28,12 +28,95 @@ from pet.wrapper import WRAPPER_TYPES, MODEL_CLASSES, SEQUENCE_CLASSIFIER_WRAPPE
 import pet
 import logging
 
+import numpy as np
+import math
+
 process_id = os.getpid()
 logging.getLogger().setLevel(logging.INFO)
 logging.basicConfig(level=logging.INFO,
                         format=str(
                             process_id) + ' - %(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',
                         datefmt='%a, %d %b %Y %H:%M:%S')
+
+def partition_class_samples_with_dirichlet_distribution(
+        train_data, beta, client_num,seed):
+    """
+    params
+    ------------------------------------
+    train_data : labeled train dataset
+    beta : int  similarity of each client, the larger the beta the similar data for each client
+    client_num : int number of clients
+    seed : random seed, from initial args; default is 42
+    ------------------------------------
+
+    return
+    ------------------------------------
+    train_data_dirichlet : labeled train dataset with dirichlet distribution (not uniformed)
+    ------------------------------------
+    """
+    np.random.seed(seed)
+    # train dataset should be shuffled before
+    N = len(train_data)
+
+    # using dirichlet distribution to determine the unbalanced proportion for each client (client_num in total)
+    # e.g., when client_num = 4, proportions = [0.29543505 0.38414498 0.31998781 0.00043216], sum(proportions) = 1
+    if beta:
+        proportions = np.random.dirichlet(np.repeat(beta, client_num))
+    else: # unifrom split
+        proportions = np.array([1 / client_num] * client_num)
+
+    train_data_dirichlet_list = np.array([])
+
+    N_available = N - client_num # ensure that each client has 1 samples at least
+
+    for i in range(client_num - 1):
+        train_data_dirichlet_list = np.append(train_data_dirichlet_list, int(N_available * proportions[i]))  # round down by inner function 'int'
+    N_avaiable_left = N_available - np.sum(train_data_dirichlet_list)
+    train_data_dirichlet_list = np.append(train_data_dirichlet_list, N_avaiable_left)
+
+    train_data_dirichlet_list = train_data_dirichlet_list + np.array([1]*client_num)# add 1 sample to each client
+    train_data_dirichlet_list_slice = []
+    idx = 0
+    for num in train_data_dirichlet_list:
+        idx = idx + int(num)
+        train_data_dirichlet_list_slice.append(idx)
+
+    # Debug info
+    # logging.info("train_data: {}".format(train_data))
+    # logging.info("train_data_dirichlet_list: {}".format(train_data_dirichlet_list))
+    # logging.info("train_data_dirichlet_list_slice: {}".format(train_data_dirichlet_list_slice))
+    
+    # generate the new train_data for each client
+    train_data_dirichlet = np.split(train_data, train_data_dirichlet_list_slice)
+
+    return train_data_dirichlet
+
+def seperate_clients(train_and_unlabeled_data_sperate, eval_data, beta, seed, client_num_in_total, all_client_num_in_total, train_examples):
+    train_and_unlabeled_data_sperate = partition_class_samples_with_dirichlet_distribution(train_data=train_and_unlabeled_data_sperate, beta=beta, client_num=all_client_num_in_total, seed=seed)
+
+    eval_data_seperate = partition_class_samples_with_dirichlet_distribution(train_data=eval_data, beta=beta, client_num=all_client_num_in_total, seed=seed)
+    
+    train_data_sperate = []
+    unlabeled_data_seperate = []
+    total_len_labeled_data = 0
+    for i in range(client_num_in_total):
+        total_len_labeled_data = total_len_labeled_data + len(train_and_unlabeled_data_sperate[i])
+
+    len_labeled_data_list = [math.ceil(len(data) / total_len_labeled_data * train_examples) for data in train_and_unlabeled_data_sperate[:client_num_in_total]]
+
+    logging.info("len_labeled_data_list{}".format(len_labeled_data_list))
+
+    for i in range(client_num_in_total):
+        train_data_sperate.append(train_and_unlabeled_data_sperate[i][:len_labeled_data_list[i]])
+        unlabeled_data_seperate.append(train_and_unlabeled_data_sperate[i][len_labeled_data_list[i]:])
+    
+    for i in range(all_client_num_in_total - client_num_in_total):
+        unlabeled_data_seperate.append(train_and_unlabeled_data_sperate[i + client_num_in_total])
+    
+    train_data_sperate = np.array(train_data_sperate)
+    unlabeled_data_seperate = np.array(unlabeled_data_seperate)
+
+    return train_data_sperate, unlabeled_data_seperate, eval_data_seperate
 
 def load_pet_configs(args) -> Tuple[WrapperConfig, pet.TrainConfig, pet.EvalConfig]:
     """
@@ -230,6 +313,8 @@ def main():
                         help="Int  similarity of each client, the larger the beta the similar data for each client")
     parser.add_argument("--client_num_in_total", type=int, default=10,
                         help="How many clients owe labeled data?")
+    parser.add_argument("--all_client_num_in_total", type=int, default=1000,
+                        help="How many clients are sperated")
 
     args = parser.parse_args()
     logging.info("Parameters: {}".format(args))
@@ -258,12 +343,17 @@ def main():
 
     eval_set = TEST_SET if args.eval_set == 'test' else DEV_SET
 
-    train_data = load_examples(
-        args.task_name, args.data_dir, TRAIN_SET, num_examples=train_ex, num_examples_per_label=train_ex_per_label)
+    # train_data = load_examples(
+    #     args.task_name, args.data_dir, TRAIN_SET, num_examples=train_ex, num_examples_per_label=train_ex_per_label)
     eval_data = load_examples(
         args.task_name, args.data_dir, eval_set, num_examples=test_ex, num_examples_per_label=test_ex_per_label)
-    unlabeled_data = load_examples(
-        args.task_name, args.data_dir, UNLABELED_SET, num_examples=args.unlabeled_examples)
+    # unlabeled_data = load_examples(
+    #     args.task_name, args.data_dir, UNLABELED_SET, num_examples=args.unlabeled_examples)
+
+    # todo: unlabeled data is seperated in some datasets
+    train_and_unlabeled_data = load_examples(args.task_name, args.data_dir, TRAIN_SET, num_examples=args.unlabeled_examples) 
+
+    train_data, unlabeled_data, eval_data = seperate_clients(train_and_unlabeled_data, eval_data, args.beta, args.seed, args.client_num_in_total, args.all_client_num_in_total, args.train_examples)
 
     args.metrics = METRICS.get(args.task_name, DEFAULT_METRICS)
 

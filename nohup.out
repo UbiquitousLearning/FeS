@@ -123,3 +123,740 @@ run_fed.sh: line 147: 13408 Killed                  CUDA_VISIBLE_DEVICES=$device
 run_fed.sh: line 147: 34901 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
 run_fed.sh: line 147: 34907 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
 run_fed.sh: line 147: 34908 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+16223 2022-08-31,21:32:12.347 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 80 -1 -1 0 10
+16231 2022-08-31,21:32:12.348 - {sweep.py (65)} - <module>(): hp = agnews fedpet 3 320 -1 -1 0 10
+16221 2022-08-31,21:32:12.351 - {sweep.py (65)} - <module>(): hp = agnews fedpet 3 20 -1 -1 0 10
+16220 2022-08-31,21:32:12.351 - {sweep.py (65)} - <module>(): hp = agnews fedpet 3 10 -1 -1 0 10
+16230 2022-08-31,21:32:12.352 - {sweep.py (65)} - <module>(): hp = agnews fedpet 4 160 -1 -1 0 10
+16222 2022-08-31,21:32:12.354 - {sweep.py (65)} - <module>(): hp = agnews fedpet 3 40 -1 -1 0 10
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+run_fed.sh: line 147: 16283 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 147: 16267 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 147: 16256 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 147: 16266 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 147: 16255 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 147: 16269 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+43624 2022-08-31,21:43:27.718 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 160 -1 -1 0 10
+43620 2022-08-31,21:43:27.719 - {sweep.py (65)} - <module>(): hp = agnews fedpet 3 20 -1 -1 0 10
+43640 2022-08-31,21:43:27.719 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 20 -1 -1 0 20
+43644 2022-08-31,21:43:27.719 - {sweep.py (65)} - <module>(): hp = agnews fedpet 5 320 -1 -1 0 20
+43642 2022-08-31,21:43:27.719 - {sweep.py (65)} - <module>(): hp = agnews fedpet 4 80 -1 -1 0 20
+43622 2022-08-31,21:43:27.719 - {sweep.py (65)} - <module>(): hp = agnews fedpet 3 80 -1 -1 0 10
+43621 2022-08-31,21:43:27.719 - {sweep.py (65)} - <module>(): hp = agnews fedpet 3 40 -1 -1 0 10
+43645 2022-08-31,21:43:27.719 - {sweep.py (65)} - <module>(): hp = agnews fedpet 5 640 -1 -1 0 20
+43641 2022-08-31,21:43:27.719 - {sweep.py (65)} - <module>(): hp = agnews fedpet 4 40 -1 -1 0 20
+43643 2022-08-31,21:43:27.719 - {sweep.py (65)} - <module>(): hp = agnews fedpet 7 160 -1 -1 0 20
+43619 2022-08-31,21:43:27.721 - {sweep.py (65)} - <module>(): hp = agnews fedpet 3 10 -1 -1 0 10
+43625 2022-08-31,21:43:27.721 - {sweep.py (65)} - <module>(): hp = agnews fedpet 6 320 -1 -1 0 10
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+run_fed.sh: line 147: 43765 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 147: 43763 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 147: 43758 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 147: 43762 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 147: 43754 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 147: 43766 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 147: 43770 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 147: 43755 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 147: 43760 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 147: 43740 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 147: 43761 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 147: 43769 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+18590 2022-09-01,10:22:27.889 - {sweep.py (65)} - <module>(): hp = agnews fedpet 3 640 -1 -1 0 40
+18600 2022-09-01,10:22:27.890 - {sweep.py (65)} - <module>(): hp = agnews fedpet 4 320 -1 -1 0 80
+18584 2022-09-01,10:22:27.890 - {sweep.py (65)} - <module>(): hp = agnews fedpet 0 40 -1 -1 0 40
+18601 2022-09-01,10:22:27.890 - {sweep.py (65)} - <module>(): hp = agnews fedpet 4 640 -1 -1 0 80
+18586 2022-09-01,10:22:27.890 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 80 -1 -1 0 40
+18606 2022-09-01,10:22:27.890 - {sweep.py (65)} - <module>(): hp = agnews fedpet 6 640 -1 -1 0 160
+18592 2022-09-01,10:22:27.894 - {sweep.py (65)} - <module>(): hp = agnews fedpet 3 80 -1 -1 0 80
+18587 2022-09-01,10:22:27.894 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 160 -1 -1 0 40
+18607 2022-09-01,10:22:27.895 - {sweep.py (65)} - <module>(): hp = agnews fedpet 7 1280 -1 -1 0 160
+18591 2022-09-01,10:22:27.895 - {sweep.py (65)} - <module>(): hp = agnews fedpet 3 1280 -1 -1 0 40
+18604 2022-09-01,10:22:27.896 - {sweep.py (65)} - <module>(): hp = agnews fedpet 5 160 -1 -1 0 160
+18602 2022-09-01,10:22:27.896 - {sweep.py (65)} - <module>(): hp = agnews fedpet 4 1280 -1 -1 0 80
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+18603 2022-09-01,10:22:27.903 - {sweep.py (65)} - <module>(): hp = agnews fedpet 5 2560 -1 -1 0 80
+fedpet start.
+18608 2022-09-01,10:22:27.903 - {sweep.py (65)} - <module>(): hp = agnews fedpet 7 2560 -1 -1 0 160
+fedpet start.
+fedpet start.
+18588 2022-09-01,10:22:27.904 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 320 -1 -1 0 40
+fedpet start.
+fedpet start.
+18599 2022-09-01,10:22:27.910 - {sweep.py (65)} - <module>(): hp = agnews fedpet 3 160 -1 -1 0 80
+fedpet start.
+fedpet start.
+fedpet start.
+18605 2022-09-01,10:22:27.913 - {sweep.py (65)} - <module>(): hp = agnews fedpet 6 320 -1 -1 0 160
+fedpet start.
+fedpet start.
+36305 2022-09-01,11:16:10.004 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 5120 -1 -1 0 160
+fedpet start.
+38625 2022-09-01,11:16:48.054 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 5120 -1 -1 0 160
+fedpet start.
+run_fed.sh: line 147: 18691 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 147: 18706 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 147: 18753 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 147: 18697 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 147: 18707 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 147: 18722 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 147: 18742 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 147: 18774 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 147: 18754 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 147: 18725 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 147: 18728 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 147: 18689 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+24332 2022-09-01,11:30:13.650 - {sweep.py (65)} - <module>(): hp = agnews fedpet 3 640 -1 -1 0 80
+24334 2022-09-01,11:30:13.652 - {sweep.py (65)} - <module>(): hp = agnews fedpet 4 2560 -1 -1 0 80
+24336 2022-09-01,11:30:13.653 - {sweep.py (65)} - <module>(): hp = agnews fedpet 5 320 -1 -1 0 160
+24325 2022-09-01,11:30:13.653 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 160 -1 -1 0 40
+24324 2022-09-01,11:30:13.655 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 80 -1 -1 0 40
+24338 2022-09-01,11:30:13.655 - {sweep.py (65)} - <module>(): hp = agnews fedpet 6 1280 -1 -1 0 160
+24341 2022-09-01,11:30:13.655 - {sweep.py (65)} - <module>(): hp = agnews fedpet 7 5120 -1 -1 0 160
+24326 2022-09-01,11:30:13.656 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 320 -1 -1 0 40
+24329 2022-09-01,11:30:13.656 - {sweep.py (65)} - <module>(): hp = agnews fedpet 3 80 -1 -1 0 80
+24337 2022-09-01,11:30:13.656 - {sweep.py (65)} - <module>(): hp = agnews fedpet 6 640 -1 -1 0 160
+24328 2022-09-01,11:30:13.657 - {sweep.py (65)} - <module>(): hp = agnews fedpet 3 1280 -1 -1 0 40
+24323 2022-09-01,11:30:13.658 - {sweep.py (65)} - <module>(): hp = agnews fedpet 0 40 -1 -1 0 40
+24331 2022-09-01,11:30:13.659 - {sweep.py (65)} - <module>(): hp = agnews fedpet 3 320 -1 -1 0 80
+fedpet start.
+24330 2022-09-01,11:30:13.659 - {sweep.py (65)} - <module>(): hp = agnews fedpet 3 160 -1 -1 0 80
+fedpet start.
+fedpet start.
+24327 2022-09-01,11:30:13.662 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 640 -1 -1 0 40
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+24335 2022-09-01,11:30:13.665 - {sweep.py (65)} - <module>(): hp = agnews fedpet 5 160 -1 -1 0 160
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+24333 2022-09-01,11:30:13.668 - {sweep.py (65)} - <module>(): hp = agnews fedpet 4 1280 -1 -1 0 80
+fedpet start.
+fedpet start.
+fedpet start.
+24340 2022-09-01,11:30:13.681 - {sweep.py (65)} - <module>(): hp = agnews fedpet 7 2560 -1 -1 0 160
+fedpet start.
+run_fed.sh: line 147: 24496 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 147: 24468 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 147: 24437 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 147: 24524 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 147: 24450 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 147: 24447 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+33732 2022-09-01,12:06:28.726 - {sweep.py (65)} - <module>(): hp = agnews fedpet 3 640 -1 -1 0 80
+fedpet start.
+40198 2022-09-01,12:08:05.564 - {sweep.py (65)} - <module>(): hp = agnews fedpet 3 80 -1 -1 0 80
+fedpet start.
+45297 2022-09-01,12:09:26.616 - {sweep.py (65)} - <module>(): hp = agnews fedpet 5 1280 -1 -1 0 40
+fedpet start.
+run_fed.sh: line 147: 24477 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 147: 24473 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 147: 24474 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 147: 24483 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 147: 45305 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 147: 24514 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 147: 40206 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 147: 24469 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 147: 24414 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 147: 33746 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 147: 24441 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+19737 2022-09-01,15:51:39.569 - {sweep.py (65)} - <module>(): hp = agnews fedpet 3 640 -1 -1 0 320
+19734 2022-09-01,15:51:39.570 - {sweep.py (65)} - <module>(): hp = agnews fedpet 5 5120 -1 -1 0 160
+19748 2022-09-01,15:51:39.573 - {sweep.py (65)} - <module>(): hp = agnews fedpet 4 10240 -1 -1 0 320
+19738 2022-09-01,15:51:39.573 - {sweep.py (65)} - <module>(): hp = agnews fedpet 3 1280 -1 -1 0 320
+19736 2022-09-01,15:51:39.573 - {sweep.py (65)} - <module>(): hp = agnews fedpet 3 320 -1 -1 0 320
+19717 2022-09-01,15:51:39.573 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 320 -1 -1 0 160
+19718 2022-09-01,15:51:39.573 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 640 -1 -1 0 160
+19739 2022-09-01,15:51:39.574 - {sweep.py (65)} - <module>(): hp = agnews fedpet 6 2560 -1 -1 0 320
+19720 2022-09-01,15:51:39.574 - {sweep.py (65)} - <module>(): hp = agnews fedpet 7 2560 -1 -1 0 160
+19719 2022-09-01,15:51:39.574 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 1280 -1 -1 0 160
+19746 2022-09-01,15:51:39.575 - {sweep.py (65)} - <module>(): hp = agnews fedpet 4 5120 -1 -1 0 320
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+19716 2022-09-01,15:51:39.588 - {sweep.py (65)} - <module>(): hp = agnews fedpet 0 160 -1 -1 0 160
+fedpet start.
+38512 2022-09-01,18:05:03.702 - {sweep.py (65)} - <module>(): hp = agnews fedpet 7 320 -1 -1 0 320
+38516 2022-09-01,18:05:03.702 - {sweep.py (65)} - <module>(): hp = agnews fedpet 7 640 -1 -1 0 320
+fedpet start.
+fedpet start.
+39444 2022-09-01,18:05:09.640 - {sweep.py (65)} - <module>(): hp = agnews fedpet 7 1280 -1 -1 0 320
+fedpet start.
+run_fed.sh: line 147: 19833 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 147: 19811 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 147: 38528 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 147: 19832 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 147: 19828 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 147: 19824 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 147: 19826 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 147: 38525 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 147: 19831 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --vanilla > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+49636 2022-09-01,20:11:31.007 - {sweep.py (65)} - <module>(): hp = yelp-full fedpet 1 80 -1 -1 0 10
+49624 2022-09-01,20:11:31.008 - {sweep.py (65)} - <module>(): hp = yelp-full fedpet 1 20 -1 -1 0 10
+49649 2022-09-01,20:11:31.009 - {sweep.py (65)} - <module>(): hp = yelp-full fedpet 5 80 -1 -1 0 20
+49625 2022-09-01,20:11:31.009 - {sweep.py (65)} - <module>(): hp = yelp-full fedpet 1 40 -1 -1 0 10
+49642 2022-09-01,20:11:31.009 - {sweep.py (65)} - <module>(): hp = yelp-full fedpet 3 20 -1 -1 0 20
+49639 2022-09-01,20:11:31.015 - {sweep.py (65)} - <module>(): hp = yelp-full fedpet 2 160 -1 -1 0 10
+49652 2022-09-01,20:11:31.015 - {sweep.py (65)} - <module>(): hp = yelp-full fedpet 6 160 -1 -1 0 20
+49646 2022-09-01,20:11:31.015 - {sweep.py (65)} - <module>(): hp = yelp-full fedpet 4 40 -1 -1 0 20
+49656 2022-09-01,20:11:31.015 - {sweep.py (65)} - <module>(): hp = yelp-full fedpet 7 320 -1 -1 0 20
+49640 2022-09-01,20:11:31.015 - {sweep.py (65)} - <module>(): hp = yelp-full fedpet 2 320 -1 -1 0 10
+49657 2022-09-01,20:11:31.015 - {sweep.py (65)} - <module>(): hp = yelp-full fedpet 2 640 -1 -1 0 20
+49623 2022-09-01,20:11:31.020 - {sweep.py (65)} - <module>(): hp = yelp-full fedpet 1 10 -1 -1 0 10
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+18884 2022-09-02,10:02:28.414 - {sweep.py (65)} - <module>(): hp = yelp-full fedpet 2 320 -1 -1 0 320
+18889 2022-09-02,10:02:28.415 - {sweep.py (65)} - <module>(): hp = yelp-full fedpet 5 10240 -1 -1 0 320
+18883 2022-09-02,10:02:28.416 - {sweep.py (65)} - <module>(): hp = yelp-full fedpet 7 5120 -1 -1 0 160
+18872 2022-09-02,10:02:28.416 - {sweep.py (65)} - <module>(): hp = yelp-full fedpet 6 80 -1 -1 0 80
+18874 2022-09-02,10:02:28.416 - {sweep.py (65)} - <module>(): hp = yelp-full fedpet 6 320 -1 -1 0 80
+18870 2022-09-02,10:02:28.416 - {sweep.py (65)} - <module>(): hp = yelp-full fedpet 1 640 -1 -1 0 40
+18878 2022-09-02,10:02:28.416 - {sweep.py (65)} - <module>(): hp = yelp-full fedpet 7 160 -1 -1 0 160
+18882 2022-09-02,10:02:28.417 - {sweep.py (65)} - <module>(): hp = yelp-full fedpet 7 2560 -1 -1 0 160
+18876 2022-09-02,10:02:28.417 - {sweep.py (65)} - <module>(): hp = yelp-full fedpet 6 1280 -1 -1 0 80
+18868 2022-09-02,10:02:28.417 - {sweep.py (65)} - <module>(): hp = yelp-full fedpet 1 160 -1 -1 0 40
+18869 2022-09-02,10:02:28.417 - {sweep.py (65)} - <module>(): hp = yelp-full fedpet 1 320 -1 -1 0 40
+18867 2022-09-02,10:02:28.418 - {sweep.py (65)} - <module>(): hp = yelp-full fedpet 1 80 -1 -1 0 40
+18877 2022-09-02,10:02:28.420 - {sweep.py (65)} - <module>(): hp = yelp-full fedpet 6 2560 -1 -1 0 80
+18871 2022-09-02,10:02:28.421 - {sweep.py (65)} - <module>(): hp = yelp-full fedpet 1 1280 -1 -1 0 40
+18866 2022-09-02,10:02:28.421 - {sweep.py (65)} - <module>(): hp = yelp-full fedpet 1 40 -1 -1 0 40
+18879 2022-09-02,10:02:28.421 - {sweep.py (65)} - <module>(): hp = yelp-full fedpet 7 320 -1 -1 0 160
+18875 2022-09-02,10:02:28.421 - {sweep.py (65)} - <module>(): hp = yelp-full fedpet 6 640 -1 -1 0 80
+18881 2022-09-02,10:02:28.422 - {sweep.py (65)} - <module>(): hp = yelp-full fedpet 7 1280 -1 -1 0 160
+18873 2022-09-02,10:02:28.422 - {sweep.py (65)} - <module>(): hp = yelp-full fedpet 6 160 -1 -1 0 80
+18880 2022-09-02,10:02:28.423 - {sweep.py (65)} - <module>(): hp = yelp-full fedpet 7 640 -1 -1 0 160
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+18886 2022-09-02,10:02:28.428 - {sweep.py (65)} - <module>(): hp = yelp-full fedpet 2 1280 -1 -1 0 320
+fedpet start.
+fedpet start.
+18885 2022-09-02,10:02:28.429 - {sweep.py (65)} - <module>(): hp = yelp-full fedpet 2 640 -1 -1 0 320
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+18887 2022-09-02,10:02:28.433 - {sweep.py (65)} - <module>(): hp = yelp-full fedpet 4 2560 -1 -1 0 320
+18888 2022-09-02,10:02:28.433 - {sweep.py (65)} - <module>(): hp = yelp-full fedpet 5 5120 -1 -1 0 320
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+29902 2022-09-02,10:32:45.681 - {sweep.py (65)} - <module>(): hp = yelp-full fedpet 6 160 -1 -1 0 160
+fedpet start.
+30105 2022-09-02,10:32:56.120 - {sweep.py (65)} - <module>(): hp = yelp-full fedpet 1 2560 -1 -1 0 160
+fedpet start.
+30548 2022-09-02,10:33:38.271 - {sweep.py (65)} - <module>(): hp = yelp-full fedpet 2 5120 -1 -1 0 160
+fedpet start.
+38795 2022-09-02,10:35:01.582 - {sweep.py (65)} - <module>(): hp = yelp-full fedpet 2 1280 -1 -1 0 160
+fedpet start.
+28865 2022-09-02,16:46:06.034 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 10 -1 -1 0 10
+fedpet start.
+usage: cli.py [-h] --method
+              {pet,ipet,sequence_classifier,fedpet,fedclassifier} --data_dir
+              DATA_DIR --model_type
+              {bert,roberta,xlm-roberta,xlnet,albert,gpt2}
+              --model_name_or_path MODEL_NAME_OR_PATH --task_name
+              {mnli,mnli-mm,agnews,yahoo,yelp-polarity,yelp-full,xstance-de,xstance-fr,xstance,wic,rte,cb,wsc,boolq,copa,multirc,record,ax-g,ax-b}
+              --output_dir OUTPUT_DIR
+              [--wrapper_type {sequence_classifier,mlm,plm}]
+              [--pattern_ids PATTERN_IDS [PATTERN_IDS ...]] [--lm_training]
+              [--alpha ALPHA] [--temperature TEMPERATURE]
+              [--verbalizer_file VERBALIZER_FILE] [--reduction {wmean,mean}]
+              [--decoding_strategy {default,ltr,parallel}] [--no_distillation]
+              [--pet_repetitions PET_REPETITIONS]
+              [--pet_max_seq_length PET_MAX_SEQ_LENGTH]
+              [--pet_per_gpu_train_batch_size PET_PER_GPU_TRAIN_BATCH_SIZE]
+              [--pet_per_gpu_eval_batch_size PET_PER_GPU_EVAL_BATCH_SIZE]
+              [--pet_per_gpu_unlabeled_batch_size PET_PER_GPU_UNLABELED_BATCH_SIZE]
+              [--pet_gradient_accumulation_steps PET_GRADIENT_ACCUMULATION_STEPS]
+              [--pet_num_train_epochs PET_NUM_TRAIN_EPOCHS]
+              [--pet_max_steps PET_MAX_STEPS]
+              [--sc_repetitions SC_REPETITIONS]
+              [--sc_max_seq_length SC_MAX_SEQ_LENGTH]
+              [--sc_per_gpu_train_batch_size SC_PER_GPU_TRAIN_BATCH_SIZE]
+              [--sc_per_gpu_eval_batch_size SC_PER_GPU_EVAL_BATCH_SIZE]
+              [--sc_per_gpu_unlabeled_batch_size SC_PER_GPU_UNLABELED_BATCH_SIZE]
+              [--sc_gradient_accumulation_steps SC_GRADIENT_ACCUMULATION_STEPS]
+              [--sc_num_train_epochs SC_NUM_TRAIN_EPOCHS]
+              [--sc_max_steps SC_MAX_STEPS]
+              [--ipet_generations IPET_GENERATIONS]
+              [--ipet_logits_percentage IPET_LOGITS_PERCENTAGE]
+              [--ipet_scale_factor IPET_SCALE_FACTOR]
+              [--ipet_n_most_likely IPET_N_MOST_LIKELY]
+              [--train_examples TRAIN_EXAMPLES]
+              [--test_examples TEST_EXAMPLES]
+              [--unlabeled_examples UNLABELED_EXAMPLES]
+              [--split_examples_evenly] [--cache_dir CACHE_DIR]
+              [--learning_rate LEARNING_RATE] [--weight_decay WEIGHT_DECAY]
+              [--adam_epsilon ADAM_EPSILON] [--max_grad_norm MAX_GRAD_NORM]
+              [--warmup_steps WARMUP_STEPS] [--logging_steps LOGGING_STEPS]
+              [--no_cuda] [--overwrite_output_dir] [--seed SEED] [--do_train]
+              [--do_eval] [--priming] [--eval_set {dev,test}] [--aggregated]
+              [--vanilla] [--augmentation] [--fed] [--beta BETA]
+              [--client_num_in_total CLIENT_NUM_IN_TOTAL]
+              [--all_client_num_in_total ALL_CLIENT_NUM_IN_TOTAL]
+cli.py: error: unrecognized arguments:  
+33689 2022-09-02,16:47:01.568 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 10 -1 -1 0 10
+fedpet start.
+usage: cli.py [-h] --method
+              {pet,ipet,sequence_classifier,fedpet,fedclassifier} --data_dir
+              DATA_DIR --model_type
+              {bert,roberta,xlm-roberta,xlnet,albert,gpt2}
+              --model_name_or_path MODEL_NAME_OR_PATH --task_name
+              {mnli,mnli-mm,agnews,yahoo,yelp-polarity,yelp-full,xstance-de,xstance-fr,xstance,wic,rte,cb,wsc,boolq,copa,multirc,record,ax-g,ax-b}
+              --output_dir OUTPUT_DIR
+              [--wrapper_type {sequence_classifier,mlm,plm}]
+              [--pattern_ids PATTERN_IDS [PATTERN_IDS ...]] [--lm_training]
+              [--alpha ALPHA] [--temperature TEMPERATURE]
+              [--verbalizer_file VERBALIZER_FILE] [--reduction {wmean,mean}]
+              [--decoding_strategy {default,ltr,parallel}] [--no_distillation]
+              [--pet_repetitions PET_REPETITIONS]
+              [--pet_max_seq_length PET_MAX_SEQ_LENGTH]
+              [--pet_per_gpu_train_batch_size PET_PER_GPU_TRAIN_BATCH_SIZE]
+              [--pet_per_gpu_eval_batch_size PET_PER_GPU_EVAL_BATCH_SIZE]
+              [--pet_per_gpu_unlabeled_batch_size PET_PER_GPU_UNLABELED_BATCH_SIZE]
+              [--pet_gradient_accumulation_steps PET_GRADIENT_ACCUMULATION_STEPS]
+              [--pet_num_train_epochs PET_NUM_TRAIN_EPOCHS]
+              [--pet_max_steps PET_MAX_STEPS]
+              [--sc_repetitions SC_REPETITIONS]
+              [--sc_max_seq_length SC_MAX_SEQ_LENGTH]
+              [--sc_per_gpu_train_batch_size SC_PER_GPU_TRAIN_BATCH_SIZE]
+              [--sc_per_gpu_eval_batch_size SC_PER_GPU_EVAL_BATCH_SIZE]
+              [--sc_per_gpu_unlabeled_batch_size SC_PER_GPU_UNLABELED_BATCH_SIZE]
+              [--sc_gradient_accumulation_steps SC_GRADIENT_ACCUMULATION_STEPS]
+              [--sc_num_train_epochs SC_NUM_TRAIN_EPOCHS]
+              [--sc_max_steps SC_MAX_STEPS]
+              [--ipet_generations IPET_GENERATIONS]
+              [--ipet_logits_percentage IPET_LOGITS_PERCENTAGE]
+              [--ipet_scale_factor IPET_SCALE_FACTOR]
+              [--ipet_n_most_likely IPET_N_MOST_LIKELY]
+              [--train_examples TRAIN_EXAMPLES]
+              [--test_examples TEST_EXAMPLES]
+              [--unlabeled_examples UNLABELED_EXAMPLES]
+              [--split_examples_evenly] [--cache_dir CACHE_DIR]
+              [--learning_rate LEARNING_RATE] [--weight_decay WEIGHT_DECAY]
+              [--adam_epsilon ADAM_EPSILON] [--max_grad_norm MAX_GRAD_NORM]
+              [--warmup_steps WARMUP_STEPS] [--logging_steps LOGGING_STEPS]
+              [--no_cuda] [--overwrite_output_dir] [--seed SEED] [--do_train]
+              [--do_eval] [--priming] [--eval_set {dev,test}] [--aggregated]
+              [--vanilla] [--augmentation] [--fed] [--beta BETA]
+              [--client_num_in_total CLIENT_NUM_IN_TOTAL]
+              [--all_client_num_in_total ALL_CLIENT_NUM_IN_TOTAL]
+cli.py: error: unrecognized arguments:  
+37037 2022-09-02,16:47:30.780 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 10 -1 -1 0 10
+fedpet start.
+37052 - Fri, 02 Sep 2022 16:47:34 cli.py[line:301] INFO Parameters: Namespace(adam_epsilon=1e-08, aggregated=False, all_client_num_in_total=1000, alpha=0.9999, augmentation=False, beta=None, cache_dir='', client_num_in_total=10, data_dir='/data/cdq/pet_data/data/agnews', decoding_strategy='default', do_eval=True, do_train=True, eval_set='dev', fed=True, ipet_generations=100, ipet_logits_percentage=0.25, ipet_n_most_likely=-1, ipet_scale_factor=1.0, learning_rate=1e-05, lm_training=False, logging_steps=5000, max_grad_norm=1.0, method='fedpet', model_name_or_path='bert-base-uncased', model_type='bert', no_cuda=False, no_distillation=False, output_dir='//data/cdq/pet_data/log/agnews/fedpet_10_10', overwrite_output_dir=False, pattern_ids=[1], pet_gradient_accumulation_steps=1, pet_max_seq_length=256, pet_max_steps=-1, pet_num_train_epochs=1.0, pet_per_gpu_eval_batch_size=8, pet_per_gpu_train_batch_size=4, pet_per_gpu_unlabeled_batch_size=4, pet_repetitions=1, priming=False, reduction='mean', sc_gradient_accumulation_steps=1, sc_max_seq_length=256, sc_max_steps=-1, sc_num_train_epochs=1.0, sc_per_gpu_eval_batch_size=8, sc_per_gpu_train_batch_size=4, sc_per_gpu_unlabeled_batch_size=4, sc_repetitions=100, seed=42, split_examples_evenly=False, task_name='agnews', temperature=2, test_examples=-1, train_examples=10, unlabeled_examples=-1, vanilla=False, verbalizer_file=None, warmup_steps=0, weight_decay=0.01, wrapper_type='mlm')
+37052 - Fri, 02 Sep 2022 16:47:34 tasks.py[line:827] INFO Creating features from dataset file at /data/cdq/pet_data/data/agnews (num_examples=10, set_type=train)
+37052 - Fri, 02 Sep 2022 16:47:36 tasks.py[line:853] INFO Returning 10 train examples with label dist.: [('1', 3), ('4', 4), ('2', 2), ('3', 1)]
+37052 - Fri, 02 Sep 2022 16:47:36 tasks.py[line:827] INFO Creating features from dataset file at /data/cdq/pet_data/data/agnews (num_examples=-1, set_type=dev)
+37052 - Fri, 02 Sep 2022 16:47:37 tasks.py[line:853] INFO Returning 7600 dev examples with label dist.: [('3', 1900), ('4', 1900), ('2', 1900), ('1', 1900)]
+37052 - Fri, 02 Sep 2022 16:47:37 tasks.py[line:827] INFO Creating features from dataset file at /data/cdq/pet_data/data/agnews (num_examples=-1, set_type=unlabeled)
+37052 - Fri, 02 Sep 2022 16:47:39 tasks.py[line:853] INFO Returning 120000 unlabeled examples with label dist.: [('1', 120000)]
+Traceback (most recent call last):
+  File "cli.py", line 381, in <module>
+    main()
+  File "cli.py", line 334, in main
+    train_data, unlabeled_data, eval_data = seperate_clients(train_data, unlabeled_data, eval_data, args.beta, args.seed, args.all_client_num_in_total)
+  File "cli.py", line 96, in seperate_clients
+    train_data_sperate = partition_class_samples_with_dirichlet_distribution(train_data=train_data, beta=beta, client_num=client_num_in_total, seed=seed)
+  File "cli.py", line 63, in partition_class_samples_with_dirichlet_distribution
+    if beta > 0:
+TypeError: '>' not supported between instances of 'NoneType' and 'int'
+42432 2022-09-02,16:48:14.773 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 10 -1 -1 0 10
+fedpet start.
+45298 2022-09-02,16:48:42.997 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 10 -1 -1 0 10
+fedpet start.
+run_fed.sh: line 148: g/yelp-full/fedpet_160_80_0.log: No such file or directory
+run_fed.sh: line 149: syntax error near unexpected token `fi'
+run_fed.sh: line 149: `    fi'
+run_fed.sh: line 148: g/yelp-full/fedpet_5120_160_0.log: No such file or directory
+run_fed.sh: line 149: syntax error near unexpected token `fi'
+run_fed.sh: line 149: `    fi'
+run_fed.sh: line 148: g/yelp-full/fedpet_1280_160_0.log: No such file or directory
+run_fed.sh: line 149: syntax error near unexpected token `fi'
+run_fed.sh: line 149: `    fi'
+run_fed.sh: line 148: g/yelp-full/fedpet_1280_80_0.log: No such file or directory
+run_fed.sh: line 149: syntax error near unexpected token `fi'
+run_fed.sh: line 149: `    fi'
+run_fed.sh: line 148: g/yelp-full/fedpet_160_160_0.log: No such file or directory
+run_fed.sh: line 149: syntax error near unexpected token `fi'
+run_fed.sh: line 149: `    fi'
+run_fed.sh: line 148: g/yelp-full/fedpet_2560_160_0.log: No such file or directory
+run_fed.sh: line 149: syntax error near unexpected token `fi'
+run_fed.sh: line 149: `    fi'
+run_fed.sh: line 151: 45303 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --fed --aggregated > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+26312 2022-09-02,16:54:30.564 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 10 -1 -1 0 10
+fedpet start.
+run_fed.sh: line 151: 26317 Terminated              CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --fed --aggregated > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+30213 2022-09-02,16:56:17.923 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 10 -1 -1 0 10
+fedpet start.
+run_fed.sh: line 148: g/yelp-full/fedpet_80_80_0.log: No such file or directory
+run_fed.sh: line 149: syntax error near unexpected token `fi'
+run_fed.sh: line 149: `    fi'
+run_fed.sh: line 148: g/yelp-full/fedpet_640_80_0.log: No such file or directory
+run_fed.sh: line 149: syntax error near unexpected token `fi'
+run_fed.sh: line 149: `    fi'
+run_fed.sh: line 148: g/yelp-full/fedpet_320_80_0.log: No such file or directory
+run_fed.sh: line 149: syntax error near unexpected token `fi'
+run_fed.sh: line 149: `    fi'
+run_fed.sh: line 148: g/yelp-full/fedpet_2560_80_0.log: No such file or directory
+run_fed.sh: line 149: syntax error near unexpected token `fi'
+run_fed.sh: line 149: `    fi'
+run_fed.sh: line 151: 30218 Terminated              CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --fed --aggregated > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+9343 2022-09-02,17:03:22.654 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 1 -1 -1 0 1
+fedpet start.
+run_fed.sh: line 151:  9350 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --fed --aggregated > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+14849 2022-09-02,17:05:31.315 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 1 -1 -1 0 1
+fedpet start.
+run_fed.sh: line 151: 14924 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --fed --aggregated > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+50921 2022-09-02,17:18:30.148 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 1 -1 -1 0 1
+fedpet start.
+60761 2022-09-02,18:14:55.795 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 1 -1 -1 0 1
+fedpet start.
+run_fed.sh: line 148: g/yelp-full/fedpet_80_40_0.log: No such file or directory
+run_fed.sh: line 149: syntax error near unexpected token `fi'
+run_fed.sh: line 149: `    fi'
+run_fed.sh: line 148: g/yelp-full/fedpet_40_40_0.log: No such file or directory
+run_fed.sh: line 149: syntax error near unexpected token `fi'
+run_fed.sh: line 149: `    fi'
+10143 2022-09-02,18:19:58.479 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 1 -1 -1 0 1
+fedpet start.
+run_fed.sh: line 148: g/yelp-full/fedpet_160_40_0.log: No such file or directory
+run_fed.sh: line 149: syntax error near unexpected token `fi'
+run_fed.sh: line 149: `    fi'
+run_fed.sh: line 148: g/yelp-full/fedpet_320_40_0.log: No such file or directory
+run_fed.sh: line 149: syntax error near unexpected token `fi'
+run_fed.sh: line 149: `    fi'
+run_fed.sh: line 148: g/yelp-full/fedpet_640_40_0.log: No such file or directory
+run_fed.sh: line 149: syntax error near unexpected token `fi'
+run_fed.sh: line 149: `    fi'
+run_fed.sh: line 148: g/yelp-full/fedpet_1280_40_0.log: No such file or directory
+run_fed.sh: line 149: syntax error near unexpected token `fi'
+run_fed.sh: line 149: `    fi'
+4290 2022-09-02,18:43:40.821 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 1 -1 -1 0 1
+fedpet start.
+5790 2022-09-02,18:44:22.511 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 1 -1 -1 0 1
+fedpet start.
+run_fed.sh: line 151: 50926 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --fed --aggregated > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+15678 2022-09-02,18:49:10.124 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 1 -1 -1 0 1
+fedpet start.
+run_fed.sh: line 151: 15683 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --fed --aggregated > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+17643 2022-09-02,18:50:06.065 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 1 -1 -1 0 1
+fedpet start.
+run_fed.sh: line 151: 17654 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --fed --aggregated > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+20592 2022-09-02,18:51:35.426 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 1 -1 -1 0 1
+fedpet start.
+run_fed.sh: line 151: 20597 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --fed --aggregated > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+24255 2022-09-02,18:53:29.496 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 1 -1 -1 0 1
+fedpet start.
+run_fed.sh: line 151: 24260 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --fed --aggregated > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+30408 2022-09-02,18:55:57.401 - {sweep.py (65)} - <module>(): hp = yelp-full fedpet 2 1 -1 -1 0 1
+fedpet start.
+30928 2022-09-02,18:56:11.765 - {sweep.py (65)} - <module>(): hp = yelp-full fedpet 2 1 -1 -1 0 1
+fedpet start.
+31418 2022-09-02,18:56:24.701 - {sweep.py (65)} - <module>(): hp = agnews fedpet 2 1 -1 -1 0 1
+fedpet start.
+34605 2022-09-02,18:57:56.306 - {sweep.py (65)} - <module>(): hp = agnews fedpet 2 1 -1 -1 0 1
+fedpet start.
+41949 2022-09-02,19:01:39.687 - {sweep.py (65)} - <module>(): hp = agnews fedpet 2 1 -1 -1 0 1
+fedpet start.
+54670 2022-09-02,19:07:06.881 - {sweep.py (65)} - <module>(): hp = agnews fedpet 2 1 -1 -1 0 1
+fedpet start.
+59479 2022-09-02,19:08:57.935 - {sweep.py (65)} - <module>(): hp = agnews fedpet 2 1 -1 -1 0 1
+fedpet start.
+60981 2022-09-02,19:09:31.356 - {sweep.py (65)} - <module>(): hp = agnews fedpet 2 1 -1 -1 0 1
+fedpet start.
+6753 2022-09-02,19:13:03.757 - {sweep.py (65)} - <module>(): hp = agnews fedpet 2 1 -1 -1 0 1
+fedpet start.
+run_fed.sh: line 151:  5795 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --fed --aggregated > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+46913 2022-09-02,19:27:06.746 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 1 -1 -1 0 1
+46924 2022-09-02,19:27:06.751 - {sweep.py (65)} - <module>(): hp = agnews fedpet 7 64 -1 -1 0 2
+46916 2022-09-02,19:27:06.752 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 8 -1 -1 0 1
+46920 2022-09-02,19:27:06.752 - {sweep.py (65)} - <module>(): hp = agnews fedpet 2 4 -1 -1 0 2
+46915 2022-09-02,19:27:06.752 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 4 -1 -1 0 1
+46919 2022-09-02,19:27:06.752 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 2 -1 -1 0 2
+46918 2022-09-02,19:27:06.752 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 32 -1 -1 0 1
+46923 2022-09-02,19:27:06.754 - {sweep.py (65)} - <module>(): hp = agnews fedpet 5 32 -1 -1 0 2
+46922 2022-09-02,19:27:06.754 - {sweep.py (65)} - <module>(): hp = agnews fedpet 2 16 -1 -1 0 2
+46914 2022-09-02,19:27:06.754 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 2 -1 -1 0 1
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+46921 2022-09-02,19:27:06.768 - {sweep.py (65)} - <module>(): hp = agnews fedpet 2 8 -1 -1 0 2
+46917 2022-09-02,19:27:06.768 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 16 -1 -1 0 1
+fedpet start.
+fedpet start.
+run_fed.sh: line 151: 46970 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --fed --aggregated > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 151: 46987 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --fed --aggregated > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 151: 46975 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --fed --aggregated > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 151: 46973 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --fed --aggregated > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 151: 46988 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --fed --aggregated > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 151: 46977 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --fed --aggregated > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 151: 46965 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --fed --aggregated > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 151: 46972 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --fed --aggregated > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 151: 46967 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --fed --aggregated > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 151: 46978 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --fed --aggregated > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 151: 46976 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --fed --aggregated > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 151: 46968 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --fed --aggregated > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+57645 2022-09-02,19:30:58.064 - {sweep.py (65)} - <module>(): hp = agnews fedpet 7 64 -1 -1 0 2
+fedpet start.
+4616 2022-09-02,19:35:11.697 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 128 -1 -1 0 16
+4615 2022-09-02,19:35:11.697 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 64 -1 -1 0 16
+4618 2022-09-02,19:35:11.697 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 512 -1 -1 0 16
+4620 2022-09-02,19:35:11.697 - {sweep.py (65)} - <module>(): hp = agnews fedpet 2 64 -1 -1 0 32
+4621 2022-09-02,19:35:11.697 - {sweep.py (65)} - <module>(): hp = agnews fedpet 2 128 -1 -1 0 32
+4619 2022-09-02,19:35:11.698 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 32 -1 -1 0 32
+4623 2022-09-02,19:35:11.698 - {sweep.py (65)} - <module>(): hp = agnews fedpet 5 512 -1 -1 0 32
+4624 2022-09-02,19:35:11.698 - {sweep.py (65)} - <module>(): hp = agnews fedpet 7 1024 -1 -1 0 32
+4614 2022-09-02,19:35:11.698 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 32 -1 -1 0 16
+4622 2022-09-02,19:35:11.701 - {sweep.py (65)} - <module>(): hp = agnews fedpet 2 256 -1 -1 0 32
+4617 2022-09-02,19:35:11.702 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 256 -1 -1 0 16
+4613 2022-09-02,19:35:11.702 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 16 -1 -1 0 16
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+run_fed.sh: line 151:  4673 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --fed --aggregated > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 151:  4682 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --fed --aggregated > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 151:  4664 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --fed --aggregated > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 151:  4667 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --fed --aggregated > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 151:  4668 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --fed --aggregated > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 151:  4665 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --fed --aggregated > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 151:  4669 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --fed --aggregated > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 151:  4684 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --fed --aggregated > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 151:  4685 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --fed --aggregated > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 151:  4683 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --fed --aggregated > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 151:  4670 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --fed --aggregated > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 151:  4681 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --fed --aggregated > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+8495 2022-09-02,19:36:06.876 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 64 -1 -1 0 16
+fedpet start.
+8499 2022-09-02,19:36:06.885 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 32 -1 -1 0 32
+8501 2022-09-02,19:36:06.885 - {sweep.py (65)} - <module>(): hp = agnews fedpet 2 128 -1 -1 0 32
+8502 2022-09-02,19:36:06.885 - {sweep.py (65)} - <module>(): hp = agnews fedpet 2 256 -1 -1 0 32
+8498 2022-09-02,19:36:06.886 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 512 -1 -1 0 16
+8504 2022-09-02,19:36:06.886 - {sweep.py (65)} - <module>(): hp = agnews fedpet 7 1024 -1 -1 0 32
+8493 2022-09-02,19:36:06.892 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 16 -1 -1 0 16
+8500 2022-09-02,19:36:06.892 - {sweep.py (65)} - <module>(): hp = agnews fedpet 2 64 -1 -1 0 32
+8503 2022-09-02,19:36:06.892 - {sweep.py (65)} - <module>(): hp = agnews fedpet 5 512 -1 -1 0 32
+8494 2022-09-02,19:36:06.892 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 32 -1 -1 0 16
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+8497 2022-09-02,19:36:06.895 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 256 -1 -1 0 16
+8496 2022-09-02,19:36:06.895 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 128 -1 -1 0 16
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+run_fed.sh: line 151:  8565 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --fed --aggregated > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 151:  8544 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --fed --aggregated > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 151:  8543 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --fed --aggregated > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 151:  8572 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --fed --aggregated > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 151:  8550 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --fed --aggregated > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 151:  8518 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --fed --aggregated > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 151:  8566 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --fed --aggregated > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 151:  8571 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --fed --aggregated > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 151:  8577 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --fed --aggregated > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 151:  8551 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --fed --aggregated > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 151:  8545 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --fed --aggregated > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 151:  8564 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --fed --aggregated > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+50865 2022-09-02,19:52:22.067 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 64 -1 -1 0 16
+50866 2022-09-02,19:52:22.072 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 128 -1 -1 0 16
+50864 2022-09-02,19:52:22.075 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 32 -1 -1 0 16
+50863 2022-09-02,19:52:22.076 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 16 -1 -1 0 16
+50873 2022-09-02,19:52:22.076 - {sweep.py (65)} - <module>(): hp = agnews fedpet 5 512 -1 -1 0 32
+50871 2022-09-02,19:52:22.078 - {sweep.py (65)} - <module>(): hp = agnews fedpet 2 128 -1 -1 0 32
+50872 2022-09-02,19:52:22.081 - {sweep.py (65)} - <module>(): hp = agnews fedpet 2 256 -1 -1 0 32
+50869 2022-09-02,19:52:22.083 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 32 -1 -1 0 32
+50870 2022-09-02,19:52:22.083 - {sweep.py (65)} - <module>(): hp = agnews fedpet 2 64 -1 -1 0 32
+50874 2022-09-02,19:52:22.085 - {sweep.py (65)} - <module>(): hp = agnews fedpet 7 1024 -1 -1 0 32
+50868 2022-09-02,19:52:22.088 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 512 -1 -1 0 16
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+50867 2022-09-02,19:52:22.104 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 256 -1 -1 0 16
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+23604 2022-09-03,08:37:54.133 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 8 -1 -1 0 1
+23607 2022-09-03,08:37:54.133 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 2 -1 -1 0 2
+23602 2022-09-03,08:37:54.133 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 2 -1 -1 0 1
+fedpet start.
+23610 2022-09-03,08:37:54.140 - {sweep.py (65)} - <module>(): hp = agnews fedpet 2 8 -1 -1 0 2
+fedpet start.
+23601 2022-09-03,08:37:54.140 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 1 -1 -1 0 1
+fedpet start.
+23603 2022-09-03,08:37:54.141 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 4 -1 -1 0 1
+23611 2022-09-03,08:37:54.142 - {sweep.py (65)} - <module>(): hp = agnews fedpet 2 16 -1 -1 0 2
+23606 2022-09-03,08:37:54.143 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 32 -1 -1 0 1
+23608 2022-09-03,08:37:54.144 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 4 -1 -1 0 2
+23613 2022-09-03,08:37:54.147 - {sweep.py (65)} - <module>(): hp = agnews fedpet 2 64 -1 -1 0 2
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+23612 2022-09-03,08:37:54.163 - {sweep.py (65)} - <module>(): hp = agnews fedpet 2 32 -1 -1 0 2
+23605 2022-09-03,08:37:54.163 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 16 -1 -1 0 1
+fedpet start.
+fedpet start.
+24281 2022-09-03,08:38:11.157 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 32 -1 -1 0 1
+24280 2022-09-03,08:38:11.163 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 16 -1 -1 0 1
+24278 2022-09-03,08:38:11.165 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 4 -1 -1 0 1
+fedpet start.
+24276 2022-09-03,08:38:11.168 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 1 -1 -1 0 1
+24277 2022-09-03,08:38:11.168 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 2 -1 -1 0 1
+24279 2022-09-03,08:38:11.169 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 8 -1 -1 0 1
+fedpet start.
+fedpet start.
+24282 2022-09-03,08:38:11.175 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 2 -1 -1 0 2
+24287 2022-09-03,08:38:11.175 - {sweep.py (65)} - <module>(): hp = agnews fedpet 2 64 -1 -1 0 2
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+24283 2022-09-03,08:38:11.183 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 4 -1 -1 0 2
+24286 2022-09-03,08:38:11.183 - {sweep.py (65)} - <module>(): hp = agnews fedpet 2 32 -1 -1 0 2
+24284 2022-09-03,08:38:11.186 - {sweep.py (65)} - <module>(): hp = agnews fedpet 2 8 -1 -1 0 2
+24285 2022-09-03,08:38:11.186 - {sweep.py (65)} - <module>(): hp = agnews fedpet 2 16 -1 -1 0 2
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+36671 2022-09-03,08:43:48.243 - {sweep.py (65)} - <module>(): hp = agnews fedclassifier 2 1024 -1 -1 0 32
+fedcls start.
+54133 2022-09-03,09:23:40.387 - {sweep.py (65)} - <module>(): hp = agnews fedclassifier 2 1 -1 -1 0 1
+fedcls start.
+run_fed.sh: line 151: 36680 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --fed --aggregated > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+56882 2022-09-03,09:24:44.370 - {sweep.py (65)} - <module>(): hp = agnews fedclassifier 2 1024 -1 -1 0 32
+fedcls start.
+run_fed.sh: line 151: 54138 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --fed --aggregated > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+57735 2022-09-03,09:25:01.605 - {sweep.py (65)} - <module>(): hp = agnews fedclassifier 2 1 -1 -1 0 1
+fedcls start.
+run_fed.sh: line 151: 24296 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --fed --aggregated > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 151: 24346 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --fed --aggregated > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 151: 24348 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --fed --aggregated > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 151: 24318 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --fed --aggregated > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 151: 24322 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --fed --aggregated > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 151: 24309 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --fed --aggregated > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 151: 24345 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --fed --aggregated > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 151: 24325 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --fed --aggregated > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 151: 24347 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --fed --aggregated > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 151: 24311 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --fed --aggregated > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 151: 24326 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --fed --aggregated > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 151: 24336 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --fed --aggregated > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+run_fed.sh: line 151: 56894 Killed                  CUDA_VISIBLE_DEVICES=$device python3 cli.py --train_examples ${train_examples} --test_examples ${test_examples} --unlabeled_examples ${unlabeled_examples} --method ${method} --pattern_ids ${pattern_ids} --data_dir $data_dir/${dataset} --model_type ${model_type} --model_name_or_path ${model_name_or_path} --task_name ${task_name} --output_dir /${output_dir}/log/${dataset}/${method}_${train_examples}_${clients} --ipet_scale_factor 1 --ipet_generations ${iteration} --pet_num_train_epochs ${epochs} --pet_repetitions 1 --pet_per_gpu_train_batch_size 4 --sc_num_train_epochs ${epochs} --sc_repetitions ${iteration} --client_num_in_total ${client_num_in_total} --do_train --do_eval --fed --aggregated > log/${dataset}/${method}_${train_examples}_${clients}.log 2>&1
+20511 2022-09-03,14:37:02.865 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 4 -1 -1 0 4
+20524 2022-09-03,14:37:02.868 - {sweep.py (65)} - <module>(): hp = agnews fedclassifier 2 256 -1 -1 0 32
+20520 2022-09-03,14:37:02.869 - {sweep.py (65)} - <module>(): hp = agnews fedpet 2 64 -1 -1 0 8
+20522 2022-09-03,14:37:02.870 - {sweep.py (65)} - <module>(): hp = agnews fedpet 2 256 -1 -1 0 8
+20512 2022-09-03,14:37:02.870 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 8 -1 -1 0 4
+20525 2022-09-03,14:37:02.870 - {sweep.py (65)} - <module>(): hp = agnews fedclassifier 2 512 -1 -1 0 32
+20517 2022-09-03,14:37:02.871 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 8 -1 -1 0 8
+20523 2022-09-03,14:37:02.872 - {sweep.py (65)} - <module>(): hp = agnews fedclassifier 2 128 -1 -1 0 32
+20513 2022-09-03,14:37:02.875 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 16 -1 -1 0 4
+20518 2022-09-03,14:37:02.875 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 16 -1 -1 0 8
+20514 2022-09-03,14:37:02.876 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 32 -1 -1 0 4
+20519 2022-09-03,14:37:02.878 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 32 -1 -1 0 8
+fedpet start.
+20516 2022-09-03,14:37:02.879 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 128 -1 -1 0 4
+20521 2022-09-03,14:37:02.879 - {sweep.py (65)} - <module>(): hp = agnews fedpet 2 128 -1 -1 0 8
+20515 2022-09-03,14:37:02.881 - {sweep.py (65)} - <module>(): hp = agnews fedpet 1 64 -1 -1 0 4
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+fedcls start.
+fedcls start.
+fedcls start.
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
+fedpet start.
