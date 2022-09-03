@@ -349,11 +349,15 @@ def main():
         args.task_name, args.data_dir, eval_set, num_examples=test_ex, num_examples_per_label=test_ex_per_label)
     # unlabeled_data = load_examples(
     #     args.task_name, args.data_dir, UNLABELED_SET, num_examples=args.unlabeled_examples)
+    check_data = load_examples(
+        args.task_name, args.data_dir, TRAIN_SET, num_examples=args.unlabeled_examples)
 
     # todo: unlabeled data is seperated in some datasets
     train_and_unlabeled_data = load_examples(args.task_name, args.data_dir, TRAIN_SET, num_examples=args.unlabeled_examples) 
 
     train_data, unlabeled_data, eval_data = seperate_clients(train_and_unlabeled_data, eval_data, args.beta, args.seed, args.client_num_in_total, args.all_client_num_in_total, args.train_examples)
+
+
 
     args.metrics = METRICS.get(args.task_name, DEFAULT_METRICS)
 
@@ -388,12 +392,12 @@ def main():
                        pattern_ids=args.pattern_ids, output_dir=args.output_dir,
                        ensemble_repetitions=args.pet_repetitions, final_repetitions=args.sc_repetitions,
                        reduction=args.reduction, train_data=train_data, unlabeled_data=unlabeled_data,
-                       eval_data=eval_data, do_train=args.do_train, do_eval=args.do_eval, seed=args.seed, aggregated=args.aggregated, vanilla=args.vanilla, fed=args.fed, augmentation=args.augmentation, beta=args.beta, client_num_in_total=args.client_num_in_total)
+                       eval_data=eval_data, do_train=args.do_train, do_eval=args.do_eval, seed=args.seed, aggregated=args.aggregated, vanilla=args.vanilla, fed=args.fed, augmentation=args.augmentation, beta=args.beta, client_num_in_total=args.client_num_in_total, check_data=check_data)
 
     elif args.method == 'fedclassifier':
         pet.train_fedclassifier(sc_model_cfg, sc_train_cfg, sc_eval_cfg, output_dir=args.output_dir,
                              repetitions=args.sc_repetitions, train_data=train_data, unlabeled_data=unlabeled_data,
-                             eval_data=eval_data, do_train=args.do_train, do_eval=args.do_eval, seed=args.seed, beta=args.beta, client_num_in_total=args.client_num_in_total)
+                             eval_data=eval_data, do_train=args.do_train, do_eval=args.do_eval, seed=args.seed, beta=args.beta, client_num_in_total=args.client_num_in_total, check_data=check_data)
 
     else:
         raise ValueError(f"Training method '{args.method}' not implemented")
