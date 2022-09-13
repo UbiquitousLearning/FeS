@@ -21,17 +21,26 @@ def add_args(parser):
                         help='8700 for mnli')
     parser.add_argument('--unlabeled_examples', type=int, default=-1,
                         help='392700 for mnli')
+    parser.add_argument("--alpha", type=int, default=0,
+                        help="Data label similarity of each client, the larger the beta the similar data for each client")
     parser.add_argument('--beta', type=int, default=0,
                         help='Int  similarity of each client, the larger the beta the similar data for each client. 0 for off')
+    parser.add_argument("--gamma", type=int, default=0,
+                        help="The labeled data distribution density, the larger the gamma the uniform the labeled data distributed")
     parser.add_argument("--client_num_in_total", type=int, default=10,
                         help="How many clients owe labeled data?")
+    parser.add_argument("--all_client_num_in_total", type=int, default=100,
+                        help="How many clients are sperated")
+    parser.add_argument("--pattern_ids", type=int, default=0,
+                        help="pattern_ids")
                         
     return parser.parse_args()
 
-def set_hp(dataset, method, device, train_examples, test_examples, unlabeled_examples, beta, client_num_in_total):
-        hp = dataset + " " + method + " " + str(device) + " " + str(train_examples) + " " + str(test_examples) + " " + str(unlabeled_examples) + " " + str(beta) + " " + str(client_num_in_total)
+def set_hp(dataset, method, device, train_examples, test_examples, unlabeled_examples, alpha, beta, gamma, client_num_in_total, all_client_num_in_total, pattern_ids):
 
-        return hp
+    hp = dataset + " " + method + " " + str(device) + " " + str(train_examples) + " " + str(test_examples) + " " + str(unlabeled_examples) + " " + str(alpha) + " " + str(beta) + " " + str(gamma) + " " + str(client_num_in_total) + " " + str(all_client_num_in_total) + " " + str(pattern_ids)
+
+    return hp
 
 # customize the log format
 logging.basicConfig(level=logging.INFO,
@@ -42,26 +51,10 @@ parser = argparse.ArgumentParser()
 args = add_args(parser)
 
 
-# conda activate ptpretrain
+args.hp = set_hp(args.dataset, args.method, args.device, args.train_examples, args.test_examples, args.unlabeled_examples, args.alpha, args.beta, args.gamma, args.client_num_in_total, args.all_client_num_in_total, args.pattern_ids)
 
-# agnews 100
-# bash run_fed.sh agnews fedpet 7 100 -1 -1
-# bash run_fed.sh agnews fedclassifier 7 100 -1 -1
-
-# mnli 100
-# bash run_fed.sh mnli fedpet 7 100 8700 392700
-# bash run_fed.sh mnli fedclassifier 7 100 8700 392700
-
-# yahoo 100
-# bash run_fed.sh yahoo fedpet 1 100 -1 -1
-# bash run_fed.sh yahoo fedclassifier 1 100 -1 -1
-
-# yelp-full 40
-# bash run_fed.sh yelp-full fedpet 1 40 -1 -1
-# bash run_fed.sh yelp-full fedclassifier 1 40 -1 -1
-
-args.hp = set_hp(args.dataset, args.method, args.device, args.train_examples, args.test_examples, args.unlabeled_examples, args.beta, args.client_num_in_total)
-
-logging.info("hp = %s" % args.hp)
+logging.info(args)
+logging.info('nohup bash run_fed.sh '
+            '{args.hp} '.format(args=args))
 os.system('nohup bash run_fed.sh '
             '{args.hp} '.format(args=args))

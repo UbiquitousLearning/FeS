@@ -44,6 +44,7 @@ logging.basicConfig(level=logging.INFO,
                         datefmt='%a, %d %b %Y %H:%M:%S')
 
 debug = False
+eval_step = 1
 # vanilla = False # whether fed vanilla is on, fed vanilla means no augmentation, but is fed, means using ft instead of pl to train local model, and aggregate the model via fedavg
 # aggregated = True # 是否将10个client训练出来的模型fedavg一下，只infer一次;后面的两个函数里也要改一下
 # augmentation = False # 如果不开augmentation，那每个client只能依靠自己的数据来进行训练，而且也不会用到unlabeled data (origin), fed is off
@@ -84,6 +85,28 @@ def eval_softlabel(ipet_data, train_data, replace=False):
     logging.info("Inference correct ratio is {}".format(correct_ratio))
 
     return ipet_data
+
+def get_prediction_accuracy_distribution(predictions, labels, label_list):
+    labels_num = len(label_list)
+    label_list = range(labels_num)
+    # logging.info(f"label_list: {label_list}")
+    train_examples_per_label = [sum(1 for i in range(len(predictions)) if labels[i] == label) for label in label_list]
+    correct_per_label = [sum(1 for i in range(len(predictions)) if predictions[i] == labels[i] and labels[i] == label) for label in label_list]
+    wrong_per_label = [sum(1 for i in range(len(predictions)) if predictions[i] != labels[i] and labels[i] == label) for label in label_list]
+    ratio_per_label = []
+
+    logging.info(f"Example distribution in the original dataset: {train_examples_per_label}")
+    logging.info(f"correct_per_label: {correct_per_label}")
+    logging.info(f"wrong_per_label: {wrong_per_label}")
+
+    for i in range(labels_num):
+        if train_examples_per_label[i] == 0:
+            ratio_per_label.append(0)
+        else:
+            ratio_per_label.append(correct_per_label[i] / train_examples_per_label[i])
+
+
+    logging.info(f"ratio_per_label: {ratio_per_label}")
 
 class PetConfig(ABC):
     """Abstract class for a PET configuration that can be saved to and loaded from a json file."""
@@ -354,7 +377,7 @@ def train_fedpet(ensemble_model_config: WrapperConfig, ensemble_train_config: Tr
                ensemble_repetitions: int = 3, final_repetitions: int = 1, reduction: str = 'wmean',
                train_data: List[InputExample] = None, unlabeled_data: List[InputExample] = None,
                eval_data: List[InputExample] = None, do_train: bool = True, do_eval: bool = True, seed: int = 42, aggregated: bool = True,
-               augmentation: bool = True, fed: bool = True, vanilla: bool = True, beta: int = None, client_num_in_total: int = None, check_data: List[InputExample] = None):
+               augmentation: bool = True, fed: bool = True, vanilla: bool = True, beta: int = None, client_num_in_total: int = None, check_data: List[InputExample] = None, all_client_num_in_total: int = None):
     """
     Train and evaluate a new fed PET model for a given task.
 
@@ -427,15 +450,31 @@ def train_fedpet(ensemble_model_config: WrapperConfig, ensemble_train_config: Tr
                 logging.info("Saving aggregated trained model at {}...".format(aggregated_model_path))
                 wrapper.save(aggregated_model_path) 
 
-                eval_result = []
-                for i in range(1000): # eval aggregated performance on all eval set
-                    eval_result.append(evaluate(wrapper, eval_data_all[i], ensemble_eval_config)['scores']['acc'])
+                
+                if eval_step > 1: # Only eval when gen = 1, 11, 21... per 10 gens
+                    if gen % eval_step == 1:
+                        eval_result = []
+                        for i in range(all_client_num_in_total): # eval aggregated performance on all eval set
+                            eval_result.append(evaluate(wrapper, eval_data_all[i], ensemble_eval_config,  label_list =ensemble_model_config.label_list)['scores']['acc'])
+                            logging.info("Gen {}: Client {} eval acc is: {}".format(gen-1, i, eval_result[-1]))
 
-                if debug:
-                    logging.info("All clients' eval performance results is:")
-                    logging.info(eval_result)
-    
-                logging.info('Gen {} aggregated model performance is: {}'.format(gen-1, np.mean(np.array(eval_result))))
+                        if debug:
+                            logging.info("All clients' eval performance results is:")
+                            logging.info(eval_result)
+
+                        logging.info('Acc iter is {}. Gen {} aggregated model performance is: {}'.format(gen-1, gen // eval_step, np.mean(np.array(eval_result))))
+                
+                else:# Normal
+                    eval_result = []
+                    for i in range(all_client_num_in_total): # eval aggregated performance on all eval set
+                        eval_result.append(evaluate(wrapper, eval_data_all[i], ensemble_eval_config,  label_list =ensemble_model_config.label_list)['scores']['acc'])
+                        logging.info("Gen {}: Client {} eval acc is: {}".format(gen-1, i, eval_result[-1]))
+
+                    if debug:
+                        logging.info("All clients' eval performance results is:")
+                        logging.info(eval_result)
+        
+                    logging.info('Gen {} aggregated model performance is: {}'.format(gen-1, np.mean(np.array(eval_result))))
                 
                 del wrapper
                 gc.collect()
@@ -443,10 +482,9 @@ def train_fedpet(ensemble_model_config: WrapperConfig, ensemble_train_config: Tr
         for client in range(num_clients):
             client_idx = client_indexes[client]
             gen_output_dir = os.path.join(output_dir, f'g{gen}', f'client{client}')
-            train_data = train_data_sperate[client_idx].tolist()
-            unlabeled_data = unlabeled_data_seperate[client_idx].tolist()
-            eval_data = eval_data_seperate[client_idx].tolist()
-            
+            train_data = np.array(train_data_sperate[client_idx]).tolist()
+            unlabeled_data = np.array(unlabeled_data_seperate[client_idx]).tolist()
+            eval_data = np.array(eval_data_seperate[client_idx]).tolist()
             logging.info("len of train set: {}".format(len(train_data)))
 
             if gen > 0:
@@ -460,7 +498,7 @@ def train_fedpet(ensemble_model_config: WrapperConfig, ensemble_train_config: Tr
                             wrapper = TransformerModelWrapper.from_pretrained(aggregated_model_path)
                             wrapper.model = fl_model
                             
-                            logits = evaluate(wrapper, unlabeled_data, ensemble_eval_config)['logits']
+                            logits = evaluate(wrapper, unlabeled_data, ensemble_eval_config, label_list = ensemble_model_config.label_list)['logits']
 
                             save_logits(os.path.join(output_dir, f'g{gen-1}', f'client{0}', 'logits.txt'), logits)
                             
@@ -484,7 +522,7 @@ def train_fedpet(ensemble_model_config: WrapperConfig, ensemble_train_config: Tr
                                 wrapper = TransformerModelWrapper.from_pretrained(pattern_iter_input_dir)
 
                                 # evaluate on this client's unlabeled_data
-                                logits = evaluate(wrapper, unlabeled_data, ensemble_eval_config)['logits']
+                                logits = evaluate(wrapper, unlabeled_data, ensemble_eval_config,  label_list = ensemble_model_config.label_list)['logits']
 
                                 # 本轮某个client的logits暂存在上一轮相应client的目录下，以供generate train sets使用; 会覆盖掉上一个client用自己的数据扩充的数据
                                 save_logits(os.path.join(pattern_iter_input_dir, 'logits.txt'), logits)
@@ -506,7 +544,7 @@ def train_fedpet(ensemble_model_config: WrapperConfig, ensemble_train_config: Tr
                         fl_model = aggregate(models_path=models_path, sample_num_list=sample_num_list)
                         wrapper = init_model(ensemble_model_config)
                         wrapper.model = fl_model
-                        logits = evaluate(wrapper, unlabeled_data, ensemble_eval_config)['logits']
+                        logits = evaluate(wrapper, unlabeled_data, ensemble_eval_config, label_list = ensemble_model_config.label_list)['logits']
 
                         save_logits(os.path.join(output_dir, f'g{gen-1}', f'client{0}', 'logits.txt'), logits)
 
@@ -541,7 +579,7 @@ def train_fedpet(ensemble_model_config: WrapperConfig, ensemble_train_config: Tr
 def train_fedclassifier(model_config: WrapperConfig, train_config: TrainConfig, eval_config: EvalConfig, output_dir: str,
                      repetitions: int = 3, train_data: List[InputExample] = None,
                      unlabeled_data: List[InputExample] = None, eval_data: List[InputExample] = None,
-                     do_train: bool = True, do_eval: bool = True, seed: int = 42, beta: int = None, client_num_in_total: int = None, check_data: List[InputExample] = None):
+                     do_train: bool = True, do_eval: bool = True, seed: int = 42, beta: int = None, client_num_in_total: int = None, check_data: List[InputExample] = None, all_client_num_in_total: int = None):
     """
     Train and evaluate a sequence classification model.
 
@@ -595,16 +633,31 @@ def train_fedclassifier(model_config: WrapperConfig, train_config: TrainConfig, 
 
             logging.info("Saving aggregated trained model at {}...".format(aggregated_model_path))
             wrapper.save(aggregated_model_path)
+            
+            if eval_step > 1:# Only eval when gen = 1, 11, 21... per 10 gens
+                if gen % 10 == 1:
+                    eval_result = []
+                    for i in range(all_client_num_in_total): # eval aggregated performance on all eval set
+                        eval_result.append(evaluate(wrapper, eval_data_all[i], eval_config, label_list = model_config.label_list)['scores']['acc'])
+                        logging.info("Gen {}: Client {} eval acc is: {}".format(gen-1, i, eval_result[-1]))
 
-            eval_result = []
-            for i in range(1000): # eval aggregated performance on all eval set
-                eval_result.append(evaluate(wrapper, eval_data_all[i], eval_config)['scores']['acc'])
+                    if debug:
+                        logging.info("All clients' eval performance results is:")
+                        logging.info(eval_result)
 
-            if debug:
-                logging.info("All clients' eval performance results is:")
-                logging.info(eval_result)
+                    logging.info('Acc iter is {}. Gen {} aggregated model performance is: {}'.format(gen-1, gen // eval_step, np.mean(np.array(eval_result))))
 
-            logging.info('Gen {} aggregated model performance is: {}'.format(gen-1, np.mean(np.array(eval_result))))
+            else: # Normal
+                eval_result = []
+                for i in range(all_client_num_in_total): # eval aggregated performance on all eval set
+                    eval_result.append(evaluate(wrapper, eval_data_all[i], eval_config, label_list = model_config.label_list)['scores']['acc'])
+                    logging.info("Gen {}: Client {} eval acc is: {}".format(gen-1, i, eval_result[-1]))
+
+                if debug:
+                    logging.info("All clients' eval performance results is:")
+                    logging.info(eval_result)
+
+                logging.info('Gen {} aggregated model performance is: {}'.format(gen-1, np.mean(np.array(eval_result))))
             
             del wrapper
             gc.collect()
@@ -612,9 +665,9 @@ def train_fedclassifier(model_config: WrapperConfig, train_config: TrainConfig, 
         for client in range(num_clients):
             client_idx = client_indexes[client]
             gen_output_dir = os.path.join(output_dir, f'g{gen}', f'client{client}')
-            train_data = train_data_sperate[client_idx].tolist()
-            unlabeled_data = unlabeled_data_seperate[client_idx].tolist()
-            eval_data = eval_data_seperate[client_idx].tolist()
+            train_data = np.array(train_data_sperate[client_idx]).tolist()
+            unlabeled_data = np.array(unlabeled_data_seperate[client_idx]).tolist()
+            eval_data = np.array(eval_data_seperate[client_idx]).tolist()
 
             train_pet_ensemble(model_config, train_config, eval_config, pattern_ids=[1], output_dir=gen_output_dir,
                             repetitions=1,
@@ -848,14 +901,14 @@ def train_single_model(model: TransformerModelWrapper, train_data: List[InputExa
         results_dict['global_step'] = global_step
         results_dict['average_loss'] = tr_loss
 
-    if train_data and return_train_set_results:
-        results_dict['train_set_after_training'] = evaluate(model, train_data, eval_config)['scores']['acc']
+    # if train_data and return_train_set_results:
+    #     results_dict['train_set_after_training'] = evaluate(model, eval_data, eval_config)['scores']['acc']
 
     return results_dict
 
 
 def evaluate(model: TransformerModelWrapper, eval_data: List[InputExample], config: EvalConfig,
-             priming_data: List[InputExample] = None) -> Dict:
+             priming_data: List[InputExample] = None, label_list: List[InputExample] = None) -> Dict:
     """
     Evaluate a model.
 
@@ -869,7 +922,7 @@ def evaluate(model: TransformerModelWrapper, eval_data: List[InputExample], conf
     if config.priming:
         for example in eval_data:
             example.meta['priming_data'] = priming_data
-
+    
     metrics = config.metrics if config.metrics else ['acc']
     device = torch.device(config.device if config.device else "cuda" if torch.cuda.is_available() else "cpu")
 
@@ -879,6 +932,9 @@ def evaluate(model: TransformerModelWrapper, eval_data: List[InputExample], conf
 
     predictions = np.argmax(results['logits'], axis=1)
     scores = {}
+
+    if label_list:
+        get_prediction_accuracy_distribution(predictions, results['labels'], label_list)
 
     for metric in metrics:
         if metric == 'acc':

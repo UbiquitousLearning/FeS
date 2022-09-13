@@ -18,7 +18,40 @@ nohup python sweep.py --dataset agnews --device 2 --train_examples 16 --test_exa
 nohup python sweep.py --dataset agnews --device 2 --train_examples 32 --test_examples -1 --unlabeled_examples -1 --method fedpet --client_num_in_total 2 &
 nohup python sweep.py --dataset agnews --device 2 --train_examples 64 --test_examples -1 --unlabeled_examples -1 --method fedpet --client_num_in_total 2 &
 
+# -----------------------
+# client_num_in_total: 4
+nohup python sweep.py --dataset agnews --device 1 --train_examples 4 --test_examples -1 --unlabeled_examples -1 --method fedpet --client_num_in_total 4 &
+nohup python sweep.py --dataset agnews --device 1 --train_examples 8 --test_examples -1 --unlabeled_examples -1 --method fedpet --client_num_in_total 4 &
+nohup python sweep.py --dataset agnews --device 1 --train_examples 16 --test_examples -1 --unlabeled_examples -1 --method fedpet --client_num_in_total 4 &
+nohup python sweep.py --dataset agnews --device 1 --train_examples 32 --test_examples -1 --unlabeled_examples -1 --method fedpet --client_num_in_total 4 &
+nohup python sweep.py --dataset agnews --device 1 --train_examples 64 --test_examples -1 --unlabeled_examples -1 --method fedpet --client_num_in_total 4 &
+nohup python sweep.py --dataset agnews --device 1 --train_examples 128 --test_examples -1 --unlabeled_examples -1 --method fedpet --client_num_in_total 4 &
+# -----------------------
+# client_num_in_total: 8
+nohup python sweep.py --dataset agnews --device 1 --train_examples 8 --test_examples -1 --unlabeled_examples -1 --method fedpet --client_num_in_total 8 &
+nohup python sweep.py --dataset agnews --device 1 --train_examples 16 --test_examples -1 --unlabeled_examples -1 --method fedpet --client_num_in_total 8 &
+nohup python sweep.py --dataset agnews --device 1 --train_examples 32 --test_examples -1 --unlabeled_examples -1 --method fedpet --client_num_in_total 8 &
+nohup python sweep.py --dataset agnews --device 2 --train_examples 64 --test_examples -1 --unlabeled_examples -1 --method fedpet --client_num_in_total 8 &
+nohup python sweep.py --dataset agnews --device 2 --train_examples 128 --test_examples -1 --unlabeled_examples -1 --method fedpet --client_num_in_total 8 &
+nohup python sweep.py --dataset agnews --device 2 --train_examples 256 --test_examples -1 --unlabeled_examples -1 --method fedpet --client_num_in_total 8 &
 
+
+# -----------------------
+# client_num_in_total: 16
+nohup python sweep.py --dataset agnews --device 1 --train_examples 16 --test_examples -1 --unlabeled_examples -1 --method fedpet --client_num_in_total 16 &
+nohup python sweep.py --dataset agnews --device 1 --train_examples 32 --test_examples -1 --unlabeled_examples -1 --method fedpet --client_num_in_total 16 &
+nohup python sweep.py --dataset agnews --device 1 --train_examples 64 --test_examples -1 --unlabeled_examples -1 --method fedpet --client_num_in_total 16 &
+nohup python sweep.py --dataset agnews --device 1 --train_examples 128 --test_examples -1 --unlabeled_examples -1 --method fedpet --client_num_in_total 16 &
+nohup python sweep.py --dataset agnews --device 1 --train_examples 256 --test_examples -1 --unlabeled_examples -1 --method fedpet --client_num_in_total 16 &
+nohup python sweep.py --dataset agnews --device 1 --train_examples 512 --test_examples -1 --unlabeled_examples -1 --method fedpet --client_num_in_total 16 &
+# -----------------------
+# client_num_in_total: 32
+nohup python sweep.py --dataset agnews --device 1 --train_examples 32 --test_examples -1 --unlabeled_examples -1 --method fedpet --client_num_in_total 32 &
+nohup python sweep.py --dataset agnews --device 2 --train_examples 64 --test_examples -1 --unlabeled_examples -1 --method fedpet --client_num_in_total 32 &
+nohup python sweep.py --dataset agnews --device 2 --train_examples 128 --test_examples -1 --unlabeled_examples -1 --method fedpet --client_num_in_total 32 &
+nohup python sweep.py --dataset agnews --device 2 --train_examples 256 --test_examples -1 --unlabeled_examples -1 --method fedpet --client_num_in_total 32 &
+nohup python sweep.py --dataset agnews --device 5 --train_examples 512 --test_examples -1 --unlabeled_examples -1 --method fedpet --client_num_in_total 32 &
+nohup python sweep.py --dataset agnews --device 7 --train_examples 1024 --test_examples -1 --unlabeled_examples -1 --method fedpet --client_num_in_total 32 &
 
 # client_num_in_total = 1
 # samples_per_client_list = [1, 5, 10, 50, 100]
@@ -141,22 +174,6 @@ nohup python sweep.py --dataset agnews --device 4 --train_examples 10240 --test_
 
 
 
-# -----------------------
-# client_num_in_total: 16
-nohup python sweep.py --dataset agnews --device 1 --train_examples 16 --test_examples -1 --unlabeled_examples -1 --method fedpet --client_num_in_total 16 &
-nohup python sweep.py --dataset agnews --device 1 --train_examples 32 --test_examples -1 --unlabeled_examples -1 --method fedpet --client_num_in_total 16 &
-nohup python sweep.py --dataset agnews --device 1 --train_examples 64 --test_examples -1 --unlabeled_examples -1 --method fedpet --client_num_in_total 16 &
-nohup python sweep.py --dataset agnews --device 1 --train_examples 128 --test_examples -1 --unlabeled_examples -1 --method fedpet --client_num_in_total 16 &
-nohup python sweep.py --dataset agnews --device 1 --train_examples 256 --test_examples -1 --unlabeled_examples -1 --method fedpet --client_num_in_total 16 &
-nohup python sweep.py --dataset agnews --device 1 --train_examples 512 --test_examples -1 --unlabeled_examples -1 --method fedpet --client_num_in_total 16 &
-# -----------------------
-# client_num_in_total: 32
-nohup python sweep.py --dataset agnews --device 1 --train_examples 32 --test_examples -1 --unlabeled_examples -1 --method fedpet --client_num_in_total 32 &
-nohup python sweep.py --dataset agnews --device 2 --train_examples 64 --test_examples -1 --unlabeled_examples -1 --method fedpet --client_num_in_total 32 &
-nohup python sweep.py --dataset agnews --device 2 --train_examples 128 --test_examples -1 --unlabeled_examples -1 --method fedpet --client_num_in_total 32 &
-nohup python sweep.py --dataset agnews --device 2 --train_examples 256 --test_examples -1 --unlabeled_examples -1 --method fedpet --client_num_in_total 32 &
-nohup python sweep.py --dataset agnews --device 5 --train_examples 512 --test_examples -1 --unlabeled_examples -1 --method fedpet --client_num_in_total 32 &
-nohup python sweep.py --dataset agnews --device 7 --train_examples 1024 --test_examples -1 --unlabeled_examples -1 --method fedpet --client_num_in_total 32 &
 
 
 # Dataset: Yelp-full

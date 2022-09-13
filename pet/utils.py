@@ -278,8 +278,9 @@ def get_verbalization_ids(word: str, tokenizer: PreTrainedTokenizer, force_singl
     ids = tokenizer.encode(word, add_special_tokens=False, **kwargs)
     if not force_single_token:
         return ids
-    assert len(ids) == 1, \
-        f'Verbalization "{word}" does not correspond to a single token, got {tokenizer.convert_ids_to_tokens(ids)}'
+    # assert (
+    #     len(ids) == 1
+    # ), f'Verbalization "{word}" does not correspond to a single token, got {tokenizer.convert_ids_to_tokens(ids)}'
     verbalization_id = ids[0]
     assert verbalization_id not in tokenizer.all_special_ids, \
         f'Verbalization {word} is mapped to a special token {tokenizer.convert_ids_to_tokens(verbalization_id)}'

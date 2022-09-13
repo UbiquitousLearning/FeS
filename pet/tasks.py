@@ -365,7 +365,8 @@ class RteProcessor(DataProcessor):
         return self._create_examples(os.path.join(data_dir, "test.jsonl"), "test")
 
     def get_unlabeled_examples(self, data_dir):
-        return self._create_examples(os.path.join(data_dir, "unlabeled.jsonl"), "unlabeled")
+        return self.get_train_examples(data_dir)
+        # return self._create_examples(os.path.join(data_dir, "unlabeled.jsonl"), "unlabeled")
 
     def get_labels(self):
         return ["entailment", "not_entailment"]
@@ -437,7 +438,8 @@ class WicProcessor(DataProcessor):
         return self._create_examples(os.path.join(data_dir, "test.jsonl"), "test")
 
     def get_unlabeled_examples(self, data_dir):
-        return self._create_examples(os.path.join(data_dir, "unlabeled.jsonl"), "unlabeled")
+        return self.get_train_examples(data_dir)
+        # return self._create_examples(os.path.join(data_dir, "unlabeled.jsonl"), "unlabeled")
 
     def get_labels(self):
         return ["F", "T"]
