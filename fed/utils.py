@@ -278,20 +278,34 @@ def partition_class_samples_with_dirichlet_distribution(
     return train_data_dirichlet
 
 
-def tag(train_and_unlabeled_data_sperate, client_num_in_total, all_client_num_in_total, train_examples, gamma):
+def tag(train_and_unlabeled_data_sperate, client_num_in_total, all_client_num_in_total, train_examples, gamma, seed):
     train_data_sperate = []
     unlabeled_data_seperate = []
-    total_len_labeled_data = 0
+
+    np.random.seed(seed)
+
+    if gamma:
+        proportions = np.random.dirichlet(np.repeat(gamma, client_num_in_total))
+    else: # unifrom split
+        proportions = np.array([1 / client_num_in_total] * client_num_in_total)
+
+    train_data_dirichlet_list = np.array([])
+
+    N_available = train_examples - client_num_in_total # ensure that each client has 1 samples at least
+
+    for i in range(client_num_in_total-1):
+        train_data_dirichlet_list = np.append(train_data_dirichlet_list, int(N_available * proportions[i]))  # round down by inner function 'int'
+    N_avaiable_left = N_available - np.sum(train_data_dirichlet_list)
+    train_data_dirichlet_list = np.append(train_data_dirichlet_list, N_avaiable_left)
+
+    train_data_dirichlet_list = train_data_dirichlet_list + np.array([1]*client_num_in_total)# add 1 sample to each client
+
+    logging.info("len_labeled_data_list: {}".format(train_data_dirichlet_list))
+
     for i in range(client_num_in_total):
-        total_len_labeled_data = total_len_labeled_data + len(train_and_unlabeled_data_sperate[i])
-
-    len_labeled_data_list = [math.ceil(len(data) / total_len_labeled_data * train_examples) for data in train_and_unlabeled_data_sperate[:client_num_in_total]]
-
-    logging.info("len_labeled_data_list: {}".format(len_labeled_data_list))
-
-    for i in range(client_num_in_total):
-        train_data_sperate.append(train_and_unlabeled_data_sperate[i][:len_labeled_data_list[i]])
-        unlabeled_data_seperate.append(train_and_unlabeled_data_sperate[i][len_labeled_data_list[i]:])
+        offset = int(train_data_dirichlet_list[i])
+        train_data_sperate.append(train_and_unlabeled_data_sperate[i][:offset])
+        unlabeled_data_seperate.append(train_and_unlabeled_data_sperate[i][offset:])
     
     for i in range(all_client_num_in_total - client_num_in_total):
         unlabeled_data_seperate.append(train_and_unlabeled_data_sperate[i + client_num_in_total])
@@ -303,22 +317,23 @@ def tag(train_and_unlabeled_data_sperate, client_num_in_total, all_client_num_in
 
 
 def seperate_clients(train_and_unlabeled_data_sperate, eval_data, alpha, beta, gamma, seed, client_num_in_total, all_client_num_in_total, train_examples, labels):
+    global_seed = 42 # fix this will stable the foundation/common (1st layer) client partition
     if alpha:
-        train_and_unlabeled_data_sperate = label_skew_process(train_data=train_and_unlabeled_data_sperate, labels=labels, client_num=all_client_num_in_total, alpha=alpha, seed=seed)
+        train_and_unlabeled_data_sperate = label_skew_process(train_data=train_and_unlabeled_data_sperate, labels=labels, client_num=all_client_num_in_total, alpha=alpha, seed=global_seed)
         for data in train_and_unlabeled_data_sperate:
             get_examples_distribution(data, labels)
-        eval_data_seperate = partition_class_samples_with_dirichlet_distribution(train_data=eval_data, beta=beta, client_num=all_client_num_in_total, seed=seed)
+        eval_data_seperate = partition_class_samples_with_dirichlet_distribution(train_data=eval_data, beta=beta, client_num=all_client_num_in_total, seed=global_seed)
     
     if beta:
-        train_and_unlabeled_data_sperate = partition_class_samples_with_dirichlet_distribution(train_data=train_and_unlabeled_data_sperate, beta=beta, client_num=all_client_num_in_total, seed=seed) # dataset partition is fixed except for different niid.
+        train_and_unlabeled_data_sperate = partition_class_samples_with_dirichlet_distribution(train_data=train_and_unlabeled_data_sperate, beta=beta, client_num=all_client_num_in_total, seed=global_seed) # dataset partition is fixed except for different niid.
         for data in train_and_unlabeled_data_sperate:
             get_examples_distribution(data, labels)
-        eval_data_seperate = partition_class_samples_with_dirichlet_distribution(train_data=eval_data, beta=beta, client_num=all_client_num_in_total, seed=seed)
+        eval_data_seperate = partition_class_samples_with_dirichlet_distribution(train_data=eval_data, beta=beta, client_num=all_client_num_in_total, seed=global_seed)
 
     if seed != 42: # vary those clients with labels; 42 is the default, others need to be shuffled
         random.Random(seed).shuffle(train_and_unlabeled_data_sperate)
 
-    train_data_sperate, unlabeled_data_seperate = tag(train_and_unlabeled_data_sperate, client_num_in_total, all_client_num_in_total, train_examples, gamma)
+    train_data_sperate, unlabeled_data_seperate = tag(train_and_unlabeled_data_sperate, client_num_in_total, all_client_num_in_total, train_examples, gamma, seed)
     
     
 
