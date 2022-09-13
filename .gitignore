@@ -15,4 +15,3 @@ log/*
 .vscode
 
 *.log
-run*
