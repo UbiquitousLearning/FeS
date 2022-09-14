@@ -282,7 +282,7 @@ def main():
     train_data, unlabeled_data, eval_data = seperate_clients(train_and_unlabeled_data, eval_data, args.alpha, args.beta,  args.gamma, args.seed, args.client_num_in_total, args.all_client_num_in_total, args.train_examples, args.label_list)
 
     for data in train_data:
-        get_examples_distribution(data, args.label_list)
+        get_examples_distribution(data, args.label_list, 2)
 
     args.metrics = METRICS.get(args.task_name, DEFAULT_METRICS)
 

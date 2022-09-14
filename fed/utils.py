@@ -13,9 +13,15 @@ logging.basicConfig(level=logging.INFO,
                         datefmt='%a, %d %b %Y %H:%M:%S')
 
 
-def get_examples_distribution(train_data, labels):
+def get_examples_distribution(train_data, labels,state=0):
+    
     train_examples_per_label = [sum(1 for ex in train_data if ex.label == label) for label in labels]
-    logging.info(f"Example distribution in the original dataset: {train_examples_per_label}")
+    if state == 1: # print origin client distribution
+        logging.info(f"Origin client distribution: Example distribution in the original dataset: {train_examples_per_label}")
+    elif state == 2: # print labeled client distribution
+        logging.info(f"Labeled client distribution: Example distribution in the original dataset: {train_examples_per_label}")
+    else: # common
+        logging.info(f"Common client distribution: Example distribution in the original dataset: {train_examples_per_label}")
 
 
 # label non-iid (alpha)
@@ -283,6 +289,8 @@ def tag(train_and_unlabeled_data_sperate, client_num_in_total, all_client_num_in
     unlabeled_data_seperate = []
 
     np.random.seed(seed)
+    for data in train_and_unlabeled_data_sperate:
+        random.Random(seed).shuffle(data)
 
     if gamma:
         proportions = np.random.dirichlet(np.repeat(gamma, client_num_in_total))
@@ -321,13 +329,13 @@ def seperate_clients(train_and_unlabeled_data_sperate, eval_data, alpha, beta, g
     if alpha:
         train_and_unlabeled_data_sperate = label_skew_process(train_data=train_and_unlabeled_data_sperate, labels=labels, client_num=all_client_num_in_total, alpha=alpha, seed=global_seed)
         for data in train_and_unlabeled_data_sperate:
-            get_examples_distribution(data, labels)
+            get_examples_distribution(data, labels, 1)
         eval_data_seperate = partition_class_samples_with_dirichlet_distribution(train_data=eval_data, beta=beta, client_num=all_client_num_in_total, seed=global_seed)
     
-    if beta:
+    else: # if beta = 0, will be uniformly distributed
         train_and_unlabeled_data_sperate = partition_class_samples_with_dirichlet_distribution(train_data=train_and_unlabeled_data_sperate, beta=beta, client_num=all_client_num_in_total, seed=global_seed) # dataset partition is fixed except for different niid.
         for data in train_and_unlabeled_data_sperate:
-            get_examples_distribution(data, labels)
+            get_examples_distribution(data, labels, 1)
         eval_data_seperate = partition_class_samples_with_dirichlet_distribution(train_data=eval_data, beta=beta, client_num=all_client_num_in_total, seed=global_seed)
 
     if seed != 42: # vary those clients with labels; 42 is the default, others need to be shuffled
