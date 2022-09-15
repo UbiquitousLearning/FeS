@@ -25,7 +25,7 @@ def add_args(parser):
                         help="Data label similarity of each client, the larger the beta the similar data for each client")
     parser.add_argument('--beta', type=int, default=0,
                         help='Int  similarity of each client, the larger the beta the similar data for each client. 0 for off')
-    parser.add_argument("--gamma", type=int, default=0,
+    parser.add_argument("--gamma", type=float, default=0,
                         help="The labeled data distribution density, the larger the gamma the uniform the labeled data distributed")
     parser.add_argument("--client_num_in_total", type=int, default=10,
                         help="How many clients owe labeled data?")

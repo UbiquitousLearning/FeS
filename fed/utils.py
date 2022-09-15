@@ -285,43 +285,82 @@ def partition_class_samples_with_dirichlet_distribution(
 
 
 def tag(train_and_unlabeled_data_sperate, client_num_in_total, all_client_num_in_total, train_examples, gamma, seed):
-    train_data_sperate = []
-    unlabeled_data_seperate = []
+    gurantee = False # # ensure that each client has 1 samples at least; when tuple clients is activated.
+    if gurantee:
+        train_data_sperate = []
+        unlabeled_data_seperate = []
 
-    np.random.seed(seed)
-    for data in train_and_unlabeled_data_sperate:
-        random.Random(seed).shuffle(data)
+        np.random.seed(seed)
+        for data in train_and_unlabeled_data_sperate:
+            random.Random(seed).shuffle(data)
 
-    if gamma:
-        proportions = np.random.dirichlet(np.repeat(gamma, client_num_in_total))
-    else: # unifrom split
-        proportions = np.array([1 / client_num_in_total] * client_num_in_total)
+        if gamma:
+            proportions = np.random.dirichlet(np.repeat(gamma, client_num_in_total))
+        else: # unifrom split
+            proportions = np.array([1 / client_num_in_total] * client_num_in_total)
 
-    train_data_dirichlet_list = np.array([])
+        train_data_dirichlet_list = np.array([])
 
-    N_available = train_examples - client_num_in_total # ensure that each client has 1 samples at least
+        N_available = train_examples - client_num_in_total # ensure that each client has 1 samples at least
 
-    for i in range(client_num_in_total-1):
-        train_data_dirichlet_list = np.append(train_data_dirichlet_list, int(N_available * proportions[i]))  # round down by inner function 'int'
-    N_avaiable_left = N_available - np.sum(train_data_dirichlet_list)
-    train_data_dirichlet_list = np.append(train_data_dirichlet_list, N_avaiable_left)
+        for i in range(client_num_in_total-1):
+            train_data_dirichlet_list = np.append(train_data_dirichlet_list, int(N_available * proportions[i]))  # round down by inner function 'int'
+        N_avaiable_left = N_available - np.sum(train_data_dirichlet_list)
+        train_data_dirichlet_list = np.append(train_data_dirichlet_list, N_avaiable_left)
 
-    train_data_dirichlet_list = train_data_dirichlet_list + np.array([1]*client_num_in_total)# add 1 sample to each client
+        train_data_dirichlet_list = train_data_dirichlet_list + np.array([1]*client_num_in_total)# add 1 sample to each client
 
-    logging.info("len_labeled_data_list: {}".format(train_data_dirichlet_list))
+        logging.info("len_labeled_data_list: {}".format(train_data_dirichlet_list))
 
-    for i in range(client_num_in_total):
-        offset = int(train_data_dirichlet_list[i])
-        train_data_sperate.append(train_and_unlabeled_data_sperate[i][:offset])
-        unlabeled_data_seperate.append(train_and_unlabeled_data_sperate[i][offset:])
-    
-    for i in range(all_client_num_in_total - client_num_in_total):
-        unlabeled_data_seperate.append(train_and_unlabeled_data_sperate[i + client_num_in_total])
-    
-    train_data_sperate = np.array(train_data_sperate)
-    unlabeled_data_seperate = np.array(unlabeled_data_seperate)
+        for i in range(client_num_in_total):
+            offset = int(train_data_dirichlet_list[i])
+            train_data_sperate.append(train_and_unlabeled_data_sperate[i][:offset])
+            unlabeled_data_seperate.append(train_and_unlabeled_data_sperate[i][offset:])
+        
+        for i in range(all_client_num_in_total - client_num_in_total):
+            unlabeled_data_seperate.append(train_and_unlabeled_data_sperate[i + client_num_in_total])
+        
+        train_data_sperate = np.array(train_data_sperate)
+        unlabeled_data_seperate = np.array(unlabeled_data_seperate)
 
-    return train_data_sperate, unlabeled_data_seperate
+        return train_data_sperate, unlabeled_data_seperate
+
+    else:
+        train_data_sperate = []
+        unlabeled_data_seperate = []
+
+        np.random.seed(seed)
+        for data in train_and_unlabeled_data_sperate:
+            random.Random(seed).shuffle(data)
+
+        if gamma:
+            proportions = np.random.dirichlet(np.repeat(gamma, client_num_in_total))
+        else: # unifrom split
+            proportions = np.array([1 / client_num_in_total] * client_num_in_total)
+
+        train_data_dirichlet_list = np.array([])
+
+        N_available = train_examples
+
+        for i in range(client_num_in_total-1):
+            train_data_dirichlet_list = np.append(train_data_dirichlet_list, int(N_available * proportions[i]))  # round down by inner function 'int'
+        N_avaiable_left = N_available - np.sum(train_data_dirichlet_list)
+        train_data_dirichlet_list = np.append(train_data_dirichlet_list, N_avaiable_left)
+
+        logging.info("len_labeled_data_list: {}".format(train_data_dirichlet_list))
+
+        for i in range(client_num_in_total):
+            offset = int(train_data_dirichlet_list[i])
+            train_data_sperate.append(train_and_unlabeled_data_sperate[i][:offset])
+            unlabeled_data_seperate.append(train_and_unlabeled_data_sperate[i][offset:])
+        
+        for i in range(all_client_num_in_total - client_num_in_total):
+            unlabeled_data_seperate.append(train_and_unlabeled_data_sperate[i + client_num_in_total])
+        
+        train_data_sperate = np.array(train_data_sperate)
+        unlabeled_data_seperate = np.array(unlabeled_data_seperate)
+
+        return train_data_sperate, unlabeled_data_seperate
 
 
 def seperate_clients(train_and_unlabeled_data_sperate, eval_data, alpha, beta, gamma, seed, client_num_in_total, all_client_num_in_total, train_examples, labels):

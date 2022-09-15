@@ -35,19 +35,19 @@ all_client_num_in_total=${11}
 pattern_ids=${12}
 
 task_name=${dataset}
-model_type="roberta"
-model_name_or_path="roberta-large"
+# model_type="roberta"
+# model_name_or_path="roberta-large"
 
-# model_type="bert"
-# model_name_or_path="bert-base-uncased"
+model_type="bert"
+model_name_or_path="bert-base-uncased"
 
 seed=42
 epochs=1
 iteration=1000
 clients=${client_num_in_total}
 
-output_model_dir=/${output_dir}/log/${dataset}/seed_${seed}/pattern_${pattern_ids}/alpha_${alpha}_beta_${beta}_gamma_${gamma}
-output_log_dir=./log/${dataset}/seed_${seed}/pattern_${pattern_ids}/alpha_${alpha}_beta_${beta}_gamma_${gamma}
+output_model_dir=/${output_dir}/log/${dataset}/all_${all_client_num_in_total}/seed_${seed}/pattern_${pattern_ids}/alpha_${alpha}_beta_${beta}_gamma_${gamma}
+output_log_dir=./log/${dataset}/all_${all_client_num_in_total}/seed_${seed}/pattern_${pattern_ids}/alpha_${alpha}_beta_${beta}_gamma_${gamma}
 mkdir -p $output_model_dir
 mkdir -p $output_log_dir
 

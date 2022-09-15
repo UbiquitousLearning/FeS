@@ -233,7 +233,7 @@ def main():
                         help="Data label similarity of each client, the larger the beta the similar data for each client")
     parser.add_argument("--beta", type=int, default=0,
                         help="Data quantity similarity of each client, the larger the beta the similar data for each client")
-    parser.add_argument("--gamma", type=int, default=0,
+    parser.add_argument("--gamma", type=float, default=0,
                         help="The labeled data distribution density, the larger the gamma the uniform the labeled data distributed")
     parser.add_argument("--client_num_in_total", type=int, default=10,
                         help="How many clients owe labeled data?")
@@ -281,8 +281,16 @@ def main():
 
     train_data, unlabeled_data, eval_data = seperate_clients(train_and_unlabeled_data, eval_data, args.alpha, args.beta,  args.gamma, args.seed, args.client_num_in_total, args.all_client_num_in_total, args.train_examples, args.label_list)
 
-    for data in train_data:
+    labeled_idx = []
+    for i in range(len(train_data)):
+        data = train_data[i]
         get_examples_distribution(data, args.label_list, 2)
+        if len(data) != 0:
+            labeled_idx.append(i)
+    labeled_idx= np.array(labeled_idx)
+
+    args.client_num_in_total = len(labeled_idx)
+    logging.info(f"Gamma {args.gamma}, all_client_num_in_total {args.all_client_num_in_total}, train_examples {args.train_examples}: labeled data is distributed in {args.client_num_in_total} clients; labeled_idx is {labeled_idx}")
 
     args.metrics = METRICS.get(args.task_name, DEFAULT_METRICS)
 
@@ -292,37 +300,17 @@ def main():
 
     logging.info("Parameters after setting: {}".format(args))
 
-    if args.method == 'pet':
-        pet.train_pet(pet_model_cfg, pet_train_cfg, pet_eval_cfg, sc_model_cfg, sc_train_cfg, sc_eval_cfg,
-                      pattern_ids=args.pattern_ids, output_dir=args.output_dir,
-                      ensemble_repetitions=args.pet_repetitions, final_repetitions=args.sc_repetitions,
-                      reduction=args.reduction, train_data=train_data, unlabeled_data=unlabeled_data,
-                      eval_data=eval_data, do_train=args.do_train, do_eval=args.do_eval,
-                      no_distillation=args.no_distillation, seed=args.seed)
-
-    elif args.method == 'ipet':
-        pet.train_ipet(pet_model_cfg, pet_train_cfg, pet_eval_cfg, ipet_cfg, sc_model_cfg, sc_train_cfg, sc_eval_cfg,
-                       pattern_ids=args.pattern_ids, output_dir=args.output_dir,
-                       ensemble_repetitions=args.pet_repetitions, final_repetitions=args.sc_repetitions,
-                       reduction=args.reduction, train_data=train_data, unlabeled_data=unlabeled_data,
-                       eval_data=eval_data, do_train=args.do_train, do_eval=args.do_eval, seed=args.seed)
-
-    elif args.method == 'sequence_classifier':
-        pet.train_classifier(sc_model_cfg, sc_train_cfg, sc_eval_cfg, output_dir=args.output_dir,
-                             repetitions=args.sc_repetitions, train_data=train_data, unlabeled_data=unlabeled_data,
-                             eval_data=eval_data, do_train=args.do_train, do_eval=args.do_eval, seed=args.seed)
-    
-    elif args.method == 'fedpet':
+    if args.method == 'fedpet':
         pet.train_fedpet(pet_model_cfg, pet_train_cfg, pet_eval_cfg, ipet_cfg, sc_model_cfg, sc_train_cfg, sc_eval_cfg,
                        pattern_ids=args.pattern_ids, output_dir=args.output_dir,
                        ensemble_repetitions=args.pet_repetitions, final_repetitions=args.sc_repetitions,
                        reduction=args.reduction, train_data=train_data, unlabeled_data=unlabeled_data,
-                       eval_data=eval_data, do_train=args.do_train, do_eval=args.do_eval, seed=args.seed, aggregated=args.aggregated, vanilla=args.vanilla, fed=args.fed, augmentation=args.augmentation, beta=args.beta, client_num_in_total=args.client_num_in_total, check_data=check_data, all_client_num_in_total=args.all_client_num_in_total)
+                       eval_data=eval_data, do_train=args.do_train, do_eval=args.do_eval, seed=args.seed, aggregated=args.aggregated, vanilla=args.vanilla, fed=args.fed, augmentation=args.augmentation, beta=args.beta, client_num_in_total=args.client_num_in_total, check_data=check_data, all_client_num_in_total=args.all_client_num_in_total, labeled_idx=labeled_idx)
 
     elif args.method == 'fedclassifier':
         pet.train_fedclassifier(sc_model_cfg, sc_train_cfg, sc_eval_cfg, output_dir=args.output_dir,
                              repetitions=args.sc_repetitions, train_data=train_data, unlabeled_data=unlabeled_data,
-                             eval_data=eval_data, do_train=args.do_train, do_eval=args.do_eval, seed=args.seed, beta=args.beta, client_num_in_total=args.client_num_in_total, check_data=check_data,all_client_num_in_total=args.all_client_num_in_total)
+                             eval_data=eval_data, do_train=args.do_train, do_eval=args.do_eval, seed=args.seed, beta=args.beta, client_num_in_total=args.client_num_in_total, check_data=check_data,all_client_num_in_total=args.all_client_num_in_total, labeled_idx=labeled_idx)
 
     else:
         raise ValueError(f"Training method '{args.method}' not implemented")
