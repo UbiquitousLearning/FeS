@@ -33,15 +33,27 @@ gamma=$9
 client_num_in_total=${10}
 all_client_num_in_total=${11}
 pattern_ids=${12}
+seed=${13}
+model_type=${14}
+model_name_or_path=${15}
 
 task_name=${dataset}
+
+# model_type="roberta"
+# model_name_or_path="roberta-base"
+
 # model_type="roberta"
 # model_name_or_path="roberta-large"
 
-model_type="bert"
-model_name_or_path="bert-base-uncased"
+# model_type="bert"
+# model_name_or_path="bert-base-uncased"
 
-seed=42
+# model_type="albert"
+# model_name_or_path="albert-base-v2"
+
+model_type="albert"
+model_name_or_path="albert-base-v2"
+
 epochs=1
 iteration=1000
 clients=${client_num_in_total}
@@ -62,7 +74,7 @@ CUDA_VISIBLE_DEVICES=$device python3 cli.py \
 --model_type ${model_type} \
 --model_name_or_path ${model_name_or_path} \
 --task_name ${task_name} \
---output_dir $output_model_dir/${method}_${train_examples}_${clients} \
+--output_dir $output_model_dir/${method}_${train_examples}_${clients}_${model_name_or_path} \
 --ipet_scale_factor 1 \
 --ipet_generations ${iteration} \
 --pet_num_train_epochs ${epochs} \
@@ -79,4 +91,4 @@ CUDA_VISIBLE_DEVICES=$device python3 cli.py \
 --do_eval \
 --fed \
 --seed ${seed} \
---aggregated > ${output_log_dir}/${method}_${train_examples}_${clients}.log 2>&1
+--aggregated > ${output_log_dir}/${method}_${train_examples}_${clients}_${model_name_or_path}.log 2>&1

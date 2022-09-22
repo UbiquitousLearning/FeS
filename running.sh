@@ -144,3 +144,28 @@ nohup python sweep.py --dataset yelp-full --device 7 --train_examples 16 --test_
 nohup python sweep.py --dataset boolq --device 7 --train_examples 256 --test_examples -1 --unlabeled_examples -1 --method fedpet --client_num_in_total 32 --all_client_num_in_total 50 &
 
 nohup python sweep.py --dataset mnli --device 7 --train_examples 16 --test_examples -1 --unlabeled_examples -1 --method fedpet --client_num_in_total 4 --all_client_num_in_total 1000 &
+
+
+nohup python sweep.py --dataset agnews --device 1 --train_examples 1024 --test_examples -1 --unlabeled_examples -1 --method fedclassifier --client_num_in_total 50 --all_client_num_in_total 50 --pattern_ids 1 --alpha 1 --gamma 8 &
+
+nohup python sweep.py --dataset agnews --device 1 --train_examples 1024 --test_examples -1 --unlabeled_examples -1 --method fedclassifier --client_num_in_total 50 --all_client_num_in_total 50 --pattern_ids 1 --alpha 1 --gamma 4 &
+
+nohup python sweep.py --dataset agnews --device 1 --train_examples 1024 --test_examples -1 --unlabeled_examples -1 --method fedclassifier --client_num_in_total 50 --all_client_num_in_total 50 --pattern_ids 1 --alpha 1 --gamma 2 &
+
+nohup python sweep.py --dataset agnews --device 1 --train_examples 1024 --test_examples -1 --unlabeled_examples -1 --method fedclassifier --client_num_in_total 50 --all_client_num_in_total 50 --pattern_ids 1 --alpha 1 --gamma 1 &
+
+nohup python sweep.py --dataset agnews --device 1 --train_examples 1024 --test_examples -1 --unlabeled_examples -1 --method fedclassifier --client_num_in_total 50 --all_client_num_in_total 50 --pattern_ids 1 --alpha 1 --gamma 0.1 &
+
+nohup python sweep.py --dataset agnews --device 1 --train_examples 1024 --test_examples -1 --unlabeled_examples -1 --method fedclassifier --client_num_in_total 50 --all_client_num_in_total 50 --pattern_ids 1 --alpha 1 --gamma 0.2 &
+
+nohup python sweep.py --dataset agnews --device 1 --train_examples 1024 --test_examples -1 --unlabeled_examples -1 --method fedclassifier --client_num_in_total 50 --all_client_num_in_total 50 --pattern_ids 1 --alpha 1 --gamma 0.4 &
+
+nohup python sweep.py --dataset agnews --device 1 --train_examples 1024 --test_examples -1 --unlabeled_examples -1 --method fedclassifier --client_num_in_total 50 --all_client_num_in_total 50 --pattern_ids 1 --alpha 1 --gamma 0.8 &
+
+nohup python sweep.py --dataset agnews --device 1 --train_examples 1024 --test_examples -1 --unlabeled_examples -1 --method fedclassifier --client_num_in_total 50 --all_client_num_in_total 50 --pattern_ids 1 --alpha 1 --gamma 0.01 &
+
+nohup python sweep.py --dataset agnews --device 1 --train_examples 1024 --test_examples -1 --unlabeled_examples -1 --method fedclassifier --client_num_in_total 50 --all_client_num_in_total 50 --pattern_ids 1 --alpha 1 --gamma 0.02 &
+
+nohup python sweep.py --dataset agnews --device 1 --train_examples 1024 --test_examples -1 --unlabeled_examples -1 --method fedclassifier --client_num_in_total 50 --all_client_num_in_total 50 --pattern_ids 1 --alpha 1 --gamma 0.04 &
+
+nohup python sweep.py --dataset agnews --device 1 --train_examples 1024 --test_examples -1 --unlabeled_examples -1 --method fedclassifier --client_num_in_total 50 --all_client_num_in_total 50 --pattern_ids 1 --alpha 1 --gamma 0.08 &

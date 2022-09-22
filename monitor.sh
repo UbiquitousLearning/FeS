@@ -1,3 +1,3 @@
-top -p 13173 -d 2 -b > monitor.log
+top -p 34756 -d 2 -b > monitor.log
 
 nvidia-smi -x

@@ -33,12 +33,67 @@ def add_args(parser):
                         help="How many clients are sperated")
     parser.add_argument("--pattern_ids", type=int, default=0,
                         help="pattern_ids")
+    parser.add_argument("--seed", type=int, default=42,
+                        help="seed")
+    parser.add_argument("--model", type=str, default="roberta",
+                        help="model")
+    parser.add_argument("--model_name_or_path", type=str, default="roberta-large",
+                        help="model_name_or_path")
                         
     return parser.parse_args()
 
-def set_hp(dataset, method, device, train_examples, test_examples, unlabeled_examples, alpha, beta, gamma, client_num_in_total, all_client_num_in_total, pattern_ids):
+def set_hp(dataset, method, device, train_examples, test_examples, unlabeled_examples, alpha, beta, gamma, client_num_in_total, all_client_num_in_total, pattern_ids, seed, model, model_name_or_path):
+    default = True
+    if default:
+        dataset = 'yelp-full'
+        method = "fedpet"
+        pattern_ids = 0
+        alpha=1
+        beta=0 
+        seed =99
 
-    hp = dataset + " " + method + " " + str(device) + " " + str(train_examples) + " " + str(test_examples) + " " + str(unlabeled_examples) + " " + str(alpha) + " " + str(beta) + " " + str(gamma) + " " + str(client_num_in_total) + " " + str(all_client_num_in_total) + " " + str(pattern_ids)
+        samples_per_client = int(train_examples / client_num_in_total)
+
+        if samples_per_client == 1:
+            train_examples = 32
+        if samples_per_client == 2:
+            train_examples = 64
+        if samples_per_client == 4:
+            train_examples = 128
+        if samples_per_client == 8:
+            train_examples = 256
+        if samples_per_client == 16:
+            train_examples = 512
+        if samples_per_client == 32:
+            train_examples = 1024
+
+        if client_num_in_total == 1:
+            gamma=0.001
+        if client_num_in_total == 2:
+            gamma=0.01
+        if client_num_in_total == 4:
+            gamma=0.1
+        if client_num_in_total == 8:
+            gamma=1
+        if client_num_in_total == 16:
+            gamma=10
+        if client_num_in_total == 32:
+            gamma=100
+        
+        client_num_in_total = 32
+
+    if dataset == "agnews":
+        all_client_num_in_total = 1000
+    if dataset == "yahoo":
+        all_client_num_in_total = 1000
+    if dataset == "yelp-full":
+        all_client_num_in_total = 1000
+    if dataset == "boolq":
+        all_client_num_in_total = 50
+    if dataset == "mnli":
+        all_client_num_in_total = 1000
+
+    hp = dataset + " " + method + " " + str(device) + " " + str(train_examples) + " " + str(test_examples) + " " + str(unlabeled_examples) + " " + str(alpha) + " " + str(beta) + " " + str(gamma) + " " + str(client_num_in_total) + " " + str(all_client_num_in_total) + " " + str(pattern_ids) + " " + str(seed) + " " + str(model) + " " + str(model_name_or_path)
 
     return hp
 
@@ -51,7 +106,7 @@ parser = argparse.ArgumentParser()
 args = add_args(parser)
 
 
-args.hp = set_hp(args.dataset, args.method, args.device, args.train_examples, args.test_examples, args.unlabeled_examples, args.alpha, args.beta, args.gamma, args.client_num_in_total, args.all_client_num_in_total, args.pattern_ids)
+args.hp = set_hp(args.dataset, args.method, args.device, args.train_examples, args.test_examples, args.unlabeled_examples, args.alpha, args.beta, args.gamma, args.client_num_in_total, args.all_client_num_in_total, args.pattern_ids, args.seed, args.model, args.model_name_or_path)
 
 logging.info(args)
 logging.info('nohup bash run_fed.sh '
