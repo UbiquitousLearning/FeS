@@ -11,17 +11,19 @@ logging.basicConfig(level=logging.INFO,
                         format=str(
                             process_id) + ' - %(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',
                         datefmt='%a, %d %b %Y %H:%M:%S')
-
+debug = False
 
 def get_examples_distribution(train_data, labels,state=0):
-    
-    train_examples_per_label = [sum(1 for ex in train_data if ex.label == label) for label in labels]
-    if state == 1: # print origin client distribution
-        logging.info(f"Origin client distribution: Example distribution in the original dataset: {train_examples_per_label}")
-    elif state == 2: # print labeled client distribution
-        logging.info(f"Labeled client distribution: Example distribution in the original dataset: {train_examples_per_label}")
-    else: # common
-        logging.info(f"Common client distribution: Example distribution in the original dataset: {train_examples_per_label}")
+    if debug:
+        train_examples_per_label = [sum(1 for ex in train_data if ex.label == label) for label in labels]
+        if state == 1: # print origin client distribution
+            logging.info(f"Origin client distribution: Example distribution in the original dataset: {train_examples_per_label}")
+        elif state == 2: # print labeled client distribution
+            logging.info(f"Labeled client distribution: Example distribution in the original dataset: {train_examples_per_label}")
+        else: # common
+            logging.info(f"Common client distribution: Example distribution in the original dataset: {train_examples_per_label}")
+    else:
+        pass
 
 
 # label non-iid (alpha)

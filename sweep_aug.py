@@ -109,7 +109,7 @@ args = add_args(parser)
 args.hp = set_hp(args.dataset, args.method, args.device, args.train_examples, args.test_examples, args.unlabeled_examples, args.alpha, args.beta, args.gamma, args.client_num_in_total, args.all_client_num_in_total, args.pattern_ids, args.seed, args.model, args.model_name_or_path)
 
 logging.info(args)
-logging.info('nohup bash run_fed.sh '
+logging.info('nohup bash run_fed_aug.sh '
             '{args.hp} '.format(args=args))
-os.system('nohup bash run_fed.sh '
+os.system('nohup bash run_fed_aug.sh '
             '{args.hp} '.format(args=args))

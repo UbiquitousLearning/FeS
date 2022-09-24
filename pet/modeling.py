@@ -46,6 +46,7 @@ logging.basicConfig(level=logging.INFO,
 
 debug = False
 eval_step = 1
+merge_eval = True
 # vanilla = False # whether fed vanilla is on, fed vanilla means no augmentation, but is fed, means using ft instead of pl to train local model, and aggregate the model via fedavg
 # aggregated = True # 是否将10个client训练出来的模型fedavg一下，只infer一次;后面的两个函数里也要改一下
 # augmentation = False # 如果不开augmentation，那每个client只能依靠自己的数据来进行训练，而且也不会用到unlabeled data (origin), fed is off
@@ -317,9 +318,15 @@ def train_fedpet(ensemble_model_config: WrapperConfig, ensemble_train_config: Tr
                 if eval_step > 1: # Only eval when gen = 1, 11, 21... per 10 gens
                     if gen % eval_step == 1:
                         eval_result = []
-                        for i in range(all_client_num_in_total): # eval aggregated performance on all eval set
-                            eval_result.append(evaluate(wrapper, eval_data_all[i], ensemble_eval_config,  label_list =ensemble_model_config.label_list)['scores']['acc'])
+                        if merge_eval:
+                            eval_data_all_merged = np.concatenate(np.array(eval_data_all))
+                            eval_result.append(evaluate(wrapper, eval_data_all_merged, ensemble_eval_config, label_list = ensemble_model_config.label_list)['scores']['acc'])
                             logging.info("Gen {}: Client {} eval acc is: {}".format(gen-1, i, eval_result[-1]))
+                        else:
+                            for i in range(all_client_num_in_total): # eval aggregated performance on all eval set
+                                eval_result.append(evaluate(wrapper, eval_data_all[i], ensemble_eval_config, label_list = ensemble_model_config.label_list)['scores']['acc'])
+                                logging.info("Gen {}: Client {} eval acc is: {}".format(gen-1, i, eval_result[-1]))
+                        
 
                         if debug:
                             logging.info("All clients' eval performance results is:")
@@ -329,9 +336,14 @@ def train_fedpet(ensemble_model_config: WrapperConfig, ensemble_train_config: Tr
                 
                 else:# Normal
                     eval_result = []
-                    for i in range(all_client_num_in_total): # eval aggregated performance on all eval set
-                        eval_result.append(evaluate(wrapper, eval_data_all[i], ensemble_eval_config,  label_list =ensemble_model_config.label_list)['scores']['acc'])
+                    if merge_eval:
+                        eval_data_all_merged = np.concatenate(np.array(eval_data_all))
+                        eval_result.append(evaluate(wrapper, eval_data_all_merged, ensemble_eval_config, label_list = ensemble_model_config.label_list)['scores']['acc'])
                         logging.info("Gen {}: Client {} eval acc is: {}".format(gen-1, i, eval_result[-1]))
+                    else:
+                        for i in range(all_client_num_in_total): # eval aggregated performance on all eval set
+                            eval_result.append(evaluate(wrapper, eval_data_all[i], ensemble_eval_config, label_list = ensemble_model_config.label_list)['scores']['acc'])
+                            logging.info("Gen {}: Client {} eval acc is: {}".format(gen-1, i, eval_result[-1]))
 
                     if debug:
                         logging.info("All clients' eval performance results is:")
@@ -498,9 +510,14 @@ def train_fedclassifier(model_config: WrapperConfig, train_config: TrainConfig, 
             if eval_step > 1:# Only eval when gen = 1, 11, 21... per 10 gens
                 if gen % 10 == 1:
                     eval_result = []
-                    for i in range(all_client_num_in_total): # eval aggregated performance on all eval set
-                        eval_result.append(evaluate(wrapper, eval_data_all[i], eval_config, label_list = model_config.label_list)['scores']['acc'])
+                    if merge_eval:
+                        eval_data_all_merged = np.concatenate(np.array(eval_data_all))
+                        eval_result.append(evaluate(wrapper, eval_data_all_merged, eval_config, label_list = model_config.label_list)['scores']['acc'])
                         logging.info("Gen {}: Client {} eval acc is: {}".format(gen-1, i, eval_result[-1]))
+                    else:
+                        for i in range(all_client_num_in_total): # eval aggregated performance on all eval set
+                            eval_result.append(evaluate(wrapper, eval_data_all[i], eval_config, label_list = model_config.label_list)['scores']['acc'])
+                            logging.info("Gen {}: Client {} eval acc is: {}".format(gen-1, i, eval_result[-1]))
 
                     if debug:
                         logging.info("All clients' eval performance results is:")
@@ -608,7 +625,7 @@ def train_pet_ensemble(model_config: WrapperConfig, train_config: TrainConfig, e
                     # ipet_train_data = [deepcopy(ex) for ex in check_data[:996]]
                     
                     logging.info("Evaluating soft label~")
-                    ipet_train_data = eval_softlabel(ipet_train_data, check_data, replace=True)
+                    ipet_train_data = eval_softlabel(ipet_train_data, check_data, replace=False)
                 else:
                     ipet_train_data = None
                 
@@ -662,7 +679,7 @@ def train_pet_ensemble(model_config: WrapperConfig, train_config: TrainConfig, e
 
                 scores = eval_result['scores']
                 logging.info("--- RESULT (pattern_id={}, iteration={}) ---".format(pattern_id, iteration))
-                logging.info(scores)
+                logging.info(f"Eval results on this client's local data: f{scores}")
                 logging.info(pattern_iter_output_dir)
 
                 results_dict['test_set_after_training'] = scores
@@ -786,7 +803,7 @@ def evaluate(model: TransformerModelWrapper, eval_data: List[InputExample], conf
     predictions = np.argmax(results['logits'], axis=1)
     scores = {}
 
-    if label_list:
+    if label_list and debug:
         get_prediction_accuracy_distribution(predictions, results['labels'], label_list)
 
     for metric in metrics:
