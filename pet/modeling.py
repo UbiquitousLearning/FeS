@@ -226,6 +226,13 @@ def init_model(config: WrapperConfig) -> TransformerModelWrapper:
     return model
 
 def find_labeled(labeled_idx, train_data, unlabeled_data, eval_data):
+    # labeled_idx = []
+    # for i in range(len(train_data)):
+    #     data = train_data[i]
+    #     if len(data) != 0:
+    #         labeled_idx.append(i)
+    # labeled_idx= np.array(labeled_idx)
+
     train_data_sperate = []
     unlabeled_data_seperate = []
     eval_data_seperate = []
@@ -270,9 +277,11 @@ def train_fedpet(ensemble_model_config: WrapperConfig, ensemble_train_config: Tr
 
     num_clients = min(5, client_num_in_total) 
 
-    train_data_sperate, unlabeled_data_seperate, eval_data_seperate = find_labeled(labeled_idx, train_data, unlabeled_data, eval_data)
-
+    train_data_all = train_data
+    unlabeled_data_all = unlabeled_data
     eval_data_all = eval_data
+    
+    train_data_sperate, unlabeled_data_seperate, eval_data_seperate = find_labeled(labeled_idx, train_data_all, unlabeled_data_all, eval_data_all)
 
     # Calculate the samples numbers of all clients involved in training
     sample_num_list = np.array([])
@@ -287,16 +296,27 @@ def train_fedpet(ensemble_model_config: WrapperConfig, ensemble_train_config: Tr
         np.random.seed(gen)
         client_indexes = np.array([])
 
+
+        if gen > 0: # involve those without labeled data at initial
+            num_clients = 5
+            client_num_in_total = 32
+            labeled_idx = range(client_num_in_total)
+            train_data_sperate, unlabeled_data_seperate, eval_data_seperate = find_labeled(labeled_idx, train_data_all, unlabeled_data_all, eval_data_all)
+            sample_num_list = np.array([100] * client_num_in_total)
+
         if fed:
             client_indexes = np.random.choice(range(client_num_in_total), num_clients, replace=False)
         else:
             client_indexes = range(client_num_in_total)
-        
         logging.info("Gen {}: client_indexes is {}".format(gen, client_indexes))
-
+        
         sample_num_list = np.array([])
-        for client in range(num_clients):
-            sample_num_list = np.append(sample_num_list, len(train_data_sperate[client_indexes[client]]))
+        if gen > 0 and augmentation:
+            sample_num_list = np.array([100]*num_clients)
+        else:
+            for client in range(num_clients):
+                sample_num_list = np.append(sample_num_list, len(train_data_sperate[client_indexes[client]]))
+                sample_num_list_init = sample_num_list
         logging.info("Gen{}: sample_num_list is {}".format(gen, sample_num_list))
 
         if gen > 0:
@@ -305,9 +325,13 @@ def train_fedpet(ensemble_model_config: WrapperConfig, ensemble_train_config: Tr
                 aggregated_model_path = os.path.join(output_dir, f'g{gen-1}',f'aggregated')
                 
                 for i in range(num_clients):
+                    if gen == 1 and i == 3:
+                        break
                     pattern_iter_input_dir = os.path.join(output_dir, f'g{gen-1}',f'client{i}')
                     models_path.append(pattern_iter_input_dir)
 
+                if gen == 1:
+                    sample_num_list = sample_num_list_init
                 fl_model = aggregate(models_path=models_path, sample_num_list=sample_num_list)
                 wrapper = init_model(ensemble_model_config)
                 wrapper.model = fl_model
@@ -360,7 +384,7 @@ def train_fedpet(ensemble_model_config: WrapperConfig, ensemble_train_config: Tr
             train_data = np.array(train_data_sperate[client_idx]).tolist()
             unlabeled_data = np.array(unlabeled_data_seperate[client_idx]).tolist()
             eval_data = np.array(eval_data_seperate[client_idx]).tolist()
-            logging.info("len of train set: {}".format(len(train_data)))
+            logging.info(f"Client {client_idx}: len of train set: {len(train_data)}")
 
             if gen > 0:
                 if augmentation: # 是否利用unlabeled data
@@ -372,27 +396,31 @@ def train_fedpet(ensemble_model_config: WrapperConfig, ensemble_train_config: Tr
                             
                             wrapper = TransformerModelWrapper.from_pretrained(aggregated_model_path)
                             wrapper.model = fl_model
-                            
-                            logits = evaluate(wrapper, unlabeled_data, ensemble_eval_config, label_list = ensemble_model_config.label_list)['logits']
+
+                            # logging.info(unlabeled_data)
+
+                            results = evaluate(wrapper, unlabeled_data, ensemble_eval_config, label_list = ensemble_model_config.label_list)
+                            # logging.info(f'results: {results}')
+                            logits = results['logits']
 
                             save_logits(os.path.join(output_dir, f'g{gen-1}', f'client{0}', 'logits.txt'), logits)
-                            
+                            logging.info(f"Client {client_idx} save_logits done")
                             del wrapper
                             gc.collect()
 
                             original_data_size = len(train_data) if train_data else 10 / ipet_config.scale_factor
                             num_new_examples = 100 - len(train_data)
                             # num_new_examples = int(original_data_size * (ipet_config.scale_factor ** (gen + 1)) - len(train_data)) # 由原先的**级别增长，降至*级别增长
-                            generate_fedipet_train_sets(train_data=train_data, unlabeled_data=unlabeled_data,
+                            generate_fedipet_train_sets(train_data=unlabeled_data, unlabeled_data=unlabeled_data,
                                                 labels=ensemble_model_config.label_list, logits_dir=os.path.join(output_dir, f'g{gen-1}'),
-                                                output_dir=os.path.join(output_dir, f'g{gen}', f'client{client}', 'this-gen-train-data'), reduction=reduction,
+                                                output_dir=os.path.join(output_dir, f'g{gen}', f'client{client_idx}', 'this-gen-train-data'), reduction=reduction,
                                                 num_new_examples=num_new_examples, logits_percentage=ipet_config.logits_percentage,
                                                 n_most_likely=ipet_config.n_most_likely if gen == 0 else -1, seed=seed, aggregated=aggregated)
 
-                        else: # 如果aggreagetd 没开，那就是每一方都会用其它n方client的模型来进行n次infer，而不是n方模型的进行
+                        else: # 如果aggreagetd 没开，那就是每一方都会用其它n方client的模型来进行n次infer，而不是n方模型的进行 (这个代码应该有点问题，不能用)
                             for i in range(num_clients):
 
-                                pattern_iter_input_dir = os.path.join(output_dir, f'g{gen-1}',f'client{i}')
+                                pattern_iter_input_dir = os.path.join(output_dir, f'g{gen-1}',f'client{client_indexes[i]}')
 
                                 wrapper = TransformerModelWrapper.from_pretrained(pattern_iter_input_dir)
 
@@ -404,9 +432,9 @@ def train_fedpet(ensemble_model_config: WrapperConfig, ensemble_train_config: Tr
 
                             original_data_size = len(train_data) if train_data else 10 / ipet_config.scale_factor
                             num_new_examples = int(original_data_size * (ipet_config.scale_factor ** (gen + 1)) - len(train_data)) # 由原先的**级别增长，降至*级别增长
-                            generate_fedipet_train_sets(train_data=train_data, unlabeled_data=unlabeled_data,
+                            generate_fedipet_train_sets(train_data=unlabeled_data, unlabeled_data=unlabeled_data,
                                                 labels=ensemble_model_config.label_list, logits_dir=os.path.join(output_dir, f'g{gen-1}'),
-                                                output_dir=os.path.join(output_dir, f'g{gen}', f'client{client}', 'this-gen-train-data'), reduction=reduction,
+                                                output_dir=os.path.join(output_dir, f'g{gen}', f'client{client_idx}', 'this-gen-train-data'), reduction=reduction,
                                                 num_new_examples=num_new_examples, logits_percentage=ipet_config.logits_percentage,
                                                 n_most_likely=ipet_config.n_most_likely if gen == 0 else -1, seed=seed, aggregated=aggregated)
 
@@ -428,18 +456,18 @@ def train_fedpet(ensemble_model_config: WrapperConfig, ensemble_train_config: Tr
 
                         original_data_size = len(train_data) if train_data else 10 / ipet_config.scale_factor
                         num_new_examples = int(original_data_size * (ipet_config.scale_factor ** (gen + 1)) - len(train_data)) # 由原先的**级别增长，降至*级别增长
-                        generate_fedipet_train_sets(train_data=train_data, unlabeled_data=unlabeled_data,
+                        generate_fedipet_train_sets(train_data=unlabeled_data, unlabeled_data=unlabeled_data,
                                             labels=ensemble_model_config.label_list, logits_dir=os.path.join(output_dir, f'g{gen-1}'),
-                                            output_dir=os.path.join(output_dir, f'g{gen}', f'client{client}', 'this-gen-train-data'), reduction=reduction,
+                                            output_dir=os.path.join(output_dir, f'g{gen}', f'client{client_idx}', 'this-gen-train-data'), reduction=reduction,
                                             num_new_examples=num_new_examples, logits_percentage=ipet_config.logits_percentage,
                                             n_most_likely=ipet_config.n_most_likely if gen == 0 else -1, seed=seed, aggregated=aggregated)
 
 
             # Step 2: Train an ensemble of models corresponding to individual clients (pattern = 1)
-            ipet_data_dir = os.path.join(output_dir, f'g{gen}', f'client{client}', 'this-gen-train-data') if gen > 0 and augmentation else None
+            ipet_data_dir = os.path.join(output_dir, f'g{gen}', f'client{client_idx}', 'this-gen-train-data') if gen > 0 and augmentation else None
             last_iteration_model_path = None
             if gen > 0: # Inherit the model para. from last iteration
-                last_iteration_model_path = os.path.join(output_dir, f'g{gen-1}', f'client{client}')
+                last_iteration_model_path = os.path.join(output_dir, f'g{gen-1}', f'client{client_idx}')
             if aggregated and fed:
                 train_pet_ensemble(ensemble_model_config, ensemble_train_config, ensemble_eval_config, pattern_ids,
                                 gen_output_dir, ipet_data_dir=ipet_data_dir,
@@ -983,6 +1011,7 @@ def generate_fedipet_train_sets(train_data: List[InputExample], unlabeled_data: 
 
     InputExample.save_examples(subdir_train_set,
                                 os.path.join(output_dir, 'train.bin'))
+    logging.info(f'Save data with soft label to {output_dir}')
 
 def generate_ipet_train_set(logits_lists: List[LogitsList], labels: List[str], original_data: List[InputExample],
                             examples_per_label: List[int], logits_percentage: float, reduction: str = 'mean',
@@ -1003,6 +1032,8 @@ def generate_ipet_train_set(logits_lists: List[LogitsList], labels: List[str], o
     """
 
     assert len(set(len(ll.logits) for ll in logits_lists)) == 1
+
+    n_most_likely = 100
 
     if not rng:
         rng = random.Random()
@@ -1061,6 +1092,8 @@ def generate_ipet_train_set(logits_lists: List[LogitsList], labels: List[str], o
 def _draw_examples_by_label_probability(examples: List[InputExample], num_examples: int, rng) -> List[InputExample]:
     if len(examples) > 0:
         label_probabilities = [max(example.logits) for example in examples]
+        # logging.info(f'Label_probabilities NAN is {np.isnan(label_probabilities)}')
+        # label_probabilities[np.isnan(label_probabilities)] = np.mean(label_probabilities)
         sum_label_probabilities = sum(label_probabilities)
         label_probabilities = [p / sum_label_probabilities for p in label_probabilities]
         return rng.choice(examples, size=num_examples, replace=False, p=label_probabilities).tolist()

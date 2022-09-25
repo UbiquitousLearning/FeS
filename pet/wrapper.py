@@ -402,7 +402,7 @@ class TransformerModelWrapper:
                 all_indices = np.append(all_indices, indices.detach().cpu().numpy(), axis=0)
                 if 'question_idx' in batch:
                     question_ids = np.append(question_ids, batch['question_idx'].detach().cpu().numpy(), axis=0)
-
+        # logging.info(f'logits: preds is {preds}')
         return {
             'indices': all_indices,
             'logits': preds,

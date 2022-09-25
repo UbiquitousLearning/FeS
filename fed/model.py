@@ -20,7 +20,7 @@ def aggregate(models_path=None, sample_num_list=None):
         model = TransformerModelWrapper.from_pretrained(model_path).model
         models.append(model)
 
-    worker_state_dict =[x.state_dict()for x in models]
+    worker_state_dict =[x.state_dict() for x in models]
     weight_keys =list(worker_state_dict[0].keys())
     fed_state_dict = collections.OrderedDict()
     for key in weight_keys:
