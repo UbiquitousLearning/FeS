@@ -13,6 +13,15 @@ logging.basicConfig(level=logging.INFO,
                         datefmt='%a, %d %b %Y %H:%M:%S')
 debug = False
 
+def delete_cache(gen, output_dir):
+    if gen > 4 :
+        delete_model_path = os.path.join(output_dir, f'g{gen-3}')
+        logging.info("Delete model cache {delete_model_path}".format(delete_model_path=delete_model_path))
+        os.system('rm -rf {delete_model_path}'.format(delete_model_path=delete_model_path))
+    else:
+        pass
+    
+
 def get_examples_distribution(train_data, labels,state=0):
     if debug:
         train_examples_per_label = [sum(1 for ex in train_data if ex.label == label) for label in labels]
@@ -387,3 +396,4 @@ def seperate_clients(train_and_unlabeled_data_sperate, eval_data, alpha, beta, g
     
 
     return train_data_sperate, unlabeled_data_seperate, eval_data_seperate
+

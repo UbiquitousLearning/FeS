@@ -36,6 +36,8 @@ transformers.logging.set_verbosity_error()
 import gc
 
 from fed.model import *
+from fed.augment import *
+from fed.utils import *
 
 process_id = os.getpid()
 logging.getLogger().setLevel(logging.INFO)
@@ -47,68 +49,12 @@ logging.basicConfig(level=logging.INFO,
 debug = False
 eval_step = 1
 merge_eval = True
+correct_label = False
+aug_data_point = 100
 # vanilla = False # whether fed vanilla is on, fed vanilla means no augmentation, but is fed, means using ft instead of pl to train local model, and aggregate the model via fedavg
 # aggregated = True # 是否将10个client训练出来的模型fedavg一下，只infer一次;后面的两个函数里也要改一下
 # augmentation = False # 如果不开augmentation，那每个client只能依靠自己的数据来进行训练，而且也不会用到unlabeled data (origin), fed is off
 # fed = False
-
-
-def delete_cache(gen, output_dir):
-    if gen > 4 :
-        delete_model_path = os.path.join(output_dir, f'g{gen-3}')
-        logging.info("Delete model cache {delete_model_path}".format(delete_model_path=delete_model_path))
-        os.system('rm -rf {delete_model_path}'.format(delete_model_path=delete_model_path))
-    else:
-        pass
-
-def eval_softlabel(ipet_data, train_data, replace=False):
-    if replace:
-            logging.info("Correct button is on.")
-
-    data_num = len(ipet_data)
-    correct = 0
-    for data in ipet_data:
-        uid = data.guid
-        
-        true_label = None
-        for labeled_data in train_data:
-            if labeled_data.guid == uid:
-                true_label = labeled_data.label
-        if true_label == data.label:
-            logging.info("Data {} is tagged correctly as {}.".format(uid, data.label))
-            correct = correct + 1
-        else:
-            logging.info("Data {} is tagged wrong. Current label is {}, true label is {}".format(uid, data.label ,true_label))
-        
-        if replace:
-            data.label = true_label
-    
-    correct_ratio = correct / data_num
-    logging.info("Inference correct ratio is {}".format(correct_ratio))
-
-    return ipet_data
-
-def get_prediction_accuracy_distribution(predictions, labels, label_list):
-    labels_num = len(label_list)
-    label_list = range(labels_num)
-    # logging.info(f"label_list: {label_list}")
-    train_examples_per_label = [sum(1 for i in range(len(predictions)) if labels[i] == label) for label in label_list]
-    correct_per_label = [sum(1 for i in range(len(predictions)) if predictions[i] == labels[i] and labels[i] == label) for label in label_list]
-    wrong_per_label = [sum(1 for i in range(len(predictions)) if predictions[i] != labels[i] and labels[i] == label) for label in label_list]
-    ratio_per_label = []
-
-    logging.info(f"Example distribution in the original dataset: {train_examples_per_label}")
-    logging.info(f"correct_per_label: {correct_per_label}")
-    logging.info(f"wrong_per_label: {wrong_per_label}")
-
-    for i in range(labels_num):
-        if train_examples_per_label[i] == 0:
-            ratio_per_label.append(0)
-        else:
-            ratio_per_label.append(correct_per_label[i] / train_examples_per_label[i])
-
-
-    logging.info(f"ratio_per_label: {ratio_per_label}")
 
 class PetConfig(ABC):
     """Abstract class for a PET configuration that can be saved to and loaded from a json file."""
@@ -225,25 +171,6 @@ def init_model(config: WrapperConfig) -> TransformerModelWrapper:
     model = TransformerModelWrapper(config)
     return model
 
-def find_labeled(labeled_idx, train_data, unlabeled_data, eval_data):
-    # labeled_idx = []
-    # for i in range(len(train_data)):
-    #     data = train_data[i]
-    #     if len(data) != 0:
-    #         labeled_idx.append(i)
-    # labeled_idx= np.array(labeled_idx)
-
-    train_data_sperate = []
-    unlabeled_data_seperate = []
-    eval_data_seperate = []
-    for idx in labeled_idx:
-        train_data_sperate.append(train_data[idx])
-        unlabeled_data_seperate.append(unlabeled_data[idx])
-        eval_data_seperate.append(eval_data[idx])
-    train_data_sperate = np.array(train_data_sperate)
-    unlabeled_data_seperate = np.array(unlabeled_data_seperate)
-    eval_data_seperate = np.array(eval_data_seperate)
-    return train_data_sperate, unlabeled_data_seperate, eval_data_seperate
 
 def train_fedpet(ensemble_model_config: WrapperConfig, ensemble_train_config: TrainConfig,
                ensemble_eval_config: EvalConfig, ipet_config: IPetConfig, final_model_config: WrapperConfig,
@@ -294,30 +221,36 @@ def train_fedpet(ensemble_model_config: WrapperConfig, ensemble_train_config: Tr
         # Select clients
         aggregated_model_path = None
         np.random.seed(gen)
-        client_indexes = np.array([])
 
-
-        if gen > 0: # involve those without labeled data at initial
-            num_clients = 5
-            client_num_in_total = 32
-            labeled_idx = range(client_num_in_total)
-            train_data_sperate, unlabeled_data_seperate, eval_data_seperate = find_labeled(labeled_idx, train_data_all, unlabeled_data_all, eval_data_all)
-            sample_num_list = np.array([100] * client_num_in_total)
-
-        if fed:
-            client_indexes = np.random.choice(range(client_num_in_total), num_clients, replace=False)
-        else:
-            client_indexes = range(client_num_in_total)
-        logging.info("Gen {}: client_indexes is {}".format(gen, client_indexes))
         
         sample_num_list = np.array([])
-        if gen > 0 and augmentation:
+        if gen > 0 and augmentation: # involve those without labeled data at initial
+            num_clients = 5
+
+            client_indexes = np.random.choice(range(all_client_num_in_total), num_clients, replace=False)
+            
+            labeled_idx = client_indexes
+            train_data_sperate, unlabeled_data_seperate, eval_data_seperate = find_labeled(labeled_idx, train_data_all, unlabeled_data_all, eval_data_all)
             sample_num_list = np.array([100]*num_clients)
+
+
+            logging.info("Gen {}: client_indexes is {}".format(gen, client_indexes))
+
         else:
+            client_indexes = np.array([])
+            if fed:
+                client_indexes = np.random.choice(range(client_num_in_total), num_clients, replace=False)
+            else:
+                client_indexes = range(client_num_in_total)
+            logging.info("Gen {}: client_indexes is {}".format(gen, client_indexes))
+
             for client in range(num_clients):
                 sample_num_list = np.append(sample_num_list, len(train_data_sperate[client_indexes[client]]))
                 sample_num_list_init = sample_num_list
+
         logging.info("Gen{}: sample_num_list is {}".format(gen, sample_num_list))
+
+
 
         if gen > 0:
             if fed and aggregated: # 是否和其它方联合训练, fed avg 
@@ -325,10 +258,12 @@ def train_fedpet(ensemble_model_config: WrapperConfig, ensemble_train_config: Tr
                 aggregated_model_path = os.path.join(output_dir, f'g{gen-1}',f'aggregated')
                 
                 for i in range(num_clients):
-                    if gen == 1 and i == 3:
+                    if gen == 1 and i == len(sample_num_list_init):
                         break
+                    
                     pattern_iter_input_dir = os.path.join(output_dir, f'g{gen-1}',f'client{i}')
                     models_path.append(pattern_iter_input_dir)
+                    logging.info(f"{pattern_iter_input_dir} is going to be aggregated.")
 
                 if gen == 1:
                     sample_num_list = sample_num_list_init
@@ -345,7 +280,6 @@ def train_fedpet(ensemble_model_config: WrapperConfig, ensemble_train_config: Tr
                         if merge_eval:
                             eval_data_all_merged = np.concatenate(np.array(eval_data_all))
                             eval_result.append(evaluate(wrapper, eval_data_all_merged, ensemble_eval_config, label_list = ensemble_model_config.label_list)['scores']['acc'])
-                            logging.info("Gen {}: Client {} eval acc is: {}".format(gen-1, i, eval_result[-1]))
                         else:
                             for i in range(all_client_num_in_total): # eval aggregated performance on all eval set
                                 eval_result.append(evaluate(wrapper, eval_data_all[i], ensemble_eval_config, label_list = ensemble_model_config.label_list)['scores']['acc'])
@@ -381,9 +315,9 @@ def train_fedpet(ensemble_model_config: WrapperConfig, ensemble_train_config: Tr
         for client in range(num_clients):
             client_idx = client_indexes[client]
             gen_output_dir = os.path.join(output_dir, f'g{gen}', f'client{client}')
-            train_data = np.array(train_data_sperate[client_idx]).tolist()
-            unlabeled_data = np.array(unlabeled_data_seperate[client_idx]).tolist()
-            eval_data = np.array(eval_data_seperate[client_idx]).tolist()
+            train_data = np.array(train_data_sperate[client]).tolist()
+            unlabeled_data = np.array(unlabeled_data_seperate[client]).tolist()
+            eval_data = np.array(eval_data_seperate[client]).tolist()
             logging.info(f"Client {client_idx}: len of train set: {len(train_data)}")
 
             if gen > 0:
@@ -399,23 +333,24 @@ def train_fedpet(ensemble_model_config: WrapperConfig, ensemble_train_config: Tr
 
                             # logging.info(unlabeled_data)
 
-                            results = evaluate(wrapper, unlabeled_data, ensemble_eval_config, label_list = ensemble_model_config.label_list)
-                            # logging.info(f'results: {results}')
-                            logits = results['logits']
+                            if len(unlabeled_data) > 0 and len(train_data) < aug_data_point:
+                                results = evaluate(wrapper, unlabeled_data, ensemble_eval_config, label_list = ensemble_model_config.label_list)
+                                # logging.info(f'results: {results}')
+                                logits = results['logits']
 
-                            save_logits(os.path.join(output_dir, f'g{gen-1}', f'client{0}', 'logits.txt'), logits)
-                            logging.info(f"Client {client_idx} save_logits done")
-                            del wrapper
-                            gc.collect()
+                                save_logits(os.path.join(output_dir, f'g{gen-1}', f'client{0}', 'logits.txt'), logits)
+                                logging.info(f"Client {client_idx} save_logits done")
+                                del wrapper
+                                gc.collect()
 
-                            original_data_size = len(train_data) if train_data else 10 / ipet_config.scale_factor
-                            num_new_examples = 100 - len(train_data)
-                            # num_new_examples = int(original_data_size * (ipet_config.scale_factor ** (gen + 1)) - len(train_data)) # 由原先的**级别增长，降至*级别增长
-                            generate_fedipet_train_sets(train_data=unlabeled_data, unlabeled_data=unlabeled_data,
-                                                labels=ensemble_model_config.label_list, logits_dir=os.path.join(output_dir, f'g{gen-1}'),
-                                                output_dir=os.path.join(output_dir, f'g{gen}', f'client{client_idx}', 'this-gen-train-data'), reduction=reduction,
-                                                num_new_examples=num_new_examples, logits_percentage=ipet_config.logits_percentage,
-                                                n_most_likely=ipet_config.n_most_likely if gen == 0 else -1, seed=seed, aggregated=aggregated)
+                                original_data_size = len(train_data) if train_data else 10 / ipet_config.scale_factor
+                                num_new_examples = aug_data_point - len(train_data)
+                                # num_new_examples = int(original_data_size * (ipet_config.scale_factor ** (gen + 1)) - len(train_data)) # 由原先的**级别增长，降至*级别增长
+                                generate_fedipet_train_sets(train_data=unlabeled_data, unlabeled_data=unlabeled_data,
+                                                    labels=ensemble_model_config.label_list, logits_dir=os.path.join(output_dir, f'g{gen-1}'),
+                                                    output_dir=os.path.join(output_dir, f'g{gen}', f'client{client_idx}', 'this-gen-train-data'), reduction=reduction,
+                                                    num_new_examples=num_new_examples, logits_percentage=ipet_config.logits_percentage,
+                                                    n_most_likely=ipet_config.n_most_likely if gen == 0 else -1, seed=seed, aggregated=aggregated)
 
                         else: # 如果aggreagetd 没开，那就是每一方都会用其它n方client的模型来进行n次infer，而不是n方模型的进行 (这个代码应该有点问题，不能用)
                             for i in range(num_clients):
@@ -464,10 +399,10 @@ def train_fedpet(ensemble_model_config: WrapperConfig, ensemble_train_config: Tr
 
 
             # Step 2: Train an ensemble of models corresponding to individual clients (pattern = 1)
-            ipet_data_dir = os.path.join(output_dir, f'g{gen}', f'client{client_idx}', 'this-gen-train-data') if gen > 0 and augmentation else None
+            ipet_data_dir = os.path.join(output_dir, f'g{gen}', f'client{client_idx}', 'this-gen-train-data') if gen > 0 and augmentation and len(unlabeled_data) > 0 and len(train_data) < aug_data_point else None
             last_iteration_model_path = None
             if gen > 0: # Inherit the model para. from last iteration
-                last_iteration_model_path = os.path.join(output_dir, f'g{gen-1}', f'client{client_idx}')
+                last_iteration_model_path = os.path.join(output_dir, f'g{gen-1}', f'client{client}')
             if aggregated and fed:
                 train_pet_ensemble(ensemble_model_config, ensemble_train_config, ensemble_eval_config, pattern_ids,
                                 gen_output_dir, ipet_data_dir=ipet_data_dir,
@@ -653,7 +588,7 @@ def train_pet_ensemble(model_config: WrapperConfig, train_config: TrainConfig, e
                     # ipet_train_data = [deepcopy(ex) for ex in check_data[:996]]
                     
                     logging.info("Evaluating soft label~")
-                    ipet_train_data = eval_softlabel(ipet_train_data, check_data, replace=False)
+                    ipet_train_data = eval_softlabel(ipet_train_data, check_data, replace=correct_label)
                 else:
                     ipet_train_data = None
                 
@@ -755,8 +690,7 @@ def train_single_model(model: TransformerModelWrapper, train_data: List[InputExa
     
     if debug:
         # debug mode, evaluate the val set, default is train_data
-        if train_data and return_train_set_results:
-            results_dict['train_set_before_training'] = evaluate(model, eval_data, eval_config)['scores']['acc']
+        results_dict['train_set_before_training'] = evaluate(model, eval_data, eval_config)['scores']['acc']
 
         
         logging.info('init acc: val acc before training is {}'.format(results_dict['train_set_before_training']))
@@ -972,9 +906,9 @@ def generate_fedipet_train_sets(train_data: List[InputExample], unlabeled_data: 
     
     for subdir in subdirs:
         if aggregated and subdir != 'client0':
-            print(subdir,' ','no aggregated data')
+            # print(subdir,' ','no aggregated data')
             continue
-        print(subdir,' ','has aggregated data')
+        # print(subdir,' ','has aggregated data')
         results_file = os.path.join(logits_dir, subdir, 'results.txt')
         logits_file = os.path.join(logits_dir, subdir, 'logits.txt')
         logits = []
