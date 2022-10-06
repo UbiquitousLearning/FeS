@@ -5,6 +5,8 @@ import math
 import random
 
 import os
+from fed.augment import *
+
 process_id = os.getpid()
 logging.getLogger().setLevel(logging.INFO)
 logging.basicConfig(level=logging.INFO,
@@ -20,7 +22,7 @@ def delete_cache(gen, output_dir):
         os.system('rm -rf {delete_model_path}'.format(delete_model_path=delete_model_path))
     else:
         pass
-    
+
 
 def get_examples_distribution(train_data, labels,state=0):
     if debug:
@@ -33,6 +35,34 @@ def get_examples_distribution(train_data, labels,state=0):
             logging.info(f"Common client distribution: Example distribution in the original dataset: {train_examples_per_label}")
     else:
         pass
+
+
+def client_selection(gen, augmentation, train_data_all, unlabeled_data_all, eval_data_all, train_data_sperate, unlabeled_data_seperate, eval_data_seperate, all_client_num_in_total, client_num_in_total, fed):
+    np.random.seed(gen)
+    sample_num_list = np.array([])
+    if gen > 0 and augmentation: # involve those without labeled data at initial
+        num_clients = 5
+        client_indexes = np.random.choice(range(all_client_num_in_total), num_clients, replace=False)
+        
+        labeled_idx = client_indexes
+        train_data_sperate, unlabeled_data_seperate, eval_data_seperate = find_labeled(labeled_idx, train_data_all, unlabeled_data_all, eval_data_all)
+        sample_num_list = np.array([100]*num_clients)
+
+        logging.info("Gen {}: client_indexes is {}".format(gen, client_indexes))
+
+    else:
+        num_clients = min(5, client_num_in_total)
+        client_indexes = np.array([])
+        if fed:
+            client_indexes = np.random.choice(range(client_num_in_total), num_clients, replace=False)
+        else:
+            client_indexes = range(client_num_in_total)
+        logging.info("Gen {}: client_indexes is {}".format(gen, client_indexes))
+
+        for client in range(num_clients):
+            sample_num_list = np.append(sample_num_list, len(train_data_sperate[client_indexes[client]]))
+        
+    return train_data_sperate, unlabeled_data_seperate, eval_data_seperate, sample_num_list, client_indexes, num_clients
 
 
 # label non-iid (alpha)

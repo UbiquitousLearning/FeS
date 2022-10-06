@@ -35,7 +35,7 @@ def find_labeled(labeled_idx, train_data, unlabeled_data, eval_data):
     
 def eval_softlabel(ipet_data, train_data, replace=False):
     if replace:
-            logging.info("Correct button is on.")
+        logging.info("Correct button is on.")
 
     data_num = len(ipet_data)
     correct = 0
@@ -47,38 +47,39 @@ def eval_softlabel(ipet_data, train_data, replace=False):
             if labeled_data.guid == uid:
                 true_label = labeled_data.label
         if true_label == data.label:
-            # logging.info("Data {} is tagged correctly as {}.".format(uid, data.label))
+            logging.info(f"Data {uid} is tagged correctly as {data.label}. Logits is {data.logits}")
             correct = correct + 1
         else:
-            # logging.info("Data {} is tagged wrong. Current label is {}, true label is {}".format(uid, data.label ,true_label))
+            logging.info(f"Data {uid} is tagged wrong. Current label is {data.label}, true label is {true_label}. Logits is {data.logits}")
             pass
         
         if replace:
             data.label = true_label
     
     correct_ratio = correct / data_num
-    logging.info("Inference correct ratio is {}".format(correct_ratio))
+    logging.info(f"Inference correct ratio is {correct_ratio}")
 
-    correct = 0
-    for data in ipet_data:
-        uid = data.guid
+    if replace:
+        correct = 0
+        for data in ipet_data:
+            uid = data.guid
+            
+            true_label = None
+            for labeled_data in train_data:
+                if labeled_data.guid == uid:
+                    true_label = labeled_data.label
+            if true_label == data.label:
+                # logging.info("Data {} is tagged correctly as {}.".format(uid, data.label))
+                correct = correct + 1
+            else:
+                # logging.info("Data {} is tagged wrong. Current label is {}, true label is {}".format(uid, data.label ,true_label))
+                pass
+            
+            if replace:
+                data.label = true_label
         
-        true_label = None
-        for labeled_data in train_data:
-            if labeled_data.guid == uid:
-                true_label = labeled_data.label
-        if true_label == data.label:
-            # logging.info("Data {} is tagged correctly as {}.".format(uid, data.label))
-            correct = correct + 1
-        else:
-            # logging.info("Data {} is tagged wrong. Current label is {}, true label is {}".format(uid, data.label ,true_label))
-            pass
-        
-        if replace:
-            data.label = true_label
-    
-    correct_ratio = correct / data_num
-    logging.info("After correct: Inference correct ratio is {}".format(correct_ratio))
+        correct_ratio = correct / data_num
+        logging.info("After correct: Inference correct ratio is {}".format(correct_ratio))
 
     return ipet_data
 
