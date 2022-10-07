@@ -21,6 +21,7 @@ from copy import deepcopy
 from typing import List, Dict
 
 import numpy as np
+from sklearn import ensemble
 import torch
 from sklearn.metrics import f1_score
 from transformers.data.metrics import simple_accuracy
@@ -48,7 +49,7 @@ logging.basicConfig(level=logging.INFO,
 
 debug = False
 eval_step = 1
-merge_eval = True
+merge_eval = False
 correct_label = False
 aug_data_point = 100
 # vanilla = False # whether fed vanilla is on, fed vanilla means no augmentation, but is fed, means using ft instead of pl to train local model, and aggregate the model via fedavg
@@ -234,133 +235,98 @@ def train_fedpet(ensemble_model_config: WrapperConfig, ensemble_train_config: Tr
             train_data_sperate, unlabeled_data_seperate, eval_data_seperate, sample_num_list, client_indexes, num_clients = client_selection(gen, augmentation, train_data_all, unlabeled_data_all, eval_data_all, train_data_sperate, unlabeled_data_seperate, eval_data_seperate, all_client_num_in_total, client_num_in_total, fed)
 
             logging.info("Gen{}: sample_num_list is {}".format(gen, sample_num_list))
-        
-
-        
 
         # Model aggregation
         aggregated_model_path = None
         if gen > 0:
-            if fed and aggregated: # 是否和其它方联合训练, fed avg 
+            aggregated_model_path = os.path.join(output_dir, f'g{gen-1}',f'aggregated')
+            
+            for pattern_id in pattern_ids:
                 models_path = []
-                aggregated_model_path = os.path.join(output_dir, f'g{gen-1}',f'aggregated')
-                
+                aggregated_model_path_pattern = f"{aggregated_model_path}-p{pattern_id}"
                 for i in range(num_clients):
                     if gen == 1 and i == len(sample_num_list):
                         break
                     
-                    pattern_iter_input_dir = os.path.join(output_dir, f'g{gen-1}',f'client{i}')
+                    pattern_iter_input_dir = os.path.join(output_dir, f'g{gen-1}',f'client{i}-p{pattern_id}')
                     models_path.append(pattern_iter_input_dir)
                     logging.info(f"{pattern_iter_input_dir} is going to be aggregated.")
 
                 fl_model = aggregate(models_path=models_path, sample_num_list=sample_num_list)
                 wrapper = init_model(ensemble_model_config)
                 wrapper.model = fl_model
-                logging.info("Saving aggregated trained model at {}...".format(aggregated_model_path))
-                wrapper.save(aggregated_model_path) 
+                logging.info("Saving aggregated trained model at {}".format(aggregated_model_path_pattern))
+                wrapper.save(aggregated_model_path_pattern) 
 
-                
-                if eval_step > 1: # Only eval when gen = 1, 11, 21... per 10 gens
-                    if gen % eval_step == 1:
-                        eval_result = []
-                        if merge_eval:
-                            eval_data_all_merged = np.concatenate(np.array(eval_data_all))
-                            eval_result.append(evaluate(wrapper, eval_data_all_merged, ensemble_eval_config, label_list = ensemble_model_config.label_list)['scores']['acc'])
-                        else:
-                            for i in range(all_client_num_in_total): # eval aggregated performance on all eval set
-                                eval_result.append(evaluate(wrapper, eval_data_all[i], ensemble_eval_config, label_list = ensemble_model_config.label_list)['scores']['acc'])
-                                logging.info("Gen {}: Client {} eval acc is: {}".format(gen-1, i, eval_result[-1]))
-                        
-
-                        if debug:
-                            logging.info("All clients' eval performance results is:")
-                            logging.info(eval_result)
-
-                        logging.info('Acc iter is {}. Gen {} aggregated model performance is: {}'.format(gen-1, gen // eval_step, np.mean(np.array(eval_result))))
-                
-                else:# Normal
+            if eval_step > 1: # Only eval when gen = 1, 11, 21... per 10 gens
+                if gen % eval_step == 1:
                     eval_result = []
                     if merge_eval:
                         eval_data_all_merged = np.concatenate(np.array(eval_data_all))
                         eval_result.append(evaluate(wrapper, eval_data_all_merged, ensemble_eval_config, label_list = ensemble_model_config.label_list)['scores']['acc'])
-                        # logging.info("Gen {}: Client {} eval acc is: {}".format(gen-1, i, eval_result[-1]))
                     else:
                         for i in range(all_client_num_in_total): # eval aggregated performance on all eval set
                             eval_result.append(evaluate(wrapper, eval_data_all[i], ensemble_eval_config, label_list = ensemble_model_config.label_list)['scores']['acc'])
                             logging.info("Gen {}: Client {} eval acc is: {}".format(gen-1, i, eval_result[-1]))
+                    
 
                     if debug:
                         logging.info("All clients' eval performance results is:")
                         logging.info(eval_result)
-        
-                    logging.info('Gen {} aggregated model performance is: {}'.format(gen-1, np.mean(np.array(eval_result))))
-                
-                del wrapper
-                gc.collect()
+
+                    logging.info('Acc iter is {}. Gen {} aggregated model performance is: {}'.format(gen-1, gen // eval_step, np.mean(np.array(eval_result))))
+            
+            else:# Normal
+                eval_result = []
+                if merge_eval:
+                    eval_data_all_merged = np.concatenate(np.array(eval_data_all))
+                    eval_result.append(evaluate(wrapper, eval_data_all_merged, ensemble_eval_config, label_list = ensemble_model_config.label_list)['scores']['acc'])
+                    # logging.info("Gen {}: Client {} eval acc is: {}".format(gen-1, i, eval_result[-1]))
+                else:
+                    for i in range(all_client_num_in_total): # eval aggregated performance on all eval set
+                        eval_result.append(evaluate(wrapper, eval_data_all[i], ensemble_eval_config, label_list = ensemble_model_config.label_list)['scores']['acc'])
+                        logging.info("Gen {}: Client {} eval acc is: {}".format(gen-1, i, eval_result[-1]))
+
+                if debug:
+                    logging.info("All clients' eval performance results is:")
+                    logging.info(eval_result)
+    
+                logging.info('Gen {} aggregated model performance is: {}'.format(gen-1, np.mean(np.array(eval_result))))
+            
+            del wrapper
+            gc.collect()
         
         # Data augmentation
         for client in range(num_clients):
-            client_idx = client_indexes[client]
-            gen_output_dir = os.path.join(output_dir, f'g{gen}', f'client{client}')
-            train_data = np.array(train_data_sperate[client]).tolist()
-            unlabeled_data = np.array(unlabeled_data_seperate[client]).tolist()
-            eval_data = np.array(eval_data_seperate[client]).tolist()
-            logging.info(f"Client {client_idx}: len of train set: {len(train_data)}")
+            for pattern_id in pattern_ids:
+                client_idx = client_indexes[client]
+                gen_output_dir_pattern = os.path.join(output_dir, f'g{gen}', f'client{client}-p{pattern_id}')
+                
+                train_data = np.array(train_data_sperate[client]).tolist()
+                unlabeled_data = np.array(unlabeled_data_seperate[client]).tolist()
+                eval_data = np.array(eval_data_seperate[client]).tolist()
+                logging.info(f"Client {client_idx}: len of train set: {len(train_data)}")
 
-            if gen > 0:
-                if augmentation: # 是否利用unlabeled data
-                    if fed: # 是否和其它方联合训练
-                        # Step 1: Use all the model in last interation to annotate examples for this generation
-                        if aggregated: # 是否把多方的模型聚合，以此来利用unlabeled data
-                            models_path = []
-                            aggregated_model_path = os.path.join(output_dir, f'g{gen-1}',f'aggregated')
-                            
-                            wrapper = TransformerModelWrapper.from_pretrained(aggregated_model_path)
-                            wrapper.model = fl_model
+                if gen > 0 and augmentation and pattern_id == pattern_ids[0]: # 是否利用unlabeled data, 只用第一个pattern训练出来的模型来增强，其他的用来验证
+                    models_path = []
+                    aggregated_model_path_aug = os.path.join(output_dir, f'g{gen-1}',f'aggregated-p{pattern_id}')
+                    
+                    wrapper = TransformerModelWrapper.from_pretrained(aggregated_model_path_aug)
+                    wrapper.model = fl_model
 
-                            # logging.info(unlabeled_data)
+                    if len(unlabeled_data) > 0 and len(train_data) < aug_data_point:
+                        results = evaluate(wrapper, unlabeled_data, ensemble_eval_config, label_list = ensemble_model_config.label_list)
+                        logits = results['logits']
+                        
+                        save_logits(os.path.join(output_dir, f'g{gen-1}', f'client{0}-p{0}', 'logits.txt'), logits)
 
-                            if len(unlabeled_data) > 0 and len(train_data) < aug_data_point:
-                                # logging.info(wrapper.model.state_dict())
-                                results = evaluate(wrapper, unlabeled_data, ensemble_eval_config, label_list = ensemble_model_config.label_list)
-                                # logging.info(f'results: {results}')
-                                logits = results['logits']
-
-                                save_logits(os.path.join(output_dir, f'g{gen-1}', f'client{0}', 'logits.txt'), logits)
-                                logging.info(f"Client {client_idx} save_logits done")
-                                del wrapper
-                                gc.collect()
-
-                                original_data_size = len(train_data) if train_data else 10 / ipet_config.scale_factor
-                                num_new_examples = aug_data_point - len(train_data)
-                                # num_new_examples = int(original_data_size * (ipet_config.scale_factor ** (gen + 1)) - len(train_data)) # 由原先的**级别增长，降至*级别增长
-                                generate_fedipet_train_sets(train_data=unlabeled_data, unlabeled_data=unlabeled_data,
-                                                    labels=ensemble_model_config.label_list, logits_dir=os.path.join(output_dir, f'g{gen-1}'),
-                                                    output_dir=os.path.join(output_dir, f'g{gen}', f'client{client_idx}', 'this-gen-train-data'), reduction=reduction,
-                                                    num_new_examples=num_new_examples, logits_percentage=ipet_config.logits_percentage,
-                                                    n_most_likely=ipet_config.n_most_likely if gen == 0 else -1, seed=seed, aggregated=aggregated)
-
-                        else: # 如果aggreagetd 没开，那就是每一方都会用其它n方client的模型来进行n次infer，而不是n方模型的进行 (这个代码应该有点问题，不能用)
-                            pass
-
-                    else: # local pet
-                        models_path = []
-                                
-                        pattern_iter_input_dir = os.path.join(output_dir, f'g{gen-1}',f'client{client_idx}')
-                        models_path.append(pattern_iter_input_dir)
-
-                        fl_model = aggregate(models_path=models_path, sample_num_list=sample_num_list)
-                        wrapper = init_model(ensemble_model_config)
-                        wrapper.model = fl_model
-                        logits = evaluate(wrapper, unlabeled_data, ensemble_eval_config, label_list = ensemble_model_config.label_list)['logits']
-
-                        save_logits(os.path.join(output_dir, f'g{gen-1}', f'client{0}', 'logits.txt'), logits)
-
+                        logging.info(f"Client {client_idx} save_logits done")
                         del wrapper
                         gc.collect()
 
                         original_data_size = len(train_data) if train_data else 10 / ipet_config.scale_factor
-                        num_new_examples = int(original_data_size * (ipet_config.scale_factor ** (gen + 1)) - len(train_data)) # 由原先的**级别增长，降至*级别增长
+                        num_new_examples = aug_data_point - len(train_data)
+                        # num_new_examples = min(aug_data_point, int(2 ** (gen + 1) - len(train_data))) # 由原先的**级别增长，降至*级别增长
                         generate_fedipet_train_sets(train_data=unlabeled_data, unlabeled_data=unlabeled_data,
                                             labels=ensemble_model_config.label_list, logits_dir=os.path.join(output_dir, f'g{gen-1}'),
                                             output_dir=os.path.join(output_dir, f'g{gen}', f'client{client_idx}', 'this-gen-train-data'), reduction=reduction,
@@ -368,131 +334,19 @@ def train_fedpet(ensemble_model_config: WrapperConfig, ensemble_train_config: Tr
                                             n_most_likely=ipet_config.n_most_likely if gen == 0 else -1, seed=seed, aggregated=aggregated)
 
 
-            # Step 2: Train an ensemble of models corresponding to individual clients (pattern = 1)
-            ipet_data_dir = os.path.join(output_dir, f'g{gen}', f'client{client_idx}', 'this-gen-train-data') if gen > 0 and augmentation and len(unlabeled_data) > 0 and len(train_data) < aug_data_point else None
-            last_iteration_model_path = None
-            if gen > 0: # Inherit the model para. from last iteration
-                last_iteration_model_path = os.path.join(output_dir, f'g{gen-1}', f'client{client}')
-            if aggregated and fed:
-                train_pet_ensemble(ensemble_model_config, ensemble_train_config, ensemble_eval_config, pattern_ids,
-                                gen_output_dir, ipet_data_dir=ipet_data_dir,
+
+                # Step 2: Train an ensemble of models corresponding to individual clients (pattern = 1)
+                ipet_data_dir = os.path.join(output_dir, f'g{gen}', f'client{client_idx}', 'this-gen-train-data') if gen > 0 and augmentation and len(unlabeled_data) > 0 and len(train_data) < aug_data_point else None
+
+                aggregated_model_path_pattern = None
+                if aggregated_model_path:
+                    aggregated_model_path_pattern = f"{aggregated_model_path}-p{pattern_id}"
+
+                train_pet_ensemble(ensemble_model_config, ensemble_train_config, ensemble_eval_config, pattern_id,
+                                gen_output_dir_pattern, ipet_data_dir=ipet_data_dir,
                                 repetitions=ensemble_repetitions, train_data=train_data, unlabeled_data=unlabeled_data,
-                                eval_data=eval_data, do_train=do_train, do_eval=do_eval, save_unlabeled_logits=augmentation, aggregated_model_path = aggregated_model_path, check_data=check_data) 
-            else:
-                train_pet_ensemble(ensemble_model_config, ensemble_train_config, ensemble_eval_config, pattern_ids,
-                                gen_output_dir, ipet_data_dir=ipet_data_dir,
-                                repetitions=ensemble_repetitions, train_data=train_data, unlabeled_data=unlabeled_data,
-                                eval_data=eval_data, do_train=do_train, do_eval=do_eval, save_unlabeled_logits=augmentation, last_iteration_model_path = last_iteration_model_path, check_data=check_data) 
+                                eval_data=eval_data, do_train=do_train, do_eval=do_eval, save_unlabeled_logits=augmentation, aggregated_model_path = aggregated_model_path_pattern, check_data=check_data) 
 
-def train_fedclassifier(model_config: WrapperConfig, train_config: TrainConfig, eval_config: EvalConfig, output_dir: str,
-                     repetitions: int = 3, train_data: List[InputExample] = None,
-                     unlabeled_data: List[InputExample] = None, eval_data: List[InputExample] = None,
-                     do_train: bool = True, do_eval: bool = True, seed: int = 42, beta: int = None, client_num_in_total: int = None, check_data: List[InputExample] = None, all_client_num_in_total: int = None, labeled_idx: List[int] = None):
-    """
-    Train and evaluate a sequence classification model.
-
-    :param model_config: the model configuration to use
-    :param train_config: the training configuration to use
-    :param eval_config: the evaluation configuration to use
-    :param output_dir: the output directory
-    :param repetitions: the number of training repetitions
-    :param train_data: the training examples to use
-    :param unlabeled_data: the unlabeled examples to use
-    :param eval_data: the evaluation examples to use
-    :param do_train: whether to perform training
-    :param do_eval: whether to perform evaluation
-    :param seed: the random seed to use
-    """
-
-    train_config.use_logits=False # !!!!!!!!!!!! to be the same with sequence classifer
-
-    num_clients = min(5, client_num_in_total) 
-    
-    train_data_sperate, unlabeled_data_seperate, eval_data_seperate = find_labeled(labeled_idx, train_data, unlabeled_data, eval_data)
-
-    eval_data_all = eval_data
-
-    for gen in range(repetitions):
-        delete_cache(gen, output_dir)
-        # Select clients
-        np.random.seed(gen)
-        client_indexes = np.random.choice(range(client_num_in_total), num_clients, replace=False)
-        logging.info("Gen {}: client_indexes is {}".format(gen, client_indexes))
-        
-        # Calculate the samples numbers of each clients involved in this round 
-        sample_num_list = np.array([])
-        for client in range(num_clients):
-            sample_num_list = np.append(sample_num_list, len(train_data_sperate[client_indexes[client]]))
-        logging.info("Gen{}: sample_num_list is {}".format(gen, sample_num_list))
-
-        if gen > 0 :
-            # Calculate the samples numbers of each clients involved in last round 
-            np.random.seed(gen-1)
-            client_indexes_last = np.random.choice(range(client_num_in_total), num_clients, replace=False)
-            sample_num_list = np.array([])
-            for client in range(num_clients):
-                sample_num_list = np.append(sample_num_list, len(train_data_sperate[client_indexes_last[client]]))
-            logging.info("Last round of Gen{}: sample_num_list is {}".format(gen, sample_num_list))
-
-        aggregated_model_path = None
-        # Aggergate models trained in previous round.
-        if gen > 0:
-            aggregated_model_path = os.path.join(output_dir, f'g{gen-1}',f'aggregated')
-            models_path = []
-            for i in range(num_clients):
-                pattern_iter_input_dir = os.path.join(output_dir, f'g{gen-1}',f'client{i}')
-                models_path.append(pattern_iter_input_dir)
-            fl_model = aggregate(models_path=models_path, sample_num_list=sample_num_list)
-            wrapper = init_model(model_config)
-            wrapper.model = fl_model
-
-            logging.info("Saving aggregated trained model at {}...".format(aggregated_model_path))
-            wrapper.save(aggregated_model_path)
-            
-            if eval_step > 1:# Only eval when gen = 1, 11, 21... per 10 gens
-                if gen % 10 == 1:
-                    eval_result = []
-                    if merge_eval:
-                        eval_data_all_merged = np.concatenate(np.array(eval_data_all))
-                        eval_result.append(evaluate(wrapper, eval_data_all_merged, eval_config, label_list = model_config.label_list)['scores']['acc'])
-                        logging.info("Gen {}: Client {} eval acc is: {}".format(gen-1, i, eval_result[-1]))
-                    else:
-                        for i in range(all_client_num_in_total): # eval aggregated performance on all eval set
-                            eval_result.append(evaluate(wrapper, eval_data_all[i], eval_config, label_list = model_config.label_list)['scores']['acc'])
-                            logging.info("Gen {}: Client {} eval acc is: {}".format(gen-1, i, eval_result[-1]))
-
-                    if debug:
-                        logging.info("All clients' eval performance results is:")
-                        logging.info(eval_result)
-
-                    logging.info('Acc iter is {}. Gen {} aggregated model performance is: {}'.format(gen-1, gen // eval_step, np.mean(np.array(eval_result))))
-
-            else: # Normal
-                eval_result = []
-                for i in range(all_client_num_in_total): # eval aggregated performance on all eval set
-                    eval_result.append(evaluate(wrapper, eval_data_all[i], eval_config, label_list = model_config.label_list)['scores']['acc'])
-                    logging.info("Gen {}: Client {} eval acc is: {}".format(gen-1, i, eval_result[-1]))
-
-                if debug:
-                    logging.info("All clients' eval performance results is:")
-                    logging.info(eval_result)
-
-                logging.info('Gen {} aggregated model performance is: {}'.format(gen-1, np.mean(np.array(eval_result))))
-            
-            del wrapper
-            gc.collect()
-
-        for client in range(num_clients):
-            client_idx = client_indexes[client]
-            gen_output_dir = os.path.join(output_dir, f'g{gen}', f'client{client}')
-            train_data = np.array(train_data_sperate[client_idx]).tolist()
-            unlabeled_data = np.array(unlabeled_data_seperate[client_idx]).tolist()
-            eval_data = np.array(eval_data_seperate[client_idx]).tolist()
-
-            train_pet_ensemble(model_config, train_config, eval_config, pattern_ids=[1], output_dir=gen_output_dir,
-                            repetitions=1,
-                            train_data=train_data, unlabeled_data=unlabeled_data, eval_data=eval_data, do_train=do_train,
-                            do_eval=do_eval, seed=seed, aggregated_model_path=aggregated_model_path, check_data=check_data)
 
 def train_pet_ensemble(model_config: WrapperConfig, train_config: TrainConfig, eval_config: EvalConfig,
                        pattern_ids: List[int], output_dir: str, ipet_data_dir: str = None, repetitions: int = 3,
@@ -522,107 +376,120 @@ def train_pet_ensemble(model_config: WrapperConfig, train_config: TrainConfig, e
     results = defaultdict(lambda: defaultdict(list))
     set_seed(seed)
 
-    for pattern_id in pattern_ids:
-        for iteration in range(repetitions):
+    for iteration in range(repetitions):
 
-            model_config.pattern_id = pattern_id
-            results_dict = {}
+        model_config.pattern_id = pattern_ids
+        results_dict = {}
 
-            pattern_iter_output_dir = "{}".format(output_dir)
+        pattern_iter_output_dir = f"{output_dir}"
 
-            if not os.path.exists(pattern_iter_output_dir):
-                os.makedirs(pattern_iter_output_dir)
+        if not os.path.exists(pattern_iter_output_dir):
+            os.makedirs(pattern_iter_output_dir)
 
-            wrapper = None
+        wrapper = None
 
+        # Training
+        if do_train:
+
+            wrapper = init_model(model_config)
             
-            # Training
-            if do_train:
+            # Using the previous aggregated model
+            if aggregated_model_path:
+                logging.info("Loading previous aggregated trained model from {}".format(aggregated_model_path))
+                wrapper = TransformerModelWrapper.from_pretrained(aggregated_model_path)
+            
+            # Using the previous private model for each client seperatedly.
+            if last_iteration_model_path:
+                logging.info("Loading previous private trained model in last iteration for each client seperatedly from {}.".format(last_iteration_model_path))
+                wrapper = TransformerModelWrapper.from_pretrained(last_iteration_model_path)
 
-                wrapper = init_model(model_config)
+            # Using trained model after 3 epochs of PET unsupervised learning (Only for SC testing, will be removed)
+            inherit = 0
+            if inherit: 
+                logging.info("Loading previous aggregated trained model via PET unsupervised learning.")
+                from transformers import BertForSequenceClassification
+                wrapper.model = BertForSequenceClassification.from_pretrained('./log_10_100/p0-i0')
+            
+            if ipet_data_dir:
+                p = os.path.join(ipet_data_dir, 'train.bin')
+                ipet_train_data = InputExample.load_examples(p)
+                # for example in ipet_train_data:
+                #     example.logits = None
                 
-                # Using the previous aggregated model
-                if aggregated_model_path:
-                    logging.info("Loading previous aggregated trained model from {}".format(aggregated_model_path))
-                    wrapper = TransformerModelWrapper.from_pretrained(aggregated_model_path)
+                # ipet_train_data = [deepcopy(ex) for ex in check_data[:996]]
                 
-                # Using the previous private model for each client seperatedly.
-                if last_iteration_model_path:
-                    logging.info("Loading previous private trained model in last iteration for each client seperatedly from {}.".format(last_iteration_model_path))
-                    wrapper = TransformerModelWrapper.from_pretrained(last_iteration_model_path)
+                logging.info("Evaluating soft label~")
 
-                # Using trained model after 3 epochs of PET unsupervised learning (Only for SC testing, will be removed)
-                inherit = 0
-                if inherit: 
-                    logging.info("Loading previous aggregated trained model via PET unsupervised learning.")
-                    from transformers import BertForSequenceClassification
-                    wrapper.model = BertForSequenceClassification.from_pretrained('./log_10_100/p0-i0')
-                
-                if ipet_data_dir:
-                    p = os.path.join(ipet_data_dir, 'train.bin')
-                    ipet_train_data = InputExample.load_examples(p)
-                    # for example in ipet_train_data:
-                    #     example.logits = None
-                    
-                    # ipet_train_data = [deepcopy(ex) for ex in check_data[:996]]
-                    
-                    logging.info("Evaluating soft label~")
-                    ipet_train_data = eval_softlabel(ipet_train_data, check_data, replace=correct_label)
-                else:
-                    ipet_train_data = None
-                
-                # # See test acc before training
-                # eval_result = evaluate(wrapper, eval_data, eval_config, priming_data=train_data)
+                pattern_ids = [0,1]
+                labels_pattern = []
+                for i in range(len(pattern_ids)):
+                    pattern_id = pattern_ids[i]
+                    aggregated_model_path_pattern = aggregated_model_path.split('-')[0] + "-" + aggregated_model_path.split('-')[1] + f'-p{pattern_id}'
+                    wrapper = TransformerModelWrapper.from_pretrained(aggregated_model_path_pattern)
+                    results = evaluate(wrapper, ipet_train_data, eval_config, model_config.label_list)
+                    # logging.info(results)
+                    label = []
+                    for l in results['logits']:
+                        label.append(model_config.label_list[np.argmax(l).item()])
+                    labels_pattern.append(label)
+                    logging.info(labels_pattern)
 
-                results_dict.update(train_single_model(wrapper, train_data, train_config, eval_config,
-                                                       ipet_train_data=ipet_train_data,
-                                                       unlabeled_data=unlabeled_data, eval_data = eval_data))
+                ipet_train_data = eval_softlabel(ipet_train_data, check_data, replace=correct_label, labels = labels_pattern)
+            else:
+                ipet_train_data = None
+            
+            # # See test acc before training
+            # eval_result = evaluate(wrapper, eval_data, eval_config, priming_data=train_data)
 
-                with open(os.path.join(pattern_iter_output_dir, 'results.txt'), 'w') as fh:
-                    fh.write(str(results_dict))
+            results_dict.update(train_single_model(wrapper, train_data, train_config, eval_config,
+                                                    ipet_train_data=ipet_train_data,
+                                                    unlabeled_data=unlabeled_data, eval_data = eval_data))
 
-                logging.info("Saving trained model at {}...".format(pattern_iter_output_dir))
-                wrapper.save(pattern_iter_output_dir)
-                train_config.save(os.path.join(pattern_iter_output_dir, 'train_config.json'))
-                eval_config.save(os.path.join(pattern_iter_output_dir, 'eval_config.json'))
-                logging.info("Saving complete")
+            with open(os.path.join(pattern_iter_output_dir, 'results.txt'), 'w') as fh:
+                fh.write(str(results_dict))
 
-                # if save_unlabeled_logits:
-                #     logits = evaluate(wrapper, unlabeled_data, eval_config)['logits']
-                #     save_logits(os.path.join(pattern_iter_output_dir, 'logits.txt'), logits)
+            logging.info("Saving trained model at {}".format(pattern_iter_output_dir))
+            wrapper.save(pattern_iter_output_dir)
+            train_config.save(os.path.join(pattern_iter_output_dir, 'train_config.json'))
+            eval_config.save(os.path.join(pattern_iter_output_dir, 'eval_config.json'))
+            logging.info("Saving complete")
 
-                if not do_eval:
-                    wrapper.model = None
-                    wrapper = None
-                    torch.cuda.empty_cache()
+            # if save_unlabeled_logits:
+            #     logits = evaluate(wrapper, unlabeled_data, eval_config)['logits']
+            #     save_logits(os.path.join(pattern_iter_output_dir, 'logits.txt'), logits)
 
-            # Evaluation
-            if do_eval:
-                logging.info("Starting evaluation...")
-                if not wrapper:
-                    logging.info("Loading from pattern_iter_output_dir")
-                    wrapper = TransformerModelWrapper.from_pretrained(pattern_iter_output_dir)
-
-                eval_result = evaluate(wrapper, eval_data, eval_config, priming_data=train_data)
-
-                save_predictions(os.path.join(pattern_iter_output_dir, 'predictions.jsonl'), wrapper, eval_result)
-                save_logits(os.path.join(pattern_iter_output_dir, 'eval_logits.txt'), eval_result['logits'])
-
-                scores = eval_result['scores']
-                logging.info("--- RESULT (pattern_id={}, iteration={}) ---".format(pattern_id, iteration))
-                logging.info(f"Eval results on this client's local data: f{scores}")
-                logging.info(pattern_iter_output_dir)
-
-                results_dict['test_set_after_training'] = scores
-                with open(os.path.join(pattern_iter_output_dir, 'results.json'), 'w') as fh:
-                    json.dump(results_dict, fh)
-
-                for metric, value in scores.items():
-                    results[metric][pattern_id].append(value)
-
+            if not do_eval:
                 wrapper.model = None
                 wrapper = None
                 torch.cuda.empty_cache()
+
+        # Evaluation
+        if do_eval:
+            logging.info("Starting evaluation...")
+            if not wrapper:
+                logging.info("Loading from pattern_iter_output_dir")
+                wrapper = TransformerModelWrapper.from_pretrained(pattern_iter_output_dir)
+
+            eval_result = evaluate(wrapper, eval_data, eval_config, priming_data=train_data)
+
+            save_predictions(os.path.join(pattern_iter_output_dir, 'predictions.jsonl'), wrapper, eval_result)
+            save_logits(os.path.join(pattern_iter_output_dir, 'eval_logits.txt'), eval_result['logits'])
+
+            scores = eval_result['scores']
+            logging.info("--- RESULT (pattern_id={}, iteration={}) ---".format(pattern_ids, iteration))
+            logging.info(f"Eval results on this client's local data: f{scores}")
+            logging.info(pattern_iter_output_dir)
+
+            results_dict['test_set_after_training'] = scores
+            with open(os.path.join(pattern_iter_output_dir, 'results.json'), 'w') as fh:
+                json.dump(results_dict, fh)
+
+            # for metric, value in scores.items():
+            #     results[metric][pattern_ids].append(value)
+
+            wrapper.model = None
+            wrapper = None
+            torch.cuda.empty_cache()
 
     # if do_eval:
     #     logging.info("=== OVERALL RESULTS ===")
@@ -873,9 +740,10 @@ def generate_fedipet_train_sets(train_data: List[InputExample], unlabeled_data: 
     rng_np = np.random.RandomState(seed)
     
     for subdir in subdirs:
-        if aggregated and subdir != 'client0':
-            # print(subdir,' ','no aggregated data')
-            continue
+        if aggregated:
+            if subdir != 'client0-p0':
+                # print(subdir,' ','no aggregated data')
+                continue
         # print(subdir,' ','has aggregated data')
         results_file = os.path.join(logits_dir, subdir, 'results.txt')
         logits_file = os.path.join(logits_dir, subdir, 'logits.txt')
@@ -932,7 +800,7 @@ def generate_ipet_train_set(logits_lists: List[LogitsList], labels: List[str], o
     :param rng_np: the random number generator to use for numpy operations
     :return: a list of input examples that serves as training set for the next generation
     """
-
+    # logging.info(logits_lists)
     assert len(set(len(ll.logits) for ll in logits_lists)) == 1
 
     n_most_likely = 100
@@ -1003,3 +871,114 @@ def _draw_examples_by_label_probability(examples: List[InputExample], num_exampl
     else:
         logging.info("This client has 0 examples to draw. Funtion _draw_examples_by_label_probability is passed.")
         return []
+
+
+def train_fedclassifier(model_config: WrapperConfig, train_config: TrainConfig, eval_config: EvalConfig, output_dir: str,
+                     repetitions: int = 3, train_data: List[InputExample] = None,
+                     unlabeled_data: List[InputExample] = None, eval_data: List[InputExample] = None,
+                     do_train: bool = True, do_eval: bool = True, seed: int = 42, beta: int = None, client_num_in_total: int = None, check_data: List[InputExample] = None, all_client_num_in_total: int = None, labeled_idx: List[int] = None):
+    """
+    Train and evaluate a sequence classification model.
+
+    :param model_config: the model configuration to use
+    :param train_config: the training configuration to use
+    :param eval_config: the evaluation configuration to use
+    :param output_dir: the output directory
+    :param repetitions: the number of training repetitions
+    :param train_data: the training examples to use
+    :param unlabeled_data: the unlabeled examples to use
+    :param eval_data: the evaluation examples to use
+    :param do_train: whether to perform training
+    :param do_eval: whether to perform evaluation
+    :param seed: the random seed to use
+    """
+
+    train_config.use_logits=False # !!!!!!!!!!!! to be the same with sequence classifer
+
+    num_clients = min(5, client_num_in_total) 
+    
+    train_data_sperate, unlabeled_data_seperate, eval_data_seperate = find_labeled(labeled_idx, train_data, unlabeled_data, eval_data)
+
+    eval_data_all = eval_data
+
+    for gen in range(repetitions):
+        delete_cache(gen, output_dir)
+        # Select clients
+        np.random.seed(gen)
+        client_indexes = np.random.choice(range(client_num_in_total), num_clients, replace=False)
+        logging.info("Gen {}: client_indexes is {}".format(gen, client_indexes))
+        
+        # Calculate the samples numbers of each clients involved in this round 
+        sample_num_list = np.array([])
+        for client in range(num_clients):
+            sample_num_list = np.append(sample_num_list, len(train_data_sperate[client_indexes[client]]))
+        logging.info("Gen{}: sample_num_list is {}".format(gen, sample_num_list))
+
+        if gen > 0 :
+            # Calculate the samples numbers of each clients involved in last round 
+            np.random.seed(gen-1)
+            client_indexes_last = np.random.choice(range(client_num_in_total), num_clients, replace=False)
+            sample_num_list = np.array([])
+            for client in range(num_clients):
+                sample_num_list = np.append(sample_num_list, len(train_data_sperate[client_indexes_last[client]]))
+            logging.info("Last round of Gen{}: sample_num_list is {}".format(gen, sample_num_list))
+
+        aggregated_model_path = None
+        # Aggergate models trained in previous round.
+        if gen > 0:
+            aggregated_model_path = os.path.join(output_dir, f'g{gen-1}',f'aggregated')
+            models_path = []
+            for i in range(num_clients):
+                pattern_iter_input_dir = os.path.join(output_dir, f'g{gen-1}',f'client{i}')
+                models_path.append(pattern_iter_input_dir)
+            fl_model = aggregate(models_path=models_path, sample_num_list=sample_num_list)
+            wrapper = init_model(model_config)
+            wrapper.model = fl_model
+
+            logging.info("Saving aggregated trained model at {}...".format(aggregated_model_path))
+            wrapper.save(aggregated_model_path)
+            
+            if eval_step > 1:# Only eval when gen = 1, 11, 21... per 10 gens
+                if gen % 10 == 1:
+                    eval_result = []
+                    if merge_eval:
+                        eval_data_all_merged = np.concatenate(np.array(eval_data_all))
+                        eval_result.append(evaluate(wrapper, eval_data_all_merged, eval_config, label_list = model_config.label_list)['scores']['acc'])
+                        logging.info("Gen {}: Client {} eval acc is: {}".format(gen-1, i, eval_result[-1]))
+                    else:
+                        for i in range(all_client_num_in_total): # eval aggregated performance on all eval set
+                            eval_result.append(evaluate(wrapper, eval_data_all[i], eval_config, label_list = model_config.label_list)['scores']['acc'])
+                            logging.info("Gen {}: Client {} eval acc is: {}".format(gen-1, i, eval_result[-1]))
+
+                    if debug:
+                        logging.info("All clients' eval performance results is:")
+                        logging.info(eval_result)
+
+                    logging.info('Acc iter is {}. Gen {} aggregated model performance is: {}'.format(gen-1, gen // eval_step, np.mean(np.array(eval_result))))
+
+            else: # Normal
+                eval_result = []
+                for i in range(all_client_num_in_total): # eval aggregated performance on all eval set
+                    eval_result.append(evaluate(wrapper, eval_data_all[i], eval_config, label_list = model_config.label_list)['scores']['acc'])
+                    logging.info("Gen {}: Client {} eval acc is: {}".format(gen-1, i, eval_result[-1]))
+
+                if debug:
+                    logging.info("All clients' eval performance results is:")
+                    logging.info(eval_result)
+
+                logging.info('Gen {} aggregated model performance is: {}'.format(gen-1, np.mean(np.array(eval_result))))
+            
+            del wrapper
+            gc.collect()
+
+        for client in range(num_clients):
+            client_idx = client_indexes[client]
+            gen_output_dir = os.path.join(output_dir, f'g{gen}', f'client{client}')
+            train_data = np.array(train_data_sperate[client_idx]).tolist()
+            unlabeled_data = np.array(unlabeled_data_seperate[client_idx]).tolist()
+            eval_data = np.array(eval_data_seperate[client_idx]).tolist()
+
+            train_pet_ensemble(model_config, train_config, eval_config, pattern_ids=[1], output_dir=gen_output_dir,
+                            repetitions=1,
+                            train_data=train_data, unlabeled_data=unlabeled_data, eval_data=eval_data, do_train=do_train,
+                            do_eval=do_eval, seed=seed, aggregated_model_path=aggregated_model_path, check_data=check_data)

@@ -13,7 +13,7 @@ logging.basicConfig(level=logging.INFO,
                         format=str(
                             process_id) + ' - %(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',
                         datefmt='%a, %d %b %Y %H:%M:%S')
-debug = False
+debug = True
 
 def delete_cache(gen, output_dir):
     if gen > 4 :

@@ -39,6 +39,8 @@ model_name_or_path=${15}
 
 task_name=${dataset}
 
+# pattern_ids=[1,0,2]
+echo $pattern_ids
 # model_type="roberta"
 # model_name_or_path="roberta-base"
 
@@ -74,7 +76,7 @@ CUDA_VISIBLE_DEVICES=$device python3 cli.py \
 --model_type ${model_type} \
 --model_name_or_path ${model_name_or_path} \
 --task_name ${task_name} \
---output_dir $output_model_dir/all_aug_100_${method}_${train_examples}_${clients}_${model_name_or_path} \
+--output_dir $output_model_dir/all_aug_100_val_${method}_${train_examples}_${clients}_${model_name_or_path} \
 --ipet_scale_factor 1 \
 --ipet_generations ${iteration} \
 --pet_num_train_epochs ${epochs} \
@@ -92,4 +94,4 @@ CUDA_VISIBLE_DEVICES=$device python3 cli.py \
 --fed \
 --augmentation \
 --seed ${seed} \
---aggregated > ${output_log_dir}/all_aug_100_${method}_${train_examples}_${clients}_${model_name_or_path}.log 2>&1
+--aggregated > ${output_log_dir}/all_aug_100_val_${method}_${train_examples}_${clients}_${model_name_or_path}.log 2>&1
