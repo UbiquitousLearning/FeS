@@ -432,7 +432,7 @@ def train_pet_ensemble(model_config: WrapperConfig, train_config: TrainConfig, e
                     for l in results['logits']:
                         label.append(model_config.label_list[np.argmax(l).item()])
                     labels_pattern.append(label)
-                    logging.info(labels_pattern)
+                    # logging.info(labels_pattern)
 
                 ipet_train_data = eval_softlabel(ipet_train_data, check_data, replace=correct_label, labels = labels_pattern)
             else:
