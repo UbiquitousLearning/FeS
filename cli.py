@@ -298,7 +298,7 @@ def main():
     sc_model_cfg, sc_train_cfg, sc_eval_cfg = load_sequence_classifier_configs(args)
     ipet_cfg = load_ipet_config(args)
 
-    args.pattern_ids = [0,1]
+    args.pattern_ids = [0]
 
     logging.info("Parameters after setting: {}".format(args))
 

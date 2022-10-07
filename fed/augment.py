@@ -39,7 +39,7 @@ def eval_softlabel(ipet_data, train_data, replace=False, labels = None):
     if labels: # ensemble voting
         logging.info("Ensemble voting is on.")
 
-        pattern_ids = [0,1]
+        pattern_ids = [0,1,2,3]
         data_num = len(ipet_data)
         correct = 0
         find_correct = 0

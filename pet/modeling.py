@@ -302,9 +302,15 @@ def train_fedpet(ensemble_model_config: WrapperConfig, ensemble_train_config: Tr
                 client_idx = client_indexes[client]
                 gen_output_dir_pattern = os.path.join(output_dir, f'g{gen}', f'client{client}-p{pattern_id}')
                 
-                train_data = np.array(train_data_sperate[client]).tolist()
-                unlabeled_data = np.array(unlabeled_data_seperate[client]).tolist()
-                eval_data = np.array(eval_data_seperate[client]).tolist()
+                if augmentation: 
+                    train_data = np.array(train_data_sperate[client]).tolist()
+                    unlabeled_data = np.array(unlabeled_data_seperate[client]).tolist()
+                    eval_data = np.array(eval_data_seperate[client]).tolist()
+                else: # without augmentation, train_data_seperate will be fixed forever, and the client list is fixed, so it performs poor
+                    train_data = np.array(train_data_sperate[client_idx]).tolist()
+                    unlabeled_data = np.array(unlabeled_data_seperate[client_idx]).tolist()
+                    eval_data = np.array(eval_data_seperate[client_idx]).tolist()
+
                 logging.info(f"Client {client_idx}: len of train set: {len(train_data)}")
 
                 if gen > 0 and augmentation and pattern_id == pattern_ids[0]: # 是否利用unlabeled data, 只用第一个pattern训练出来的模型来增强，其他的用来验证
@@ -420,7 +426,7 @@ def train_pet_ensemble(model_config: WrapperConfig, train_config: TrainConfig, e
                 
                 logging.info("Evaluating soft label~")
 
-                pattern_ids = [0,1]
+                pattern_ids = [0,1,2,3]
                 labels_pattern = []
                 for i in range(len(pattern_ids)):
                     pattern_id = pattern_ids[i]
