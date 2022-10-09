@@ -169,3 +169,8 @@ nohup python sweep.py --dataset agnews --device 1 --train_examples 1024 --test_e
 nohup python sweep.py --dataset agnews --device 1 --train_examples 1024 --test_examples -1 --unlabeled_examples -1 --method fedclassifier --client_num_in_total 50 --all_client_num_in_total 50 --pattern_ids 1 --alpha 1 --gamma 0.04 &
 
 nohup python sweep.py --dataset agnews --device 1 --train_examples 1024 --test_examples -1 --unlabeled_examples -1 --method fedclassifier --client_num_in_total 50 --all_client_num_in_total 50 --pattern_ids 1 --alpha 1 --gamma 0.08 &
+
+
+nohup python sweep_aug.py --dataset mnli --device 1 --train_examples 392 --test_examples -1 --unlabeled_examples -1 --method fedpet --client_num_in_total 32 --all_client_num_in_total 1000 --pattern_ids 0 --data_point 20 &
+
+nohup python sweep_aug.py --dataset mnli --device 1 --train_examples 392 --test_examples -1 --unlabeled_examples -1 --method fedpet --client_num_in_total 32 --all_client_num_in_total 1000 --pattern_ids 0 --data_point 30 &

@@ -36,6 +36,7 @@ pattern_ids=${12}
 seed=${13}
 model_type=${14}
 model_name_or_path=${15}
+data_point=${16}
 
 task_name=${dataset}
 
@@ -76,7 +77,7 @@ CUDA_VISIBLE_DEVICES=$device python3 cli.py \
 --model_type ${model_type} \
 --model_name_or_path ${model_name_or_path} \
 --task_name ${task_name} \
---output_dir $output_model_dir/all_aug_100_val_${method}_${train_examples}_${clients}_${model_name_or_path} \
+--output_dir $output_model_dir/all_aug_${data_point}_conver_10_limit_0_${method}_${train_examples}_${clients}_${model_name_or_path} \
 --ipet_scale_factor 1 \
 --ipet_generations ${iteration} \
 --pet_num_train_epochs ${epochs} \
@@ -94,4 +95,5 @@ CUDA_VISIBLE_DEVICES=$device python3 cli.py \
 --fed \
 --augmentation \
 --seed ${seed} \
---aggregated > ${output_log_dir}/all_aug_100_val_${method}_${train_examples}_${clients}_${model_name_or_path}.log 2>&1
+--data_point ${data_point} \
+--aggregated > ${output_log_dir}/all_aug_${data_point}_conver_10_limit_0_${method}_${train_examples}_${clients}_${model_name_or_path}.log 2>&1

@@ -37,10 +37,10 @@ def get_examples_distribution(train_data, labels,state=0):
         pass
 
 
-def client_selection(gen, augmentation, train_data_all, unlabeled_data_all, eval_data_all, train_data_sperate, unlabeled_data_seperate, eval_data_seperate, all_client_num_in_total, client_num_in_total, fed):
+def client_selection(gen, augmentation, train_data_all, unlabeled_data_all, eval_data_all, train_data_sperate, unlabeled_data_seperate, eval_data_seperate, all_client_num_in_total, client_num_in_total, labeled_idx, conver_point):
     np.random.seed(gen)
     sample_num_list = np.array([])
-    if gen > 0 and augmentation: # involve those without labeled data at initial
+    if gen > conver_point and augmentation: # involve those without labeled data at initial
         num_clients = 5
         client_indexes = np.random.choice(range(all_client_num_in_total), num_clients, replace=False)
         
@@ -52,11 +52,9 @@ def client_selection(gen, augmentation, train_data_all, unlabeled_data_all, eval
 
     else:
         num_clients = min(5, client_num_in_total)
-        client_indexes = np.array([])
-        if fed:
-            client_indexes = np.random.choice(range(client_num_in_total), num_clients, replace=False)
-        else:
-            client_indexes = range(client_num_in_total)
+
+        client_indexes = np.random.choice(range(client_num_in_total), num_clients, replace=False)
+
         logging.info("Gen {}: client_indexes is {}".format(gen, client_indexes))
 
         for client in range(num_clients):

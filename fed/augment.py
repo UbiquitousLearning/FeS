@@ -39,7 +39,7 @@ def eval_softlabel(ipet_data, train_data, replace=False, labels = None):
     if labels: # ensemble voting
         logging.info("Ensemble voting is on.")
 
-        pattern_ids = [0,1,2,3]
+        pattern_ids = [0]
         data_num = len(ipet_data)
         correct = 0
         find_correct = 0
@@ -94,6 +94,9 @@ def eval_softlabel(ipet_data, train_data, replace=False, labels = None):
 
         data_num = len(ipet_data)
         correct = 0
+
+        limit = 0
+        ipet_data_within_limit = []
         for data in ipet_data:
             uid = data.guid
             
@@ -107,6 +110,9 @@ def eval_softlabel(ipet_data, train_data, replace=False, labels = None):
             else:
                 logging.info(f"Data {uid} is tagged wrong. Current label is {data.label}, true label is {true_label}. Logits is {data.logits}")
                 pass
+                
+            if data.logits[0] > limit:
+                ipet_data_within_limit.append(data)
             
             if replace:
                 data.label = true_label
@@ -114,9 +120,10 @@ def eval_softlabel(ipet_data, train_data, replace=False, labels = None):
         correct_ratio = correct / data_num
         logging.info(f"Inference correct ratio is {correct_ratio}")
 
-        if replace:
-            correct = 0
-            for data in ipet_data:
+        data_num = len(ipet_data_within_limit)
+        correct = 0
+        if data_num > 0: # replace and 
+            for data in ipet_data_within_limit:
                 uid = data.guid
                 
                 true_label = None
@@ -124,10 +131,10 @@ def eval_softlabel(ipet_data, train_data, replace=False, labels = None):
                     if labeled_data.guid == uid:
                         true_label = labeled_data.label
                 if true_label == data.label:
-                    # logging.info("Data {} is tagged correctly as {}.".format(uid, data.label))
+                    logging.info("Data {} is tagged correctly as {}.".format(uid, data.label))
                     correct = correct + 1
                 else:
-                    # logging.info("Data {} is tagged wrong. Current label is {}, true label is {}".format(uid, data.label ,true_label))
+                    logging.info("Data {} is tagged wrong. Current label is {}, true label is {}".format(uid, data.label ,true_label))
                     pass
                 
                 if replace:
@@ -136,7 +143,7 @@ def eval_softlabel(ipet_data, train_data, replace=False, labels = None):
             correct_ratio = correct / data_num
             logging.info("After correct: Inference correct ratio is {}".format(correct_ratio))
 
-        return ipet_data
+        return ipet_data_within_limit
 
 def get_prediction_accuracy_distribution(predictions, labels, label_list):
     labels_num = len(label_list)

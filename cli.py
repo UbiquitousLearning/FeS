@@ -239,6 +239,8 @@ def main():
                         help="How many clients owe labeled data?")
     parser.add_argument("--all_client_num_in_total", type=int, default=1000,
                         help="How many clients are sperated")
+    parser.add_argument("--data_point", type=int, default=100,
+                        help="How many data is to be annotated")
 
     args = parser.parse_args()
     # logging.info("Parameters: {}".format(args))
@@ -298,7 +300,7 @@ def main():
     sc_model_cfg, sc_train_cfg, sc_eval_cfg = load_sequence_classifier_configs(args)
     ipet_cfg = load_ipet_config(args)
 
-    args.pattern_ids = [0]
+    # args.pattern_ids = [0]
 
     logging.info("Parameters after setting: {}".format(args))
 
@@ -307,7 +309,7 @@ def main():
                        pattern_ids=args.pattern_ids, output_dir=args.output_dir,
                        ensemble_repetitions=args.pet_repetitions, final_repetitions=args.sc_repetitions,
                        reduction=args.reduction, train_data=train_data, unlabeled_data=unlabeled_data,
-                       eval_data=eval_data, do_train=args.do_train, do_eval=args.do_eval, seed=args.seed, aggregated=args.aggregated, vanilla=args.vanilla, fed=args.fed, augmentation=args.augmentation, beta=args.beta, client_num_in_total=args.client_num_in_total, check_data=check_data, all_client_num_in_total=args.all_client_num_in_total, labeled_idx=labeled_idx)
+                       eval_data=eval_data, do_train=args.do_train, do_eval=args.do_eval, seed=args.seed, aggregated=args.aggregated, vanilla=args.vanilla, fed=args.fed, augmentation=args.augmentation, beta=args.beta, client_num_in_total=args.client_num_in_total, check_data=check_data, all_client_num_in_total=args.all_client_num_in_total, labeled_idx=labeled_idx, aug_data_point=args.data_point)
 
     elif args.method == 'fedclassifier':
         pet.train_fedclassifier(sc_model_cfg, sc_train_cfg, sc_eval_cfg, output_dir=args.output_dir,
