@@ -35,7 +35,7 @@ def find_labeled(labeled_idx, train_data, unlabeled_data, eval_data):
     return train_data_sperate, unlabeled_data_seperate, eval_data_seperate
 
     
-def eval_softlabel(ipet_data, train_data, replace=False, labels = None):
+def eval_softlabel(ipet_data, train_data, replace=False, labels = None, limit = None):
     if labels: # ensemble voting
         logging.info("Ensemble voting is on.")
 
@@ -95,7 +95,7 @@ def eval_softlabel(ipet_data, train_data, replace=False, labels = None):
         data_num = len(ipet_data)
         correct = 0
 
-        limit = 0
+        limit = limit
         ipet_data_within_limit = []
         for data in ipet_data:
             uid = data.guid

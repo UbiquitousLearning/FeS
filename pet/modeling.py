@@ -52,7 +52,7 @@ debug = False
 eval_step = 1
 merge_eval = False
 correct_label = False
-conver_point = 10
+# conver_point = 10
 # aug_data_point = 100
 # vanilla = False # whether fed vanilla is on, fed vanilla means no augmentation, but is fed, means using ft instead of pl to train local model, and aggregate the model via fedavg
 # aggregated = True # 是否将10个client训练出来的模型fedavg一下，只infer一次;后面的两个函数里也要改一下
@@ -181,7 +181,7 @@ def train_fedpet(ensemble_model_config: WrapperConfig, ensemble_train_config: Tr
                ensemble_repetitions: int = 3, final_repetitions: int = 1, reduction: str = 'wmean',
                train_data: List[InputExample] = None, unlabeled_data: List[InputExample] = None,
                eval_data: List[InputExample] = None, do_train: bool = True, do_eval: bool = True, seed: int = 42, aggregated: bool = True,
-               augmentation: bool = True, fed: bool = True, vanilla: bool = True, beta: int = None, client_num_in_total: int = None, check_data: List[InputExample] = None, all_client_num_in_total: int = None, labeled_idx: List[int] = None, aug_data_point: int = 100):
+               augmentation: bool = True, fed: bool = True, vanilla: bool = True, beta: int = None, client_num_in_total: int = None, check_data: List[InputExample] = None, all_client_num_in_total: int = None, labeled_idx: List[int] = None, aug_data_point: int = 100, conver_point: int = 0, limit: int = 0):
     """
     Train and evaluate a new fed PET model for a given task.
 
@@ -364,7 +364,7 @@ def train_fedpet(ensemble_model_config: WrapperConfig, ensemble_train_config: Tr
                 train_pet_ensemble(ensemble_model_config, ensemble_train_config, ensemble_eval_config, pattern_id,
                                 gen_output_dir_pattern, ipet_data_dir=ipet_data_dir,
                                 repetitions=ensemble_repetitions, train_data=train_data, unlabeled_data=unlabeled_data,
-                                eval_data=eval_data, do_train=do_train, do_eval=do_eval, save_unlabeled_logits=augmentation, aggregated_model_path = aggregated_model_path_pattern, check_data=check_data) 
+                                eval_data=eval_data, do_train=do_train, do_eval=do_eval, save_unlabeled_logits=augmentation, aggregated_model_path = aggregated_model_path_pattern, check_data=check_data, limit=limit) 
 
         logging.info("The current generation of Gen{}: sample_num_list is {}".format(gen, sample_num_list))
 
@@ -372,7 +372,7 @@ def train_pet_ensemble(model_config: WrapperConfig, train_config: TrainConfig, e
                        pattern_ids: List[int], output_dir: str, ipet_data_dir: str = None, repetitions: int = 3,
                        train_data: List[InputExample] = None, unlabeled_data: List[InputExample] = None,
                        eval_data: List[InputExample] = None, do_train: bool = True, do_eval: bool = True,
-                       save_unlabeled_logits: bool = False, seed: int = 42, aggregated_model_path: str = None, last_iteration_model_path: str = None, check_data: List[InputExample] = None):
+                       save_unlabeled_logits: bool = False, seed: int = 42, aggregated_model_path: str = None, last_iteration_model_path: str = None, check_data: List[InputExample] = None, limit: int = 0):
     """
     Train and evaluate an ensemble of PET models without knowledge distillation.
 
@@ -440,7 +440,7 @@ def train_pet_ensemble(model_config: WrapperConfig, train_config: TrainConfig, e
                 
                 logging.info("Evaluating soft label~")
 
-                ipet_train_data = eval_softlabel(ipet_train_data, check_data, replace=correct_label)
+                ipet_train_data = eval_softlabel(ipet_train_data, check_data, replace=correct_label, limit=limit)
 
                 # ensemble voting
                 # pattern_ids = [0]
