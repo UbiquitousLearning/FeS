@@ -49,7 +49,7 @@ logging.basicConfig(level=logging.INFO,
                         datefmt='%a, %d %b %Y %H:%M:%S')
 
 debug = False
-eval_step = 1
+eval_step = 10
 merge_eval = False
 correct_label = False
 # conver_point = 10
@@ -328,7 +328,7 @@ def train_fedpet(ensemble_model_config: WrapperConfig, ensemble_train_config: Tr
                         results = evaluate(wrapper, unlabeled_data, ensemble_eval_config, label_list = ensemble_model_config.label_list)
                         logits = results['logits']
                         
-                        save_logits(os.path.join(output_dir, f'g{gen-1}', f'client{0}-p{0}', 'logits.txt'), logits)
+                        save_logits(os.path.join(output_dir, f'g{gen-1}', f'client0-p{pattern_id}', 'logits.txt'), logits)
 
                         logging.info(f"Client {client_idx} save_logits done")
                         del wrapper
@@ -341,7 +341,7 @@ def train_fedpet(ensemble_model_config: WrapperConfig, ensemble_train_config: Tr
                                             labels=ensemble_model_config.label_list, logits_dir=os.path.join(output_dir, f'g{gen-1}'),
                                             output_dir=os.path.join(output_dir, f'g{gen}', f'client{client_idx}', 'this-gen-train-data'), reduction=reduction,
                                             num_new_examples=num_new_examples, logits_percentage=ipet_config.logits_percentage,
-                                            n_most_likely=ipet_config.n_most_likely if gen == 0 else -1, seed=seed, aggregated=aggregated)
+                                            n_most_likely=ipet_config.n_most_likely if gen == 0 else -1, seed=seed, aggregated=aggregated, pattern=pattern_id)
                                             
 
 
@@ -423,13 +423,6 @@ def train_pet_ensemble(model_config: WrapperConfig, train_config: TrainConfig, e
                 logging.info("Loading previous private trained model in last iteration for each client seperatedly from {}.".format(last_iteration_model_path))
                 wrapper = TransformerModelWrapper.from_pretrained(last_iteration_model_path)
 
-            # Using trained model after 3 epochs of PET unsupervised learning (Only for SC testing, will be removed)
-            inherit = 0
-            if inherit: 
-                logging.info("Loading previous aggregated trained model via PET unsupervised learning.")
-                from transformers import BertForSequenceClassification
-                wrapper.model = BertForSequenceClassification.from_pretrained('./log_10_100/p0-i0')
-            
             if ipet_data_dir:
                 p = os.path.join(ipet_data_dir, 'train.bin')
                 ipet_train_data = InputExample.load_examples(p)
@@ -718,7 +711,7 @@ def merge_logits_lists(logits_lists: List[LogitsList], reduction: str = 'mean') 
                                    
 def generate_fedipet_train_sets(train_data: List[InputExample], unlabeled_data: List[InputExample], labels: List[str],
                              logits_dir: str, output_dir: str, reduction: str, num_new_examples: int,
-                             logits_percentage: float, n_most_likely: int = -1, seed: int = 42, aggregated: bool = True):
+                             logits_percentage: float, n_most_likely: int = -1, seed: int = 42, aggregated: bool = True, pattern: int = None):
     """
     Generate training sets for the next generation of iPET models.
 
@@ -763,8 +756,12 @@ def generate_fedipet_train_sets(train_data: List[InputExample], unlabeled_data: 
     rng_np = np.random.RandomState(seed)
     
     for subdir in subdirs:
+        if pattern:
+            s = f'client0-p{pattern}'
+        else:
+            s = 'client0-p0'
         if aggregated:
-            if subdir != 'client0-p0':
+            if subdir != s:
                 # print(subdir,' ','no aggregated data')
                 continue
         # print(subdir,' ','has aggregated data')

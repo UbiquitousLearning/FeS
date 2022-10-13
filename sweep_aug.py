@@ -43,7 +43,7 @@ def add_args(parser):
                         help="How many data is to be annotated")
     parser.add_argument("--conver_point", type=int, default=0,
                         help="After conver_point, clients with unlabeled data will be involved.")
-    parser.add_argument("--limit", type=int, default=0,
+    parser.add_argument("--limit", type=float, default=0,
                         help="logits < limit will be dropped")
                         
     return parser.parse_args()

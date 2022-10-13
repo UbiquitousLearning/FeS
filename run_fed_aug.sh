@@ -99,5 +99,5 @@ CUDA_VISIBLE_DEVICES=$device python3 cli.py \
 --seed ${seed} \
 --data_point ${data_point} \
 --conver_point ${conver_point} \
---limit ${conver_point} \
+--limit ${limit} \
 --aggregated > ${output_log_dir}/all_aug_${data_point}_conver_${conver_point}_limit_${limit}_${method}_${train_examples}_${clients}_${model_name_or_path}.log 2>&1
