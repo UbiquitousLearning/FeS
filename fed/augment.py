@@ -35,11 +35,11 @@ def find_labeled(labeled_idx, train_data, unlabeled_data, eval_data):
     return train_data_sperate, unlabeled_data_seperate, eval_data_seperate
 
     
-def eval_softlabel(ipet_data, train_data, replace=False, labels = None, limit = None):
+def eval_softlabel(ipet_data, train_data, replace=False, labels = None, limit = None, logits = None):
     if labels: # ensemble voting
         logging.info("Ensemble voting is on.")
 
-        pattern_ids = [0]
+        pattern_ids = [0, 1]
         data_num = len(ipet_data)
         correct = 0
         find_correct = 0
@@ -61,22 +61,25 @@ def eval_softlabel(ipet_data, train_data, replace=False, labels = None, limit = 
             else:
                 logging.info(f"Data {uid} is tagged wrong. Current label is {data.label}, true label is {true_label}. Logits is {data.logits}")
 
-             # correctly find those data annotated wrong
+            sort_out = False
+            # correctly find those data annotated wrong
             for i in range(len(pattern_ids)):
                 pattern_id = pattern_ids[i]
                 
                 if labels[i][j] == data.label:
-                    logging.info(f"Data {uid} is tagged the same as p-{pattern_id}. Logits is {data.logits}")
+                    logging.info(f"Data {uid} is tagged the same as p-{pattern_id}")
                     
                 else:
-                    logging.info(f"Data {uid} is tagged differently. Current label is {data.label}, p-{pattern_id} label is {labels[i][j]}. Logits is {data.logits}")
+                    sort_out = True
+                    logging.info(f"Data {uid} is tagged differently. Current label is {data.label}, p-{pattern_id} label is {labels[i][j]}")
                     if flag:
                         find_wrong = find_wrong + 1
                     else:
                         find_correct = find_correct + 1
                     break
 
-            ipet_data_all_right.append(data)
+            if not sort_out: 
+                ipet_data_all_right.append(data)
         
         correct_ratio = correct / data_num
         find_correct_ratio = find_correct / data_num

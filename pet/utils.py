@@ -275,16 +275,12 @@ def get_verbalization_ids(word: str, tokenizer: PreTrainedTokenizer, force_singl
     :return: either the list of token ids or the single token id corresponding to this word
     """
     kwargs = {'add_prefix_space': True} if isinstance(tokenizer, GPT2Tokenizer) else {}
-    ids = tokenizer.encode(word, add_special_tokens=False, **kwargs)
-    if not force_single_token:
-        return ids
-    # assert (
-    #     len(ids) == 1
-    # ), f'Verbalization "{word}" does not correspond to a single token, got {tokenizer.convert_ids_to_tokens(ids)}'
-    verbalization_id = ids[0]
-    assert verbalization_id not in tokenizer.all_special_ids, \
-        f'Verbalization {word} is mapped to a special token {tokenizer.convert_ids_to_tokens(verbalization_id)}'
-    return verbalization_id
+    if tokenizer.convert_tokens_to_ids(word) == tokenizer.unk_token_id:
+        space_word = "Ġ" + word
+        ids = tokenizer.convert_tokens_to_ids(space_word)
+    else:
+        ids = tokenizer.convert_tokens_to_ids(word)
+    return ids
 
 
 def trim_input_ids(input_ids: torch.tensor, pad_token_id, mask_token_id, num_masks: int):

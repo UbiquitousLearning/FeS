@@ -332,7 +332,7 @@ def train_fedpet(ensemble_model_config: WrapperConfig, ensemble_train_config: Tr
                 logging.info("Zero-shot: saving origin pretrained model at {}".format(aggregated_model_path_pattern))
                 wrapper.save(aggregated_model_path_pattern) 
 
-        # do_eval = False
+        do_eval = False
         if do_eval:
             if eval_step > 1: # Only eval when gen = 0, 10, 20... per 10 gens
                 if gen % eval_step == 0:
@@ -439,24 +439,29 @@ def train_pet_ensemble(model_config: WrapperConfig, train_config: TrainConfig, e
                 
                 logging.info("Evaluating soft label~")
 
-                ipet_train_data = eval_softlabel(ipet_train_data, check_data, replace=correct_label, limit=limit)
+                # vanilla annotating
+                # ipet_train_data = eval_softlabel(ipet_train_data, check_data, replace=correct_label, limit=limit)
 
                 # ensemble voting
-                # pattern_ids = [0]
-                # labels_pattern = []
-                # for i in range(len(pattern_ids)):
-                #     pattern_id = pattern_ids[i]
-                #     aggregated_model_path_pattern = aggregated_model_path.split('-')[0] + "-" + aggregated_model_path.split('-')[1] + f'-p{pattern_id}'
-                #     wrapper = TransformerModelWrapper.from_pretrained(aggregated_model_path_pattern)
-                #     results = evaluate(wrapper, ipet_train_data, eval_config, model_config.label_list)
-                #     # logging.info(results)
-                #     label = []
-                #     for l in results['logits']:
-                #         label.append(model_config.label_list[np.argmax(l).item()])
-                #     labels_pattern.append(label)
-                #     # logging.info(labels_pattern)
+                pattern_ids = [0, 1]
+                logits_pattern = []
+                labels_pattern = []
+                for i in range(len(pattern_ids)):
+                    pattern_id = pattern_ids[i]
+                    aggregated_model_path_pattern = aggregated_model_path.split('-')[0] + "-" + aggregated_model_path.split('-')[1] + f'-p{pattern_id}'
+                    wrapper_tmp = TransformerModelWrapper.from_pretrained(aggregated_model_path_pattern)
+                    results = evaluate(wrapper_tmp, ipet_train_data, eval_config, model_config.label_list)
+                    logging.info(aggregated_model_path_pattern)
+                    label = []
+                    for l in results['logits']:
+                        label.append(model_config.label_list[np.argmax(l).item()])
+                        logits_pattern.append(l)
+                    labels_pattern.append(label)
+                    # logging.info(labels_pattern)
+                    del wrapper_tmp
+                    gc.collect()
 
-                # ipet_train_data = eval_softlabel(ipet_train_data, check_data, replace=correct_label, labels = labels_pattern)
+                ipet_train_data = eval_softlabel(ipet_train_data, check_data, replace=correct_label, labels = labels_pattern, logits = logits_pattern)
             else:
                 ipet_train_data = None
             
@@ -500,7 +505,7 @@ def train_pet_ensemble(model_config: WrapperConfig, train_config: TrainConfig, e
             scores = eval_result['scores']
             logging.info("--- RESULT (pattern_id={}, iteration={}) ---".format(pattern_ids, iteration))
             logging.info(f"Eval results on this client's local data: f{scores}")
-            logging.info(pattern_iter_output_dir)
+            # logging.info(pattern_iter_output_dir)
 
             results_dict['test_set_after_training'] = scores
             with open(os.path.join(pattern_iter_output_dir, 'results.json'), 'w') as fh:
