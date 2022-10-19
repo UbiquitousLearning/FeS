@@ -40,6 +40,7 @@ import gc
 from fed.model import *
 from fed.augment import *
 from fed.utils import *
+from fed.bitfit import *
 
 process_id = os.getpid()
 logging.getLogger().setLevel(logging.INFO)
@@ -49,7 +50,7 @@ logging.basicConfig(level=logging.INFO,
                         datefmt='%a, %d %b %Y %H:%M:%S')
 
 debug = False
-eval_step = 10
+eval_step = 1
 merge_eval = False
 correct_label = False
 # conver_point = 10
@@ -332,7 +333,7 @@ def train_fedpet(ensemble_model_config: WrapperConfig, ensemble_train_config: Tr
                 logging.info("Zero-shot: saving origin pretrained model at {}".format(aggregated_model_path_pattern))
                 wrapper.save(aggregated_model_path_pattern) 
 
-        do_eval = False
+        # do_eval = False
         if do_eval:
             if eval_step > 1: # Only eval when gen = 0, 10, 20... per 10 gens
                 if gen % eval_step == 0:
@@ -440,28 +441,28 @@ def train_pet_ensemble(model_config: WrapperConfig, train_config: TrainConfig, e
                 logging.info("Evaluating soft label~")
 
                 # vanilla annotating
-                # ipet_train_data = eval_softlabel(ipet_train_data, check_data, replace=correct_label, limit=limit)
+                ipet_train_data = eval_softlabel(ipet_train_data, check_data, replace=correct_label, limit=limit)
 
                 # ensemble voting
-                pattern_ids = [0, 1]
-                logits_pattern = []
-                labels_pattern = []
-                for i in range(len(pattern_ids)):
-                    pattern_id = pattern_ids[i]
-                    aggregated_model_path_pattern = aggregated_model_path.split('-')[0] + "-" + aggregated_model_path.split('-')[1] + f'-p{pattern_id}'
-                    wrapper_tmp = TransformerModelWrapper.from_pretrained(aggregated_model_path_pattern)
-                    results = evaluate(wrapper_tmp, ipet_train_data, eval_config, model_config.label_list)
-                    logging.info(aggregated_model_path_pattern)
-                    label = []
-                    for l in results['logits']:
-                        label.append(model_config.label_list[np.argmax(l).item()])
-                        logits_pattern.append(l)
-                    labels_pattern.append(label)
-                    # logging.info(labels_pattern)
-                    del wrapper_tmp
-                    gc.collect()
+                # pattern_ids = [0, 1]
+                # logits_pattern = []
+                # labels_pattern = []
+                # for i in range(len(pattern_ids)):
+                #     pattern_id = pattern_ids[i]
+                #     aggregated_model_path_pattern = aggregated_model_path.split('-')[0] + "-" + aggregated_model_path.split('-')[1] + f'-p{pattern_id}'
+                #     wrapper_tmp = TransformerModelWrapper.from_pretrained(aggregated_model_path_pattern)
+                #     results = evaluate(wrapper_tmp, ipet_train_data, eval_config, model_config.label_list)
+                #     logging.info(aggregated_model_path_pattern)
+                #     label = []
+                #     for l in results['logits']:
+                #         label.append(model_config.label_list[np.argmax(l).item()])
+                #         logits_pattern.append(l)
+                #     labels_pattern.append(label)
+                #     # logging.info(labels_pattern)
+                #     del wrapper_tmp
+                #     gc.collect()
 
-                ipet_train_data = eval_softlabel(ipet_train_data, check_data, replace=correct_label, labels = labels_pattern, logits = logits_pattern)
+                # ipet_train_data = eval_softlabel(ipet_train_data, check_data, replace=correct_label, labels = labels_pattern, logits = logits_pattern)
             else:
                 ipet_train_data = None
             
@@ -572,6 +573,7 @@ def train_single_model(model: TransformerModelWrapper, train_data: List[InputExa
     if not all_train_data and not config.use_logits:
         logging.warning('Training method was called without training examples')
     else:
+        model = deactivate_relevant_gradients(model)
         global_step, tr_loss = model.train(
             all_train_data, device,
             per_gpu_train_batch_size=config.per_gpu_train_batch_size,
