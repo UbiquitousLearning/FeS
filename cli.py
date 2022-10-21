@@ -245,6 +245,11 @@ def main():
                         help="After conver_point, clients with unlabeled data will be involved.")
     parser.add_argument("--limit", type=float, default=0,
                         help="logits < limit will be dropped")
+    parser.add_argument("--num_clients_infer", type=int, default=5,
+                        help="select how many clients to do soft label annotation")
+    parser.add_argument("--infer_freq", type=int, default=1,
+                        help="the model trains for infer_freq rounds, and annotation starts once")
+            
 
     args = parser.parse_args()
     # logging.info("Parameters: {}".format(args))
@@ -313,7 +318,7 @@ def main():
                        pattern_ids=args.pattern_ids, output_dir=args.output_dir,
                        ensemble_repetitions=args.pet_repetitions, final_repetitions=args.sc_repetitions,
                        reduction=args.reduction, train_data=train_data, unlabeled_data=unlabeled_data,
-                       eval_data=eval_data, do_train=args.do_train, do_eval=args.do_eval, seed=args.seed, aggregated=args.aggregated, vanilla=args.vanilla, fed=args.fed, augmentation=args.augmentation, beta=args.beta, client_num_in_total=args.client_num_in_total, check_data=check_data, all_client_num_in_total=args.all_client_num_in_total, labeled_idx=labeled_idx, aug_data_point=args.data_point, conver_point=args.conver_point, limit=args.limit)
+                       eval_data=eval_data, do_train=args.do_train, do_eval=args.do_eval, seed=args.seed, aggregated=args.aggregated, vanilla=args.vanilla, fed=args.fed, augmentation=args.augmentation, beta=args.beta, client_num_in_total=args.client_num_in_total, check_data=check_data, all_client_num_in_total=args.all_client_num_in_total, labeled_idx=labeled_idx, aug_data_point=args.data_point, conver_point=args.conver_point, limit=args.limit, num_clients_infer=args.num_clients_infer, infer_freq=args.infer_freq)
 
     elif args.method == 'fedclassifier':
         pet.train_fedclassifier(sc_model_cfg, sc_train_cfg, sc_eval_cfg, output_dir=args.output_dir,

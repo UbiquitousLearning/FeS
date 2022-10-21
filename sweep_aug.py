@@ -40,15 +40,19 @@ def add_args(parser):
     parser.add_argument("--model_name_or_path", type=str, default="roberta-large",
                         help="model_name_or_path")
     parser.add_argument("--data_point", type=int, default=100,
-                        help="How many data is to be annotated")
+                        help="How many data is to be annotated. Now, the increase ratio of augment data")
     parser.add_argument("--conver_point", type=int, default=0,
                         help="After conver_point, clients with unlabeled data will be involved.")
     parser.add_argument("--limit", type=float, default=0,
                         help="logits < limit will be dropped")
+    parser.add_argument("--num_clients_infer", type=int, default=5,
+                        help="select how many clients to do soft label annotation")
+    parser.add_argument("--infer_freq", type=int, default=1,
+                        help="the model trains for infer_freq rounds, and annotation starts once")
                         
     return parser.parse_args()
 
-def set_hp(dataset, method, device, train_examples, test_examples, unlabeled_examples, alpha, beta, gamma, client_num_in_total, all_client_num_in_total, pattern_ids, seed, model, model_name_or_path, data_point, conver_point, limit):
+def set_hp(dataset, method, device, train_examples, test_examples, unlabeled_examples, alpha, beta, gamma, client_num_in_total, all_client_num_in_total, pattern_ids, seed, model, model_name_or_path, data_point, conver_point, limit, num_clients_infer, infer_freq):
     default = False
     if default:
         dataset = 'yelp-full'
@@ -99,7 +103,7 @@ def set_hp(dataset, method, device, train_examples, test_examples, unlabeled_exa
     if dataset == "mnli":
         all_client_num_in_total = 1000
 
-    hp = dataset + " " + method + " " + str(device) + " " + str(train_examples) + " " + str(test_examples) + " " + str(unlabeled_examples) + " " + str(alpha) + " " + str(beta) + " " + str(gamma) + " " + str(client_num_in_total) + " " + str(all_client_num_in_total) + " " + str(pattern_ids) + " " + str(seed) + " " + str(model) + " " + str(model_name_or_path) + " " + str(data_point) + " " + str(conver_point) + " " + str(limit)
+    hp = dataset + " " + method + " " + str(device) + " " + str(train_examples) + " " + str(test_examples) + " " + str(unlabeled_examples) + " " + str(alpha) + " " + str(beta) + " " + str(gamma) + " " + str(client_num_in_total) + " " + str(all_client_num_in_total) + " " + str(pattern_ids) + " " + str(seed) + " " + str(model) + " " + str(model_name_or_path) + " " + str(data_point) + " " + str(conver_point) + " " + str(limit) + " " + str(num_clients_infer) + " " + str(infer_freq)
 
     return hp
 
@@ -112,7 +116,7 @@ parser = argparse.ArgumentParser()
 args = add_args(parser)
 
 
-args.hp = set_hp(args.dataset, args.method, args.device, args.train_examples, args.test_examples, args.unlabeled_examples, args.alpha, args.beta, args.gamma, args.client_num_in_total, args.all_client_num_in_total, args.pattern_ids, args.seed, args.model, args.model_name_or_path, args.data_point, args.conver_point, args.limit)
+args.hp = set_hp(args.dataset, args.method, args.device, args.train_examples, args.test_examples, args.unlabeled_examples, args.alpha, args.beta, args.gamma, args.client_num_in_total, args.all_client_num_in_total, args.pattern_ids, args.seed, args.model, args.model_name_or_path, args.data_point, args.conver_point, args.limit, args.num_clients_infer, args.infer_freq)
 
 logging.info(args)
 logging.info('nohup bash run_fed_aug.sh '

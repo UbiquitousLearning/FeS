@@ -37,11 +37,11 @@ def get_examples_distribution(train_data, labels,state=0):
         pass
 
 # Infer selection. num_clients should be changed to N.
-def client_selection(gen, augmentation, train_data_all, unlabeled_data_all, eval_data_all, train_data_sperate, unlabeled_data_seperate, eval_data_seperate, all_client_num_in_total, client_num_in_total, labeled_idx, conver_point):
+def client_selection(gen, augmentation, train_data_all, unlabeled_data_all, eval_data_all, train_data_sperate, unlabeled_data_seperate, eval_data_seperate, all_client_num_in_total, client_num_in_total, labeled_idx, conver_point, num_clients_infer=None):
     np.random.seed(gen)
     sample_num_list = np.array([])
     if gen > conver_point and augmentation: # involve those without labeled data at initial
-        num_clients = 5
+        num_clients = num_clients_infer
         client_indexes = np.random.choice(range(all_client_num_in_total), num_clients, replace=False)
         
         labeled_idx = client_indexes

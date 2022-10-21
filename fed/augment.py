@@ -96,6 +96,9 @@ def eval_softlabel(ipet_data, train_data, replace=False, labels = None, limit = 
             logging.info("Correct button is on.")
 
         data_num = len(ipet_data)
+        if data_num == 0:
+            logging.info("There is no ipet data!!")
+            return None
         correct = 0
 
         limit = limit

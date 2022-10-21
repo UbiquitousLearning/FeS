@@ -182,7 +182,7 @@ def train_fedpet(ensemble_model_config: WrapperConfig, ensemble_train_config: Tr
                ensemble_repetitions: int = 3, final_repetitions: int = 1, reduction: str = 'wmean',
                train_data: List[InputExample] = None, unlabeled_data: List[InputExample] = None,
                eval_data: List[InputExample] = None, do_train: bool = True, do_eval: bool = True, seed: int = 42, aggregated: bool = True,
-               augmentation: bool = True, fed: bool = True, vanilla: bool = True, beta: int = None, client_num_in_total: int = None, check_data: List[InputExample] = None, all_client_num_in_total: int = None, labeled_idx: List[int] = None, aug_data_point: int = 100, conver_point: int = 0, limit: int = 0):
+               augmentation: bool = True, fed: bool = True, vanilla: bool = True, beta: int = None, client_num_in_total: int = None, check_data: List[InputExample] = None, all_client_num_in_total: int = None, labeled_idx: List[int] = None, aug_data_point: int = 100, conver_point: int = 0, limit: int = 0, num_clients_infer: int = 5, infer_freq: int = 1):
     """
     Train and evaluate a new fed PET model for a given task.
 
@@ -226,13 +226,13 @@ def train_fedpet(ensemble_model_config: WrapperConfig, ensemble_train_config: Tr
         # those train_data_seperate will be different in the second round, and thus leading to null error
         if gen > 0:
             # client selection
-            train_data_sperate, unlabeled_data_seperate, eval_data_seperate, curr_sample_num_list, client_indexes, num_clients = client_selection(gen, augmentation, train_data_all, unlabeled_data_all, eval_data_all, train_data_sperate, unlabeled_data_seperate, eval_data_seperate, all_client_num_in_total, client_num_in_total, labeled_idx, conver_point)
+            train_data_sperate, unlabeled_data_seperate, eval_data_seperate, curr_sample_num_list, client_indexes, num_clients = client_selection(gen, augmentation, train_data_all, unlabeled_data_all, eval_data_all, train_data_sperate, unlabeled_data_seperate, eval_data_seperate, all_client_num_in_total, client_num_in_total, labeled_idx, conver_point, num_clients_infer)
 
         else: 
             train_data_sperate, unlabeled_data_seperate, eval_data_seperate, sample_num_list, client_indexes, num_clients = client_selection(gen, augmentation, train_data_all, unlabeled_data_all, eval_data_all, train_data_sperate, unlabeled_data_seperate, eval_data_seperate, all_client_num_in_total, client_num_in_total, labeled_idx, conver_point)
 
-        logging.info("Infer. Gen{}: client_indexes is {}".format(gen, client_indexes))        
-        
+        logging.info(f"Infer. Gen{gen}: client_indexes is {client_indexes}, Labeled idx is {labeled_idx}")   
+
         # Data augmentation
         sample_num_list = []
         for client in range(num_clients):
@@ -250,16 +250,18 @@ def train_fedpet(ensemble_model_config: WrapperConfig, ensemble_train_config: Tr
 
                 logging.info(f"Client {client_idx}: len of train set: {len(train_data)}")
 
-                if gen > 0 and augmentation and pattern_id == pattern_ids[0]: # 是否利用unlabeled data, 只用第一个pattern训练出来的模型来增强，其他的用来验证
-                    if client_idx not in labeled_idx:
-                        labeled_idx = np.append(labeled_idx, client_idx)
-                    logging.info(f"Labeled idx is {labeled_idx}")
+                if gen > 0 and augmentation and pattern_id == pattern_ids[0] and gen % infer_freq == 0: # 是否利用unlabeled data, 只用第一个pattern训练出来的模型来增强，其他的用来验证
+                    
+                    
                     models_path = []
                     aggregated_model_path_aug = os.path.join(output_dir, f'g{gen-1}',f'aggregated-p{pattern_id}')
                     
                     wrapper = TransformerModelWrapper.from_pretrained(aggregated_model_path_aug)
 
-                    if len(unlabeled_data) > 0 and len(train_data) < aug_data_point:
+                    augmented_point = min(int(len(unlabeled_data) * aug_data_point / 100 * gen/infer_freq), len(unlabeled_data))
+                    logging.info(f"Gen {gen}: will annotate {augmented_point} data.")
+                    if len(unlabeled_data) > 0 and len(train_data) < augmented_point:
+
                         results = evaluate(wrapper, unlabeled_data, ensemble_eval_config, label_list = ensemble_model_config.label_list)
                         logits = results['logits']
                         
@@ -272,17 +274,21 @@ def train_fedpet(ensemble_model_config: WrapperConfig, ensemble_train_config: Tr
                         del wrapper
                         gc.collect()
 
-                        num_new_examples = aug_data_point - len(train_data)
+                        num_new_examples = augmented_point  - len(train_data)
                         # num_new_examples = min(aug_data_point, int(2 ** (gen + 1) - len(train_data))) # 由原先的**级别增长，降至*级别增长
                         generate_fedipet_train_sets(train_data=unlabeled_data, unlabeled_data=unlabeled_data,
                                             labels=ensemble_model_config.label_list, logits_dir=os.path.join(output_dir, f'g{gen-1}'),
                                             output_dir=os.path.join(output_dir, f'g-1', f'client{client_idx}', 'this-gen-train-data'), reduction=reduction,
                                             num_new_examples=num_new_examples, logits_percentage=ipet_config.logits_percentage,
                                             n_most_likely=ipet_config.n_most_likely if gen == 0 else -1, seed=seed, aggregated=aggregated, pattern=pattern_id)
+                        p = os.path.join(output_dir, f'g-1', f'client{client_idx}', 'this-gen-train-data', 'train.bin')
+                        ipet_train_data = InputExample.load_examples(p)
+                        if client_idx not in labeled_idx and len(ipet_train_data) > 0:
+                            labeled_idx = np.append(labeled_idx, client_idx)
 
         train_data_sperate, unlabeled_data_seperate, eval_data_seperate, curr_sample_num_list, client_indexes, num_clients = train_client_selection(gen, augmentation, train_data_all, unlabeled_data_all, eval_data_all, train_data_sperate, unlabeled_data_seperate, eval_data_seperate, all_client_num_in_total, client_num_in_total, labeled_idx, conver_point)
 
-        logging.info("Train. Gen{}: client_indexes is {}".format(gen, client_indexes))  
+        logging.info(f"Train. Gen{gen}: client_indexes is {client_indexes}, Labeled idx is {labeled_idx}")   
             
         # Prompt local training
         sample_num_list = []
