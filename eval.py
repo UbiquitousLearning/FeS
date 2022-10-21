@@ -17,7 +17,6 @@ one of the supported tasks and datasets.
 
 import argparse
 import os
-os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 from typing import Tuple
 
 import torch

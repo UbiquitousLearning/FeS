@@ -324,7 +324,10 @@ def partition_class_samples_with_dirichlet_distribution(
 
 
 def tag(train_and_unlabeled_data_sperate, client_num_in_total, all_client_num_in_total, train_examples, gamma, seed):
-    gurantee = False # # ensure that each client has 1 samples at least; when tuple clients is activated.
+    if gamma > 10 and train_examples < client_num_in_total: # Avoid the evenly be reversed to the extremely skewed
+        gurantee = True  # ensure that each client has 1 samples at least; when tuple clients is activated.
+    else:
+        gurantee = False
     if gurantee:
         train_data_sperate = []
         unlabeled_data_seperate = []
@@ -341,6 +344,9 @@ def tag(train_and_unlabeled_data_sperate, client_num_in_total, all_client_num_in
         train_data_dirichlet_list = np.array([])
 
         N_available = train_examples - client_num_in_total # ensure that each client has 1 samples at least
+        if N_available < 0:
+            client_num_in_total = train_examples
+            N_available = train_examples - client_num_in_total
 
         for i in range(client_num_in_total-1):
             train_data_dirichlet_list = np.append(train_data_dirichlet_list, int(N_available * proportions[i]))  # round down by inner function 'int'
