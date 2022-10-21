@@ -8,7 +8,7 @@ logging.basicConfig(level=logging.INFO,
                             process_id) + ' - %(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',
                         datefmt='%a, %d %b %Y %H:%M:%S')
 
-
+debug=False
 def deactivate_relevant_gradients(model):
         """
         https://github.com/benzakenelad/BitFit.git
@@ -37,7 +37,8 @@ def deactivate_relevant_gradients(model):
         # trainable_components = trainable_components + ['classifier']
         for name, param in model.model.named_parameters():
             if component in name:
-                logging.info(f"name {name}; param {param}")
+                if debug:
+                    logging.info(f"name {name}; param {param}")
                 param.requires_grad = True
                 # continue
         logging.info(f"After bitfit, model parameters is: {get_parameter_number(model.model)}")

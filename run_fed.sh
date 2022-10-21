@@ -60,8 +60,12 @@ clients=${client_num_in_total}
 
 output_model_dir=/${output_dir}/log/${dataset}/all_${all_client_num_in_total}/seed_${seed}/pattern_${pattern_ids}/alpha_${alpha}_beta_${beta}_gamma_${gamma}
 output_log_dir=./log/${dataset}/all_${all_client_num_in_total}/seed_${seed}/pattern_${pattern_ids}/alpha_${alpha}_beta_${beta}_gamma_${gamma}
+
 mkdir -p $output_model_dir
 mkdir -p $output_log_dir
+
+# remove model info and generated data info
+rm -rf $output_model_dir/${method}_${train_examples}_${clients}_${model_name_or_path}
 
 echo $method "start."
 CUDA_VISIBLE_DEVICES=$device python3 cli.py \

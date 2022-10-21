@@ -16,7 +16,7 @@ nohup python sweep_aug.py --dataset yelp-full --device 2 --train_examples 256 --
 
 
 # # done
-
+nohup python sweep_aug.py --dataset agnews --device 3 --train_examples 64 --test_examples -1 --unlabeled_examples -1 --method fedpet --client_num_in_total 32 --all_client_num_in_total 1000 --alpha 1 --gamma 0.001 --pattern_ids 2 --data_point 2 --conver_point 0 --limit 0 --model_name_or_path roberta-large &
 
 # # agnews datapoint = 64, a=1, g=0.001, clients = 32
 # nohup python sweep_aug.py --dataset agnews --device 0 --train_examples 64 --test_examples -1 --unlabeled_examples -1 --method fedpet --client_num_in_total 32 --all_client_num_in_total 1000 --alpha 1 --gamma 0.001 --pattern_ids 1 --data_point 2 --conver_point 0 --limit 0 --model_name_or_path roberta-large &

@@ -13,7 +13,7 @@ logging.basicConfig(level=logging.INFO,
                         format=str(
                             process_id) + ' - %(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',
                         datefmt='%a, %d %b %Y %H:%M:%S')
-debug = True
+debug = False
 
 def delete_cache(gen, output_dir):
     if gen > 4 :
@@ -36,7 +36,7 @@ def get_examples_distribution(train_data, labels,state=0):
     else:
         pass
 
-
+# Infer selection. num_clients should be changed to N.
 def client_selection(gen, augmentation, train_data_all, unlabeled_data_all, eval_data_all, train_data_sperate, unlabeled_data_seperate, eval_data_seperate, all_client_num_in_total, client_num_in_total, labeled_idx, conver_point):
     np.random.seed(gen)
     sample_num_list = np.array([])
@@ -45,12 +45,14 @@ def client_selection(gen, augmentation, train_data_all, unlabeled_data_all, eval
         client_indexes = np.random.choice(range(all_client_num_in_total), num_clients, replace=False)
         
         labeled_idx = client_indexes
+        # train_data_seperate is cut to the same as len(labeled_idx), i.e., num_clients
         train_data_sperate, unlabeled_data_seperate, eval_data_seperate = find_labeled(labeled_idx, train_data_all, unlabeled_data_all, eval_data_all)
         sample_num_list = np.array([100]*num_clients)
 
         logging.info("Gen {}: client_indexes is {}".format(gen, client_indexes))
 
     else:
+        # train_data_seperate is not cut, the same as origin
         num_clients = min(5, client_num_in_total)
 
         client_indexes = np.random.choice(range(client_num_in_total), num_clients, replace=False)
@@ -59,6 +61,21 @@ def client_selection(gen, augmentation, train_data_all, unlabeled_data_all, eval
 
         for client in range(num_clients):
             sample_num_list = np.append(sample_num_list, len(train_data_sperate[client_indexes[client]]))
+        
+    return train_data_sperate, unlabeled_data_seperate, eval_data_seperate, sample_num_list, client_indexes, num_clients
+
+
+def train_client_selection(gen, augmentation, train_data_all, unlabeled_data_all, eval_data_all, train_data_sperate, unlabeled_data_seperate, eval_data_seperate, all_client_num_in_total, client_num_in_total, labeled_idx, conver_point):
+    np.random.seed(gen * 2) # to differentiate from infer_client_selection
+    sample_num_list = np.array([])
+    num_clients = min(5, len(labeled_idx))
+    client_indexes = np.random.choice(labeled_idx, num_clients, replace=False)
+    
+    labeled_idx = client_indexes
+    train_data_sperate, unlabeled_data_seperate, eval_data_seperate = find_labeled(labeled_idx, train_data_all, unlabeled_data_all, eval_data_all)
+    sample_num_list = np.array([100]*num_clients)
+
+    logging.info("Gen {}: client_indexes is {}".format(gen, client_indexes))
         
     return train_data_sperate, unlabeled_data_seperate, eval_data_seperate, sample_num_list, client_indexes, num_clients
 
