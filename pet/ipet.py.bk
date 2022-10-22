@@ -1,4 +1,4 @@
-# annotate according to classes
+# do not annotate according to classes
 from typing import List, Dict
 from pet.utils import InputExample, LogitsList, eq_div, softmax
 import numpy as np
@@ -70,16 +70,23 @@ def generate_fedipet_train_sets(train_data: List[InputExample], unlabeled_data: 
 
     logging.info("Found the following {} subdirectories: {}".format(len(subdirs), subdirs))
 
-    if train_data:
-        train_examples_per_label = [sum(1 for ex in train_data if ex.label == label) for label in labels]
-        multiplier = num_new_examples / len(train_data)
-        examples_per_label = [int(epl * multiplier) for epl in train_examples_per_label]
-        logging.info(f"Example distribution in the original dataset: {train_examples_per_label}")
-    else:
-        examples_per_label = eq_div(num_new_examples, len(labels))
+    # if train_data:
+    #     train_examples_per_label = [sum(1 for ex in train_data if ex.label == label) for label in labels]
+    #     multiplier = num_new_examples / len(train_data)
+    #     examples_per_label = [int(epl * multiplier) for epl in train_examples_per_label]
+    #     logging.info(f"Example distribution in the original dataset: {train_examples_per_label}")
+    # else:
+    #     examples_per_label = eq_div(num_new_examples, len(labels))
 
     
-    logging.info(f"Target distribution for the new dataset: {examples_per_label}")
+    # logging.info(f"Target distribution for the new dataset: {examples_per_label}")
+    
+    # do not annotate according to classes
+    examples_per_label = num_new_examples
+
+    for idx, label in enumerate(labels):
+        examples = [ex for ex in unlabeled_data if ex.label == label]
+        logging.info("Origin data: There are {} unlabeled examples for {} label".format(len(examples), label))
 
 
     for example in unlabeled_data:
@@ -196,26 +203,18 @@ def generate_ipet_train_set(logits_lists: List[LogitsList], labels: List[str], o
     test_set = []
 
     for idx, label in enumerate(labels):
+        examples = [ex for ex in original_data if ex.label == label]
+        logging.info("Reading from logits: There are {} unlabeled examples for {} label".format(len(examples), label))
 
-        if n_most_likely <= 0:
-            examples = [ex for ex in original_data if ex.label == label]
-            logging.info("There are {} examples for label {}".format(len(examples), label))
-            while len(examples) < examples_per_label[idx]:
-                # upsample examples if there are too few
-                examples.extend(ex for ex in original_data if ex.label == label)
-        else:
-            examples = [(ex.logits[idx], ex_idx, ex) for ex_idx, ex in enumerate(original_data)]
-            examples.sort(reverse=True)
-            examples = [ex for score, ex_idx, ex in examples[:n_most_likely]]
-            examples = [deepcopy(ex) for ex in examples]
-            for example in examples:
-                example.logits = [example.logits[idx]]
-                example.label = label
+    examples = [ex for ex in original_data]
+    logging.info("There are {} unlabeled examples for all labels".format(len(examples)))
+    while len(examples) < examples_per_label:
+        # upsample examples if there are too few
+        examples.extend(ex for ex in original_data)
 
-        label_examples = _draw_examples_by_label_probability(
-            examples=examples, num_examples=examples_per_label[idx], rng=rng_np)
-        test_set.extend(label_examples)
-
+    label_examples = _draw_examples_by_label_probability(
+        examples=examples, num_examples=examples_per_label, rng=rng_np)
+    test_set.extend(label_examples)
     return test_set
 
 

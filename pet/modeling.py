@@ -31,6 +31,7 @@ import logging
 
 from pet.utils import InputExample, exact_match, save_logits, save_predictions, LogitsList, set_seed
 from pet.wrapper import TransformerModelWrapper, SEQUENCE_CLASSIFIER_WRAPPER, WrapperConfig
+from pet.ipet import *
 
 import transformers
 transformers.logging.set_verbosity_error()
@@ -285,8 +286,13 @@ def train_fedpet(ensemble_model_config: WrapperConfig, ensemble_train_config: Tr
                                             n_most_likely=ipet_config.n_most_likely if gen == 0 else -1, seed=seed, aggregated=aggregated, pattern=pattern_id)
                         p = os.path.join(output_dir, f'g-1', f'client{client_idx}', 'this-gen-train-data', 'train.bin')
                         ipet_train_data = InputExample.load_examples(p)
+                        # logging.info(client_idx)
+                        # logging.info(labeled_idx)
                         if client_idx not in labeled_idx and len(ipet_train_data) > 0:
-                            labeled_idx = np.append(labeled_idx, client_idx)
+                            # an int will be transferred to float after appending to a null list of numpy
+                            labeled_idx = labeled_idx.tolist()
+                            labeled_idx.append(client_idx)
+                            labeled_idx = np.array(labeled_idx, dtype=int)
 
         train_data_sperate, unlabeled_data_seperate, eval_data_seperate, curr_sample_num_list, client_indexes, num_clients = train_client_selection(gen, augmentation, train_data_all, unlabeled_data_all, eval_data_all, train_data_sperate, unlabeled_data_seperate, eval_data_seperate, all_client_num_in_total, client_num_in_total, labeled_idx, conver_point)
 
