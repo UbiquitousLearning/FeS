@@ -163,7 +163,7 @@ def generate_ipet_train_set(logits_lists: List[LogitsList], labels: List[str], o
     # logging.info(logits_lists)
     assert len(set(len(ll.logits) for ll in logits_lists)) == 1
 
-    n_most_likely = 100
+    # n_most_likely = 100
 
     if not rng:
         rng = random.Random()
@@ -226,6 +226,7 @@ def _draw_examples_by_label_probability(examples: List[InputExample], num_exampl
         # label_probabilities[np.isnan(label_probabilities)] = np.mean(label_probabilities)
         sum_label_probabilities = sum(label_probabilities)
         label_probabilities = [p / sum_label_probabilities for p in label_probabilities]
+        logging.info(len(examples))
         return rng.choice(examples, size=num_examples, replace=False, p=label_probabilities).tolist()
         # return rng.choice(examples, size=num_examples, replace=False).tolist() # do not choose those high probabilities.
     else:

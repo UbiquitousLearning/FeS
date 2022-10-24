@@ -170,8 +170,6 @@ def generate_ipet_train_set(logits_lists: List[LogitsList], labels: List[str], o
     # logging.info(logits_lists)
     assert len(set(len(ll.logits) for ll in logits_lists)) == 1
 
-    n_most_likely = 100
-
     if not rng:
         rng = random.Random()
     if not rng_np:
