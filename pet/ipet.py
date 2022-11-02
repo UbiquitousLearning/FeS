@@ -136,7 +136,7 @@ def generate_fedipet_train_sets(train_data: List[InputExample], unlabeled_data: 
     subdir_train_set = generate_ipet_train_set(
         other_logits_lists, labels=labels, original_data=unlabeled_data, examples_per_label=examples_per_label,
         logits_percentage=logits_percentage, reduction=reduction, n_most_likely=n_most_likely, rng=rng,
-        rng_np=rng_np
+        rng_np=rng_np, num_new_examples = num_new_examples
     )
 
     InputExample.save_examples(subdir_train_set,
@@ -145,7 +145,7 @@ def generate_fedipet_train_sets(train_data: List[InputExample], unlabeled_data: 
 
 def generate_ipet_train_set(logits_lists: List[LogitsList], labels: List[str], original_data: List[InputExample],
                             examples_per_label: List[int], logits_percentage: float, reduction: str = 'mean',
-                            n_most_likely: int = -1, rng=None, rng_np=None, aggregated: bool = True) -> List[InputExample]:
+                            n_most_likely: int = -1, rng=None, rng_np=None, aggregated: bool = True, num_new_examples: int = 1) -> List[InputExample]:
     """
     Generate a single training set for the next generation of iPET models.
 
@@ -200,9 +200,12 @@ def generate_ipet_train_set(logits_lists: List[LogitsList], labels: List[str], o
         if n_most_likely <= 0:
             examples = [ex for ex in original_data if ex.label == label]
             logging.info("There are {} examples for label {}".format(len(examples), label))
-            while len(examples) < examples_per_label[idx]:
-                # upsample examples if there are too few
-                examples.extend(ex for ex in original_data if ex.label == label)
+            if len(examples) > 0:
+                while len(examples) < examples_per_label[idx]:
+                    # upsample examples if there are too few
+                    examples.extend(ex for ex in original_data if ex.label == label)
+            else:
+                 examples_per_label[idx] = 0
         else:
             examples = [(ex.logits[idx], ex_idx, ex) for ex_idx, ex in enumerate(original_data)]
             examples.sort(reverse=True)
@@ -215,6 +218,8 @@ def generate_ipet_train_set(logits_lists: List[LogitsList], labels: List[str], o
         label_examples = _draw_examples_by_label_probability(
             examples=examples, num_examples=examples_per_label[idx], rng=rng_np)
         test_set.extend(label_examples)
+        
+    logging.info(f"final examples_per_label: {examples_per_label}")
 
     return test_set
 

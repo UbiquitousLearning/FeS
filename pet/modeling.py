@@ -51,9 +51,10 @@ logging.basicConfig(level=logging.INFO,
                         datefmt='%a, %d %b %Y %H:%M:%S')
 
 debug = False
-eval_step = 1
+eval_step = 10
 merge_eval = True
 correct_label = False
+check_eval = False
 # conver_point = 10
 # aug_data_point = 100
 # vanilla = False # whether fed vanilla is on, fed vanilla means no augmentation, but is fed, means using ft instead of pl to train local model, and aggregate the model via fedavg
@@ -479,8 +480,10 @@ def train_pet_ensemble(model_config: WrapperConfig, train_config: TrainConfig, e
                 logging.info(f"Evaluating soft label on {ipet_data_dir}")
 
                 # vanilla annotating
-                ipet_train_data = eval_softlabel(ipet_train_data, check_data, replace=correct_label, limit=limit)
-
+                if check_eval:
+                    ipet_train_data = eval_softlabel(ipet_train_data, check_data, replace=correct_label, limit=limit)
+                else:
+                    logging.info("Not using check data for annotating.")
                 # ensemble voting
                 # pattern_ids = [0, 1]
                 # logits_pattern = []

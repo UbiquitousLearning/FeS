@@ -418,7 +418,7 @@ class TransformerModelWrapper:
             'token_type_ids': torch.tensor([f.token_type_ids for f in features], dtype=torch.long),
             'labels': torch.tensor([f.label for f in features], dtype=torch.long),
             'mlm_labels': torch.tensor([f.mlm_labels for f in features], dtype=torch.long),
-            'logits': torch.tensor([f.logits for f in features], dtype=torch.float),
+            'logits': torch.tensor([[-1] for f in features], dtype=torch.float),
             'idx': torch.tensor([f.idx for f in features], dtype=torch.long)
         }
         if self.config.wrapper_type == PLM_WRAPPER:
