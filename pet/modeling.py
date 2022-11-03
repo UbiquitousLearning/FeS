@@ -27,8 +27,6 @@ import torch
 from sklearn.metrics import f1_score
 from transformers.data.metrics import simple_accuracy
 
-import logging
-
 from pet.utils import InputExample, exact_match, save_logits, save_predictions, LogitsList, set_seed
 from pet.wrapper import TransformerModelWrapper, SEQUENCE_CLASSIFIER_WRAPPER, WrapperConfig
 from pet.ipet import *
@@ -42,7 +40,9 @@ from fed.model import *
 from fed.augment import *
 from fed.utils import *
 from fed.bitfit import *
+from fed.selective_annotating import *
 
+import logging
 process_id = os.getpid()
 logging.getLogger().setLevel(logging.INFO)
 logging.basicConfig(level=logging.INFO,
@@ -55,6 +55,7 @@ eval_step = 10
 merge_eval = True
 correct_label = False
 check_eval = False
+vote_k = False
 # conver_point = 10
 # aug_data_point = 100
 # vanilla = False # whether fed vanilla is on, fed vanilla means no augmentation, but is fed, means using ft instead of pl to train local model, and aggregate the model via fedavg
@@ -184,7 +185,7 @@ def train_fedpet(ensemble_model_config: WrapperConfig, ensemble_train_config: Tr
                ensemble_repetitions: int = 3, final_repetitions: int = 1, reduction: str = 'wmean',
                train_data: List[InputExample] = None, unlabeled_data: List[InputExample] = None,
                eval_data: List[InputExample] = None, do_train: bool = True, do_eval: bool = True, seed: int = 42, aggregated: bool = True,
-               augmentation: bool = True, fed: bool = True, vanilla: bool = True, beta: int = None, client_num_in_total: int = None, check_data: List[InputExample] = None, all_client_num_in_total: int = None, labeled_idx: List[int] = None, aug_data_point: int = 100, conver_point: int = 0, limit: int = 0, num_clients_infer: int = 5, infer_freq: int = 1):
+               augmentation: bool = True, fed: bool = True, vanilla: bool = True, beta: int = None, client_num_in_total: int = None, check_data: List[InputExample] = None, all_client_num_in_total: int = None, labeled_idx: List[int] = None, aug_data_point: int = 100, conver_point: int = 0, limit: int = 0, num_clients_infer: int = 5, infer_freq: int = 1, args = None):
     """
     Train and evaluate a new fed PET model for a given task.
 
@@ -238,62 +239,71 @@ def train_fedpet(ensemble_model_config: WrapperConfig, ensemble_train_config: Tr
         # Data augmentation
         sample_num_list = []
         infer_sample_num_list = []
-        for client in range(num_clients):
-            for pattern_id in pattern_ids:
-                client_idx = client_indexes[client]
-                
-                if gen > conver_point and augmentation: 
-                    train_data = np.array(train_data_sperate[client]).tolist()
-                    unlabeled_data = np.array(unlabeled_data_seperate[client]).tolist()
-                    eval_data = np.array(eval_data_seperate[client]).tolist()
-                else: # within conver_point and without augmentation, train_data_seperate will be fixed forever, and the client list is fixed, so it performs poor
-                    train_data = np.array(train_data_sperate[client_idx]).tolist()
-                    unlabeled_data = np.array(unlabeled_data_seperate[client_idx]).tolist()
-                    eval_data = np.array(eval_data_seperate[client_idx]).tolist()
-
-                logging.info(f"Client {client_idx}: len of train set: {len(train_data)}")
-
-                if gen > 0 and augmentation and pattern_id == pattern_ids[0] and gen % infer_freq == 0: # 是否利用unlabeled data, 只用第一个pattern训练出来的模型来增强，其他的用来验证
+        if augmentation:
+            for client in range(num_clients):
+                for pattern_id in pattern_ids:
+                    client_idx = client_indexes[client]
                     
-                    
-                    models_path = []
-                    aggregated_model_path_aug = os.path.join(output_dir, f'g{gen-1}',f'aggregated-p{pattern_id}')
-                    
-                    wrapper = TransformerModelWrapper.from_pretrained(aggregated_model_path_aug)
+                    if gen > conver_point and augmentation: 
+                        train_data = np.array(train_data_sperate[client]).tolist()
+                        unlabeled_data = np.array(unlabeled_data_seperate[client]).tolist()
+                        eval_data = np.array(eval_data_seperate[client]).tolist()
+                    else: # within conver_point and without augmentation, train_data_seperate will be fixed forever, and the client list is fixed, so it performs poor. We rearrange them as the client_idx mannually.
+                        train_data = np.array(train_data_sperate[client_idx]).tolist()
+                        unlabeled_data = np.array(unlabeled_data_seperate[client_idx]).tolist()
+                        eval_data = np.array(eval_data_seperate[client_idx]).tolist()
 
-                    augmented_point = min(int(len(unlabeled_data) * aug_data_point / 100 * gen/infer_freq), len(unlabeled_data))
-                    logging.info(f"Gen {gen}: Client {client_idx} will annotate {augmented_point} data.")
-                    if len(unlabeled_data) > 0 and len(train_data) < augmented_point:
+                    logging.info(f"Client {client_idx}: len of train set: {len(train_data)}")
 
-                        results = evaluate(wrapper, unlabeled_data, ensemble_eval_config, label_list = ensemble_model_config.label_list)
-                        logits = results['logits']
-                        infer_sample_num_list.append(len(unlabeled_data))
+                    if gen > 0 and augmentation and pattern_id == pattern_ids[0] and gen % infer_freq == 0: # 是否利用unlabeled data, 只用第一个pattern训练出来的模型来增强，其他的用来验证
                         
-                        logits_path = os.path.join(output_dir, f'g{gen-1}', f'client0-p{pattern_id}')
-                        if not os.path.exists(logits_path):
-                            os.makedirs(logits_path)
-                        save_logits(os.path.join(logits_path, 'logits.txt'), logits)
+                        # select the unlabeled data for inference by voting_k
+                        # forked from https://github.com/HKUNLP/icl-selective-annotation
 
-                        logging.info(f"Client {client_idx} save_logits done")
-                        del wrapper
-                        gc.collect()
+                        if vote_k:
+                            task_name = args.task_name
+                            select_num = int(len(unlabeled_data) * 0.2)
+                            logging.info(f"Client {client_idx}: len of unlabeled set: {len(unlabeled_data)}, select_num is {select_num}")
+                            unlabeled_data = select_by_voting(unlabeled_data,select_num, os.path.join(output_dir, f'g-1', f'client{client_idx}'), task_name)
+                        
+                        models_path = []
+                        aggregated_model_path_aug = os.path.join(output_dir, f'g{gen-1}',f'aggregated-p{pattern_id}')
+                        
+                        wrapper = TransformerModelWrapper.from_pretrained(aggregated_model_path_aug)
 
-                        num_new_examples = augmented_point  - len(train_data)
-                        # num_new_examples = min(aug_data_point, int(2 ** (gen + 1) - len(train_data))) # 由原先的**级别增长，降至*级别增长
-                        generate_fedipet_train_sets(train_data=unlabeled_data, unlabeled_data=unlabeled_data,
-                                            labels=ensemble_model_config.label_list, logits_dir=os.path.join(output_dir, f'g{gen-1}'),
-                                            output_dir=os.path.join(output_dir, f'g-1', f'client{client_idx}', 'this-gen-train-data'), reduction=reduction,
-                                            num_new_examples=num_new_examples, logits_percentage=ipet_config.logits_percentage,
-                                            n_most_likely=ipet_config.n_most_likely if gen == 0 else -1, seed=seed, aggregated=aggregated, pattern=pattern_id)
-                        p = os.path.join(output_dir, f'g-1', f'client{client_idx}', 'this-gen-train-data', 'train.bin')
-                        ipet_train_data = InputExample.load_examples(p)
-                        # logging.info(client_idx)
-                        # logging.info(labeled_idx)
-                        if client_idx not in labeled_idx and len(ipet_train_data) > 0:
-                            # an int will be transferred to float after appending to a null list of numpy
-                            labeled_idx = labeled_idx.tolist()
-                            labeled_idx.append(client_idx)
-                            labeled_idx = np.array(labeled_idx, dtype=int)
+                        augmented_point = min(int(len(unlabeled_data) * aug_data_point / 100 * gen/infer_freq), len(unlabeled_data))
+                        logging.info(f"Gen {gen}: Client {client_idx} will annotate {augmented_point} data.")
+                        if len(unlabeled_data) > 0 and len(train_data) < augmented_point:
+
+                            results = evaluate(wrapper, unlabeled_data, ensemble_eval_config, label_list = ensemble_model_config.label_list)
+                            logits = results['logits']
+                            infer_sample_num_list.append(len(unlabeled_data))
+                            
+                            logits_path = os.path.join(output_dir, f'g{gen-1}', f'client0-p{pattern_id}')
+                            if not os.path.exists(logits_path):
+                                os.makedirs(logits_path)
+                            save_logits(os.path.join(logits_path, 'logits.txt'), logits)
+
+                            logging.info(f"Client {client_idx} save_logits done")
+                            del wrapper
+                            gc.collect()
+
+                            num_new_examples = augmented_point  - len(train_data)
+                            # num_new_examples = min(aug_data_point, int(2 ** (gen + 1) - len(train_data))) # 由原先的**级别增长，降至*级别增长
+                            generate_fedipet_train_sets(train_data=unlabeled_data, unlabeled_data=unlabeled_data,
+                                                labels=ensemble_model_config.label_list, logits_dir=os.path.join(output_dir, f'g{gen-1}'),
+                                                output_dir=os.path.join(output_dir, f'g-1', f'client{client_idx}', 'this-gen-train-data'), reduction=reduction,
+                                                num_new_examples=num_new_examples, logits_percentage=ipet_config.logits_percentage,
+                                                n_most_likely=ipet_config.n_most_likely if gen == 0 else -1, seed=seed, aggregated=aggregated, pattern=pattern_id)
+                            p = os.path.join(output_dir, f'g-1', f'client{client_idx}', 'this-gen-train-data', 'train.bin')
+                            ipet_train_data = InputExample.load_examples(p)
+                            # logging.info(client_idx)
+                            # logging.info(labeled_idx)
+                            if client_idx not in labeled_idx and len(ipet_train_data) > 0:
+                                # an int will be transferred to float after appending to a null list of numpy
+                                labeled_idx = labeled_idx.tolist()
+                                labeled_idx.append(client_idx)
+                                labeled_idx = np.array(labeled_idx, dtype=int)
 
         train_data_sperate, unlabeled_data_seperate, eval_data_seperate, curr_sample_num_list, client_indexes, num_clients = train_client_selection(gen, augmentation, train_data_all, unlabeled_data_all, eval_data_all, train_data_sperate, unlabeled_data_seperate, eval_data_seperate, all_client_num_in_total, client_num_in_total, labeled_idx, conver_point)
 
