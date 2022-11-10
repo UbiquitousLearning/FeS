@@ -14,6 +14,8 @@ logging.basicConfig(level=logging.INFO,
                             process_id) + ' - %(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',
                         datefmt='%a, %d %b %Y %H:%M:%S')
 
+debug = False
+
 def find_labeled(labeled_idx, train_data, unlabeled_data, eval_data):
     # labeled_idx = []
     # for i in range(len(train_data)):
@@ -37,7 +39,7 @@ def find_labeled(labeled_idx, train_data, unlabeled_data, eval_data):
     
 def eval_softlabel(ipet_data, train_data, replace=False, labels = None, limit = None, logits = None):
     if labels: # ensemble voting
-        logging.info("Ensemble voting is on.")
+        logging.info("Ensemble voting is on.") 
 
         pattern_ids = [0, 1]
         data_num = len(ipet_data)
@@ -55,11 +57,11 @@ def eval_softlabel(ipet_data, train_data, replace=False, labels = None, limit = 
                 if labeled_data.guid == uid:
                     true_label = labeled_data.label
             if true_label == data.label:
-                logging.info(f"Data {uid} is tagged correctly as {data.label}. Logits is {data.logits}")
+                logging.info(f"Data {uid} is tagged correctly as {data.label}. Logits is {data.logits}") if debug else None
                 flag = 1
                 correct = correct + 1
             else:
-                logging.info(f"Data {uid} is tagged wrong. Current label is {data.label}, true label is {true_label}. Logits is {data.logits}")
+                logging.info(f"Data {uid} is tagged wrong. Current label is {data.label}, true label is {true_label}. Logits is {data.logits}") if debug else None
 
             sort_out = False
             # correctly find those data annotated wrong
@@ -67,11 +69,11 @@ def eval_softlabel(ipet_data, train_data, replace=False, labels = None, limit = 
                 pattern_id = pattern_ids[i]
                 
                 if labels[i][j] == data.label:
-                    logging.info(f"Data {uid} is tagged the same as p-{pattern_id}")
+                    logging.info(f"Data {uid} is tagged the same as p-{pattern_id}") if debug else None
                     
                 else:
                     sort_out = True
-                    logging.info(f"Data {uid} is tagged differently. Current label is {data.label}, p-{pattern_id} label is {labels[i][j]}")
+                    logging.info(f"Data {uid} is tagged differently. Current label is {data.label}, p-{pattern_id} label is {labels[i][j]}") if debug else None
                     if flag:
                         find_wrong = find_wrong + 1
                     else:
@@ -111,10 +113,10 @@ def eval_softlabel(ipet_data, train_data, replace=False, labels = None, limit = 
                 if labeled_data.guid == uid:
                     true_label = labeled_data.label
             if true_label == data.label:
-                logging.info(f"Data {uid} is tagged correctly as {data.label}. Logits is {data.logits}")
+                logging.info(f"Data {uid} is tagged correctly as {data.label}. Logits is {data.logits}") if debug else None
                 correct = correct + 1
             else:
-                logging.info(f"Data {uid} is tagged wrong. Current label is {data.label}, true label is {true_label}. Logits is {data.logits}")
+                logging.info(f"Data {uid} is tagged wrong. Current label is {data.label}, true label is {true_label}. Logits is {data.logits}") if debug else None
                 pass
                 
             if data.logits[0] > limit:
@@ -126,28 +128,29 @@ def eval_softlabel(ipet_data, train_data, replace=False, labels = None, limit = 
         correct_ratio = correct / data_num
         logging.info(f"Inference correct ratio is {correct_ratio}")
 
-        data_num = len(ipet_data_within_limit)
-        correct = 0
-        if data_num > 0: # replace and 
-            for data in ipet_data_within_limit:
-                uid = data.guid
+        if limit > 0:
+            data_num = len(ipet_data_within_limit)
+            correct = 0
+            if data_num > 0: # replace and 
+                for data in ipet_data_within_limit:
+                    uid = data.guid
+                    
+                    true_label = None
+                    for labeled_data in train_data:
+                        if labeled_data.guid == uid:
+                            true_label = labeled_data.label
+                    if true_label == data.label:
+                        logging.info("Data {} is tagged correctly as {}.".format(uid, data.label)) if debug else None
+                        correct = correct + 1
+                    else:
+                        logging.info("Data {} is tagged wrong. Current label is {}, true label is {}".format(uid, data.label ,true_label)) if debug else None
+                        pass
+                    
+                    if replace:
+                        data.label = true_label
                 
-                true_label = None
-                for labeled_data in train_data:
-                    if labeled_data.guid == uid:
-                        true_label = labeled_data.label
-                if true_label == data.label:
-                    logging.info("Data {} is tagged correctly as {}.".format(uid, data.label))
-                    correct = correct + 1
-                else:
-                    logging.info("Data {} is tagged wrong. Current label is {}, true label is {}".format(uid, data.label ,true_label))
-                    pass
-                
-                if replace:
-                    data.label = true_label
-            
-            correct_ratio = correct / data_num
-            logging.info("After correct: Inference correct ratio is {}".format(correct_ratio))
+                correct_ratio = correct / data_num
+                logging.info("After correct: Inference correct ratio is {}".format(correct_ratio))
 
         return ipet_data_within_limit
 

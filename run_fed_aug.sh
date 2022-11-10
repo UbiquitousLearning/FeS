@@ -81,7 +81,7 @@ CUDA_VISIBLE_DEVICES=$device python3 cli.py \
 --model_type ${model_type} \
 --model_name_or_path ${model_name_or_path} \
 --task_name ${task_name} \
---output_dir $output_model_dir/bitfit_new_all_aug_${data_point}_conver_${conver_point}_limit_${limit}_${method}_${train_examples}_${clients}_${model_name_or_path}_${num_clients_infer}_${infer_freq} \
+--output_dir $output_model_dir/stale_aug_${data_point}_conver_${conver_point}_limit_${limit}_${method}_${train_examples}_${clients}_${model_name_or_path}_${num_clients_infer}_${infer_freq} \
 --ipet_scale_factor 1 \
 --ipet_generations ${iteration} \
 --pet_num_train_epochs ${epochs} \
@@ -104,4 +104,4 @@ CUDA_VISIBLE_DEVICES=$device python3 cli.py \
 --limit ${limit} \
 --num_clients_infer ${num_clients_infer} \
 --infer_freq ${infer_freq} \
---aggregated > ${output_log_dir}/bitfit_new_all_aug_${data_point}_conver_${conver_point}_limit_${limit}_${method}_${train_examples}_${clients}_${model_name_or_path}_${num_clients_infer}_${infer_freq}.log 2>&1
+--aggregated > ${output_log_dir}/stale_aug_${data_point}_conver_${conver_point}_limit_${limit}_${method}_${train_examples}_${clients}_${model_name_or_path}_${num_clients_infer}_${infer_freq}.log 2>&1

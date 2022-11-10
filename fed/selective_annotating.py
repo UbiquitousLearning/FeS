@@ -42,12 +42,19 @@ def text_to_encode(train_examples, dataset):
     else:
         raise ValueError("dataset not supported")
 
-def select_by_voting(train_examples,select_num, output_dir, dataset):
+def select_by_voting(train_examples, select_num, output_dir, dataset, k = 150):
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
-    k = 150
-    all_train_text_to_encode = text_to_encode(list(train_examples), dataset)
-    embeddings = calculate_sentence_transformer_embedding(text_to_encode=all_train_text_to_encode)
+    
+    vote_file=os.path.join(output_dir,'votek_cache.json')
+
+    if vote_file is not None and os.path.isfile(vote_file): # will load from json file if exists.
+        logging.info(f'load from {vote_file}')
+        embeddings=[]
+    else:
+        all_train_text_to_encode = text_to_encode(list(train_examples), dataset)
+        embeddings = calculate_sentence_transformer_embedding(text_to_encode=all_train_text_to_encode)
+
     selected_indices = fast_votek(embeddings=embeddings,
                                   select_num=select_num,
                                   k=k,

@@ -48,8 +48,8 @@ def client_selection(gen, augmentation, train_data_all, unlabeled_data_all, eval
         # train_data_seperate is cut to the same as len(labeled_idx), i.e., num_clients
         train_data_sperate, unlabeled_data_seperate, eval_data_seperate = find_labeled(labeled_idx, train_data_all, unlabeled_data_all, eval_data_all)
         sample_num_list = np.array([100]*num_clients)
-
-        logging.info("Gen {}: client_indexes is {}".format(gen, client_indexes))
+        if debug:
+            logging.info("Gen {}: client_indexes is {}".format(gen, client_indexes))
 
     else:
         # train_data_seperate is not cut, the same as origin
@@ -57,7 +57,8 @@ def client_selection(gen, augmentation, train_data_all, unlabeled_data_all, eval
 
         client_indexes = np.random.choice(range(client_num_in_total), num_clients, replace=False)
 
-        logging.info("Gen {}: client_indexes is {}".format(gen, client_indexes))
+        if debug:
+            logging.info("Gen {}: client_indexes is {}".format(gen, client_indexes))
 
         for client in range(num_clients):
             sample_num_list = np.append(sample_num_list, len(train_data_sperate[client_indexes[client]]))

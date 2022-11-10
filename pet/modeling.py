@@ -51,11 +51,12 @@ logging.basicConfig(level=logging.INFO,
                         datefmt='%a, %d %b %Y %H:%M:%S')
 
 debug = False
-eval_step = 10
+eval_step = 1
 merge_eval = True
 correct_label = False
-check_eval = False
+check_eval = True
 vote_k = False
+staleness = True # whether train on the same clients inferred in this round. Staleness paves the way for asynchronous/pipeline
 # conver_point = 10
 # aug_data_point = 100
 # vanilla = False # whether fed vanilla is on, fed vanilla means no augmentation, but is fed, means using ft instead of pl to train local model, and aggregate the model via fedavg
@@ -227,19 +228,21 @@ def train_fedpet(ensemble_model_config: WrapperConfig, ensemble_train_config: Tr
         logging.info(f"Start generation {gen}.")
         # get the sample num list of the last iteration for fedavg aggregation
         # those train_data_seperate will be different in the second round, and thus leading to null error
-        if gen > 0:
-            # client selection
-            train_data_sperate, unlabeled_data_seperate, eval_data_seperate, curr_sample_num_list, client_indexes, num_clients = client_selection(gen, augmentation, train_data_all, unlabeled_data_all, eval_data_all, train_data_sperate, unlabeled_data_seperate, eval_data_seperate, all_client_num_in_total, client_num_in_total, labeled_idx, conver_point, num_clients_infer)
-
-        else: 
-            train_data_sperate, unlabeled_data_seperate, eval_data_seperate, sample_num_list, client_indexes, num_clients = client_selection(gen, augmentation, train_data_all, unlabeled_data_all, eval_data_all, train_data_sperate, unlabeled_data_seperate, eval_data_seperate, all_client_num_in_total, client_num_in_total, labeled_idx, conver_point)
-
-        logging.info(f"Infer. Gen{gen}: client_indexes is {client_indexes}, Labeled idx is {labeled_idx}")   
+        
 
         # Data augmentation
         sample_num_list = []
         infer_sample_num_list = []
         if augmentation:
+            if gen > 0:
+                # client selection
+                train_data_sperate, unlabeled_data_seperate, eval_data_seperate, curr_sample_num_list, client_indexes, num_clients = client_selection(gen, augmentation, train_data_all, unlabeled_data_all, eval_data_all, train_data_sperate, unlabeled_data_seperate, eval_data_seperate, all_client_num_in_total, client_num_in_total, labeled_idx, conver_point, num_clients_infer)
+
+            else: 
+                train_data_sperate, unlabeled_data_seperate, eval_data_seperate, sample_num_list, client_indexes, num_clients = client_selection(gen, augmentation, train_data_all, unlabeled_data_all, eval_data_all, train_data_sperate, unlabeled_data_seperate, eval_data_seperate, all_client_num_in_total, client_num_in_total, labeled_idx, conver_point)
+
+            logging.info(f"Infer. Gen{gen}: client_indexes is {client_indexes}, Labeled idx is {labeled_idx}")  
+
             for client in range(num_clients):
                 for pattern_id in pattern_ids:
                     client_idx = client_indexes[client]
@@ -305,7 +308,9 @@ def train_fedpet(ensemble_model_config: WrapperConfig, ensemble_train_config: Tr
                                 labeled_idx.append(client_idx)
                                 labeled_idx = np.array(labeled_idx, dtype=int)
 
-        train_data_sperate, unlabeled_data_seperate, eval_data_seperate, curr_sample_num_list, client_indexes, num_clients = train_client_selection(gen, augmentation, train_data_all, unlabeled_data_all, eval_data_all, train_data_sperate, unlabeled_data_seperate, eval_data_seperate, all_client_num_in_total, client_num_in_total, labeled_idx, conver_point)
+        if staleness or not augmentation:
+            train_data_sperate, unlabeled_data_seperate, eval_data_seperate, curr_sample_num_list, client_indexes, num_clients = train_client_selection(gen, augmentation, train_data_all, unlabeled_data_all, eval_data_all, train_data_sperate, unlabeled_data_seperate, eval_data_seperate, all_client_num_in_total, client_num_in_total, labeled_idx, conver_point)
+        
 
         logging.info(f"Train. Gen{gen}: client_indexes is {client_indexes}, Labeled idx is {labeled_idx}")   
             
