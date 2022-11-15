@@ -249,6 +249,8 @@ def main():
                         help="select how many clients to do soft label annotation")
     parser.add_argument("--infer_freq", type=int, default=1,
                         help="the model trains for infer_freq rounds, and annotation starts once")
+    parser.add_argument("--vote_k", type=float, default=0,
+                        help="whether to use vote_k. vote_k is the percentage of unlabeled data for inferring")
             
 
     args = parser.parse_args()

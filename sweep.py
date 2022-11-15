@@ -82,16 +82,16 @@ def set_hp(dataset, method, device, train_examples, test_examples, unlabeled_exa
         
         client_num_in_total = 32
 
-    if dataset == "agnews":
-        all_client_num_in_total = 1000
-    if dataset == "yahoo":
-        all_client_num_in_total = 1000
-    if dataset == "yelp-full":
-        all_client_num_in_total = 1000
-    if dataset == "boolq":
-        all_client_num_in_total = 50
-    if dataset == "mnli":
-        all_client_num_in_total = 1000
+    # if dataset == "agnews":
+    #     all_client_num_in_total = 1000
+    # if dataset == "yahoo":
+    #     all_client_num_in_total = 1000
+    # if dataset == "yelp-full":
+    #     all_client_num_in_total = 1000
+    # if dataset == "boolq":
+    #     all_client_num_in_total = 50
+    # if dataset == "mnli":
+    #     all_client_num_in_total = 1000
 
     hp = dataset + " " + method + " " + str(device) + " " + str(train_examples) + " " + str(test_examples) + " " + str(unlabeled_examples) + " " + str(alpha) + " " + str(beta) + " " + str(gamma) + " " + str(client_num_in_total) + " " + str(all_client_num_in_total) + " " + str(pattern_ids) + " " + str(seed) + " " + str(model) + " " + str(model_name_or_path)
 

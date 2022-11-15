@@ -49,10 +49,12 @@ def add_args(parser):
                         help="select how many clients to do soft label annotation")
     parser.add_argument("--infer_freq", type=int, default=1,
                         help="the model trains for infer_freq rounds, and annotation starts once")
+    parser.add_argument("--vote_k", type=float, default=0,
+                        help="whether to use vote_k. vote_k is the percentage of unlabeled data for inferring")
                         
     return parser.parse_args()
 
-def set_hp(dataset, method, device, train_examples, test_examples, unlabeled_examples, alpha, beta, gamma, client_num_in_total, all_client_num_in_total, pattern_ids, seed, model, model_name_or_path, data_point, conver_point, limit, num_clients_infer, infer_freq):
+def set_hp(dataset, method, device, train_examples, test_examples, unlabeled_examples, alpha, beta, gamma, client_num_in_total, all_client_num_in_total, pattern_ids, seed, model, model_name_or_path, data_point, conver_point, limit, num_clients_infer, infer_freq, vote_k):
     default = 0
 
     if default:
@@ -93,28 +95,14 @@ def set_hp(dataset, method, device, train_examples, test_examples, unlabeled_exa
         
         client_num_in_total = 32
 
-    if dataset == "agnews":
-        all_client_num_in_total = 1000
-    if dataset == "yahoo":
-        all_client_num_in_total = 1000
-    if dataset == "yelp-full":
-        all_client_num_in_total = 1000
-    if dataset == "boolq":
-        all_client_num_in_total = 50
-    if dataset == "mnli":
-        all_client_num_in_total = 1000
-
-    hp = dataset + " " + method + " " + str(device) + " " + str(train_examples) + " " + str(test_examples) + " " + str(unlabeled_examples) + " " + str(alpha) + " " + str(beta) + " " + str(gamma) + " " + str(client_num_in_total) + " " + str(all_client_num_in_total) + " " + str(pattern_ids) + " " + str(seed) + " " + str(model) + " " + str(model_name_or_path) + " " + str(data_point) + " " + str(conver_point) + " " + str(limit) + " " + str(num_clients_infer) + " " + str(infer_freq)
+    hp = dataset + " " + method + " " + str(device) + " " + str(train_examples) + " " + str(test_examples) + " " + str(unlabeled_examples) + " " + str(alpha) + " " + str(beta) + " " + str(gamma) + " " + str(client_num_in_total) + " " + str(all_client_num_in_total) + " " + str(pattern_ids) + " " + str(seed) + " " + str(model) + " " + str(model_name_or_path) + " " + str(data_point) + " " + str(conver_point) + " " + str(limit) + " " + str(num_clients_infer) + " " + str(infer_freq) + " " + str(vote_k)
 
     return hp
 
 
-def set_hp_list(dataset, method, device, train_examples, test_examples, unlabeled_examples, alpha, beta, gamma, client_num_in_total, all_client_num_in_total, pattern_ids, seed, model, model_name_or_path, data_point, conver_point, limit, num_clients_infer, infer_freq):
+def set_hp_list(dataset, method, device, train_examples, test_examples, unlabeled_examples, alpha, beta, gamma, client_num_in_total, all_client_num_in_total, pattern_ids, seed, model, model_name_or_path, data_point, conver_point, limit, num_clients_infer, infer_freq, vote_k):
 
-    all_client_num_in_total = 1000
-
-
-    hp = dataset + " " + method + " " + str(device) + " " + str(train_examples) + " " + str(test_examples) + " " + str(unlabeled_examples) + " " + str(alpha) + " " + str(beta) + " " + str(gamma) + " " + str(client_num_in_total) + " " + str(all_client_num_in_total) + " " + str(pattern_ids) + " " + str(seed) + " " + str(model) + " " + str(model_name_or_path) + " " + str(data_point) + " " + str(conver_point) + " " + str(limit) + " " + str(num_clients_infer) + " " + str(infer_freq)
+    hp = dataset + " " + method + " " + str(device) + " " + str(train_examples) + " " + str(test_examples) + " " + str(unlabeled_examples) + " " + str(alpha) + " " + str(beta) + " " + str(gamma) + " " + str(client_num_in_total) + " " + str(all_client_num_in_total) + " " + str(pattern_ids) + " " + str(seed) + " " + str(model) + " " + str(model_name_or_path) + " " + str(data_point) + " " + str(conver_point) + " " + str(limit) + " " + str(num_clients_infer) + " " + str(infer_freq) + " " + str(vote_k)
 
     return hp
 
@@ -129,7 +117,7 @@ args = add_args(parser)
 auto = True
 
 if not auto:
-    args.hp = set_hp(args.dataset, args.method, args.device, args.train_examples, args.test_examples, args.unlabeled_examples, args.alpha, args.beta, args.gamma, args.client_num_in_total, args.all_client_num_in_total, args.pattern_ids, args.seed, args.model, args.model_name_or_path, args.data_point, args.conver_point, args.limit, args.num_clients_infer, args.infer_freq)
+    args.hp = set_hp(args.dataset, args.method, args.device, args.train_examples, args.test_examples, args.unlabeled_examples, args.alpha, args.beta, args.gamma, args.client_num_in_total, args.all_client_num_in_total, args.pattern_ids, args.seed, args.model, args.model_name_or_path, args.data_point, args.conver_point, args.limit, args.num_clients_infer, args.infer_freq, args.vote_k)
 
     logging.info(args)
     logging.info('nohup bash run_fed_aug.sh '
@@ -139,41 +127,50 @@ if not auto:
 else:
     # Fixed para.
     pattern_ids = {"agnews": 1, "yahoo": 5, "yelp-full": 0, "mnli": 0}
+    all_client_num_in_total_list = {"agnews": 100, "yahoo": 1000, "yelp-full": 1000, "mnli": 1000}
     alphas = {"agnews": 1, "yahoo": 0, "yelp-full": 0, "mnli": 0}
-    args.gamma = 100
+    gammas = {"agnews": 0.001, "yahoo": 0.001, "yelp-full": 0.001, "mnli": 100}
+    
 
     # Vary para.
-    datasets = ['agnews', 'yahoo', 'yelp-full', 'mnli']
-    num_clients_infer_list = [1, 5, 10]
-    infer_freq_list = [1, 10]
-    seeds = [99] # 6, 
-    # datapoints = [1, 2, 4, 8, 16, 32]
+    datasets = ['agnews', 'yahoo', 'yelp-full', 'mnli'] # 
+    num_clients_infer_list = [5] # [1, 5, 10]
+    infer_freq_list = [1]
+    seeds = [6] 
+    vote_k_list = [0.1,0.2,0.5,1]
+    datapoints = [5]
     
     process = 0
     process_per_gpu = 4
-    device_list = [0, 1, 2, 3, 4, 5, 7]
+    device_list = [0,1,3,4]
     device_idx = 0
 
     for num_clients_infer in num_clients_infer_list:
         args.num_clients_infer = num_clients_infer
         for infer_freq in infer_freq_list:
             args.infer_freq = infer_freq
-            for seed in seeds:
-                args.seed = seed
-                for dataset in datasets:
-                    args.dataset = dataset
-                    args.pattern_ids = pattern_ids[dataset]
-                    args.alpha = alphas[dataset]
-                    
-                    args.device = device_list[device_idx]
-                    args.hp = set_hp_list(args.dataset, args.method, args.device, args.train_examples, args.test_examples, args.unlabeled_examples, args.alpha, args.beta, args.gamma, args.client_num_in_total, args.all_client_num_in_total, args.pattern_ids, args.seed, args.model, args.model_name_or_path, args.data_point, args.conver_point, args.limit, args.num_clients_infer, args.infer_freq)
+            for datapoint in datapoints:
+                args.data_point = datapoint
+                for seed in seeds:
+                    args.seed = seed
+                    for vote_k in vote_k_list:
+                        args.vote_k = vote_k
+                        for dataset in datasets:
+                            args.all_client_num_in_total = all_client_num_in_total_list[dataset]
+                            args.dataset = dataset
+                            args.pattern_ids = pattern_ids[dataset]
+                            args.alpha = alphas[dataset]
+                            args.gamma = gammas[dataset]
+                            
+                            args.device = device_list[device_idx]
+                            args.hp = set_hp_list(args.dataset, args.method, args.device, args.train_examples, args.test_examples, args.unlabeled_examples, args.alpha, args.beta, args.gamma, args.client_num_in_total, args.all_client_num_in_total, args.pattern_ids, args.seed, args.model, args.model_name_or_path, args.data_point, args.conver_point, args.limit, args.num_clients_infer, args.infer_freq, args.vote_k)
 
-                    logging.info(args)
-                    logging.info('nohup bash run_fed_aug.sh &'
-                                '{args.hp} '.format(args=args))
-                    os.system('nohup bash run_fed_aug.sh '
-                                '{args.hp} &'.format(args=args))
-                    process += 1
-                    if process >= process_per_gpu:
-                        process = 0
-                        device_idx += 1
+                            logging.info(args)
+                            logging.info('nohup bash run_fed_aug.sh &'
+                                        '{args.hp} '.format(args=args))
+                            os.system('nohup bash run_fed_aug.sh '
+                                        '{args.hp} &'.format(args=args))
+                            process += 1
+                            if process >= process_per_gpu:
+                                process = 0
+                                device_idx += 1

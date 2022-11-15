@@ -37,7 +37,7 @@ def text_to_encode(train_examples, dataset):
         return ["{}.\nquestion: {}".format(raw_item.to_dict()["text_a"], raw_item.to_dict()["text_b"]) for raw_item in train_examples]
     elif dataset == "yahoo":
         return ["question: {}.\nanswer: {}".format(raw_item.to_dict()["text_a"], raw_item.to_dict()["text_b"]) for raw_item in train_examples]
-    elif dataset == "yelp":
+    elif dataset == "yelp-full":
         return ["{}".format(raw_item.to_dict()["text_a"]) for raw_item in train_examples]
     else:
         raise ValueError("dataset not supported")
@@ -79,15 +79,19 @@ def fast_votek(embeddings,select_num,k,vote_file=None):
             for idx in sorted_indices:
                 if idx!=i:
                     vote_stat[idx].append(i)
+            logging.info(i)
             bar.update(1)
         if vote_file is not None:
             with open(vote_file,'w') as f:
                 json.dump(vote_stat,f)
+        logging.info(f'voting done, saved into {vote_file}')
     votes = sorted(vote_stat.items(),key=lambda x:len(x[1]),reverse=True)
+    logging.info(f'sorted votes')
     selected_indices = []
     selected_times = defaultdict(int)
     while len(selected_indices)<select_num:
         cur_scores = defaultdict(int)
+        logging.info(f'len(selected_indices)={len(selected_indices)}')
         for idx,candidates in votes:
             if idx in selected_indices:
                 cur_scores[idx] = -100

@@ -41,6 +41,7 @@ conver_point=${17}
 limit=${18}
 num_clients_infer=${19}
 infer_freq=${20}
+filter=${21}
 
 task_name=${dataset}
 
@@ -70,6 +71,8 @@ output_log_dir=./log/${dataset}/all_${all_client_num_in_total}/seed_${seed}/patt
 mkdir -p $output_model_dir
 mkdir -p $output_log_dir
 
+rm -rf $output_model_dir/random_stale_aug_${data_point}_conver_${conver_point}_limit_${limit}_${method}_${train_examples}_${clients}_${model_name_or_path}_${num_clients_infer}_${infer_freq}_filter_${filter}
+
 echo $method "start."
 CUDA_VISIBLE_DEVICES=$device python3 cli.py \
 --train_examples ${train_examples} \
@@ -81,7 +84,7 @@ CUDA_VISIBLE_DEVICES=$device python3 cli.py \
 --model_type ${model_type} \
 --model_name_or_path ${model_name_or_path} \
 --task_name ${task_name} \
---output_dir $output_model_dir/stale_aug_${data_point}_conver_${conver_point}_limit_${limit}_${method}_${train_examples}_${clients}_${model_name_or_path}_${num_clients_infer}_${infer_freq} \
+--output_dir $output_model_dir/random_stale_aug_${data_point}_conver_${conver_point}_limit_${limit}_${method}_${train_examples}_${clients}_${model_name_or_path}_${num_clients_infer}_${infer_freq}_filter_${filter} \
 --ipet_scale_factor 1 \
 --ipet_generations ${iteration} \
 --pet_num_train_epochs ${epochs} \
@@ -104,4 +107,5 @@ CUDA_VISIBLE_DEVICES=$device python3 cli.py \
 --limit ${limit} \
 --num_clients_infer ${num_clients_infer} \
 --infer_freq ${infer_freq} \
---aggregated > ${output_log_dir}/stale_aug_${data_point}_conver_${conver_point}_limit_${limit}_${method}_${train_examples}_${clients}_${model_name_or_path}_${num_clients_infer}_${infer_freq}.log 2>&1
+--vote_k ${filter} \
+--aggregated > ${output_log_dir}/random_stale_aug_${data_point}_conver_${conver_point}_limit_${limit}_${method}_${train_examples}_${clients}_${model_name_or_path}_${num_clients_infer}_${infer_freq}_filter_${filter}.log 2>&1
