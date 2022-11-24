@@ -17,7 +17,7 @@ logging.basicConfig(level=logging.INFO,
 
 # nohup python sweep_aug.py --dataset agnews --device 0 --train_examples 0 --test_examples -1 --unlabeled_examples -1 --method fedpet --client_num_in_total 32 --all_client_num_in_total 1000 --seed 6 --pattern_ids 1 --alpha 1 --data_point 5 --num_clients_infer 5 --infer_freq 1 &
 
-def calculate_sentence_transformer_embedding(text_to_encode):
+def calculate_sentence_transformer_embedding(text_to_encode, mean=True):
     num = len(text_to_encode)
     emb_model = SentenceTransformer('sentence-transformers/paraphrase-mpnet-base-v2')
     embeddings = []
@@ -27,7 +27,10 @@ def calculate_sentence_transformer_embedding(text_to_encode):
         bar.update(1)
     embeddings = torch.tensor(embeddings)
     mean_embeddings = torch.mean(embeddings, 0, True)
-    embeddings = embeddings - mean_embeddings
+    if mean:
+        embeddings = embeddings - mean_embeddings
+    else:
+        embeddings = embeddings
     return embeddings
 
 def text_to_encode(train_examples, dataset):
@@ -41,6 +44,30 @@ def text_to_encode(train_examples, dataset):
         return ["{}".format(raw_item.to_dict()["text_a"]) for raw_item in train_examples]
     else:
         raise ValueError("dataset not supported")
+
+def select_by_sorting(labeled_example, unlabeled_examples, select_num, dataset):
+    if len(labeled_example) == 0:
+        logging.info("no labeled example, select randomly")
+        labeled_example = unlabeled_examples[0:1]
+        unlabeled_examples = unlabeled_examples[1:]
+    all_train_text_to_encode = text_to_encode(list(unlabeled_examples), dataset)
+    embeddings = calculate_sentence_transformer_embedding(text_to_encode=all_train_text_to_encode,mean=False)
+    unlabeled_embeddings = embeddings
+    all_train_text_to_encode = text_to_encode(list(labeled_example), dataset)
+    embeddings = calculate_sentence_transformer_embedding(text_to_encode=all_train_text_to_encode,mean=False)
+    labeled_embeddings = embeddings
+    # logging.info(f"unlabeled_embeddings: {unlabeled_embeddings}, labeled_embeddings: {labeled_embeddings}")
+    # labeled_embeddings = labeled_embeddings.reshape(1, -1)
+    # logging.info(f"After reshaping, labeled_embeddings: {labeled_embeddings}")
+    similarity = cosine_similarity(unlabeled_embeddings, labeled_embeddings)
+    # logging.info(f"similarity shape: {similarity.shape}, similarity: {similarity}")
+    similarity = np.mean(similarity, axis=1)
+    # logging.info(f"After np.mean(): similarity shape: {similarity.shape}, similarity: {similarity}")
+    selected_indices = np.argsort(similarity)[-select_num:]
+    selected_examples = []
+    for idx in selected_indices:
+        selected_examples.append(unlabeled_examples[idx])
+    return selected_examples
 
 def select_by_voting(train_examples, select_num, output_dir, dataset, k = 150):
     if not os.path.exists(output_dir):

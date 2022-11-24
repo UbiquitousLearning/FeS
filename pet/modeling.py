@@ -27,7 +27,7 @@ import torch
 from sklearn.metrics import f1_score
 from transformers.data.metrics import simple_accuracy
 
-from pet.utils import InputExample, exact_match, save_logits, save_predictions, LogitsList, set_seed
+from pet.utils import InputExample, exact_match, save_logits, save_predictions, LogitsList, set_seed, calculate_mean_max_logits
 from pet.wrapper import TransformerModelWrapper, SEQUENCE_CLASSIFIER_WRAPPER, WrapperConfig
 from pet.ipet import *
 
@@ -54,10 +54,10 @@ debug = False
 eval_step = 1
 merge_eval = True
 correct_label = False
-check_eval = True
+check_eval = False
 staleness = True # whether train on the same clients inferred in this round. Staleness paves the way for asynchronous/pipeline
-vote_k_check = False
-random_filter = True
+vote_k_check = True
+random_filter = False
 # conver_point = 10
 # aug_data_point = 100
 # vanilla = False # whether fed vanilla is on, fed vanilla means no augmentation, but is fed, means using ft instead of pl to train local model, and aggregate the model via fedavg
@@ -266,18 +266,33 @@ def train_fedpet(ensemble_model_config: WrapperConfig, ensemble_train_config: Tr
 
                         augmented_point = min(int(len(unlabeled_data) * aug_data_point / 100 * gen/infer_freq), len(unlabeled_data))
 
-                        unlabeled_data_normal = unlabeled_data
+                        unlabeled_data_normal = [deepcopy(d) for d in unlabeled_data]
                         if random_filter:
+                            select_num = int(len(unlabeled_data) * args.vote_k) if args.vote_k <= 1 else augmented_point
                             logging.info(f"Random filter the unlabeled data, select_num is {select_num}.")
                             np.random.seed(seed)
-                            unlabeled_data = np.random.choice(unlabeled_data, len(unlabeled_data) * args.vote_k)
-                            augmented_point = min(int(len(unlabeled_data) * aug_data_point / 100 * gen/infer_freq), len(unlabeled_data))
+                            unlabeled_data = np.random.choice(unlabeled_data, select_num).tolist()
+                            augmented_point = min(int(len(unlabeled_data) * aug_data_point / 100 * gen/infer_freq), len(unlabeled_data)) if args.vote_k <= 1 else augmented_point
                         elif args.vote_k > 0:
                             task_name = args.task_name
                             select_num = int(len(unlabeled_data) * args.vote_k) if args.vote_k <= 1 else augmented_point
                             logging.info(f"Client {client_idx}: len of unlabeled set: {len(unlabeled_data)}, select_num is {select_num}")
-                            unlabeled_data = select_by_voting(unlabeled_data,select_num, os.path.join(output_dir, f'g-1', f'client{client_idx}'), task_name)
-                            augmented_point = min(int(len(unlabeled_data) * aug_data_point / 100 * gen/infer_freq), len(unlabeled_data))
+                            # unlabeled_data = select_by_voting(unlabeled_data,select_num, os.path.join(output_dir, f'g-1', f'client{client_idx}'), task_name)
+                            
+                            # sorted by the probability of labeled data
+                            ipet_data_dir = os.path.join(output_dir, f'g-1', f'client{client_idx}', 'this-gen-train-data')
+                            if not os.path.exists(ipet_data_dir):
+                                logging.info(f"Client {client_idx} has no ipet data.")
+                                ipet_data_dir = None
+                            if ipet_data_dir:
+                                p = os.path.join(ipet_data_dir, 'train.bin')
+                                ipet_data = InputExample.load_examples(p)
+                                sample_num_list.append(original_data_size + ipet_data_size)
+                            train_data_and_ipet_data = train_data + ipet_data if ipet_data_dir else train_data
+                            unlabeled_data = select_by_sorting(train_data_and_ipet_data, unlabeled_data, select_num, task_name)
+                            augmented_point = min(int(len(unlabeled_data) * aug_data_point / 100 * gen/infer_freq), len(unlabeled_data)) if args.vote_k <= 1 else augmented_point # if vote_k > 1, it means merely select those data to infer that could be selected for training.
+                        else:
+                            logging.info("Vote k filter is not activated.")
                         
                         models_path = []
                         aggregated_model_path_aug = os.path.join(output_dir, f'g{gen-1}',f'aggregated-p{pattern_id}')
@@ -296,14 +311,10 @@ def train_fedpet(ensemble_model_config: WrapperConfig, ensemble_train_config: Tr
                                 if not os.path.exists(logits_path):
                                     os.makedirs(logits_path)
                                 save_logits(os.path.join(logits_path, 'logits.txt'), logits)
-
-                                logging.info(f"Client {client_idx} save_logits done")
+                                logging.info(f"Normal ipet selection results. Client {client_idx}: mean(max(logits)): {calculate_mean_max_logits(logits)}")
 
                                 num_new_examples = augmented_point  - len(train_data)
-                                # num_new_examples = min(aug_data_point, int(2 ** (gen + 1) - len(train_data))) # 由原先的**级别增长，降至*级别增长
-
-                                # num_new_examples_normal = min(int(len(unlabeled_data_normal) * aug_data_point / 100 * gen/infer_freq), len(unlabeled_data_normal))  - len(train_data)
-                                # normal augmentation for comparison
+                
                                 generate_fedipet_train_sets(train_data=unlabeled_data_normal, unlabeled_data=unlabeled_data_normal,
                                                     labels=ensemble_model_config.label_list, logits_dir=os.path.join(output_dir, f'g{gen-1}'),
                                                     output_dir=os.path.join(output_dir, f'g-1', f'client{client_idx}', 'this-gen-train-data'), reduction=reduction,
@@ -325,7 +336,7 @@ def train_fedpet(ensemble_model_config: WrapperConfig, ensemble_train_config: Tr
                                 os.makedirs(logits_path)
                             save_logits(os.path.join(logits_path, 'logits.txt'), logits)
 
-                            logging.info(f"Client {client_idx} save_logits done")
+                            logging.info(f"Vote k selection results. Client {client_idx}: mean(max(logits)): {calculate_mean_max_logits(logits)}")
                             del wrapper
                             gc.collect()
 

@@ -39,20 +39,6 @@ model_name_or_path=${15}
 
 task_name=${dataset}
 
-# model_type="roberta"
-# model_name_or_path="roberta-base"
-
-# model_type="roberta"
-# model_name_or_path="roberta-large"
-
-# model_type="bert"
-# model_name_or_path="bert-base-uncased"
-
-# model_type="albert"
-# model_name_or_path="albert-base-v2"
-
-# model_type="albert"
-# model_name_or_path="albert-base-v2"
 
 epochs=1
 iteration=1000

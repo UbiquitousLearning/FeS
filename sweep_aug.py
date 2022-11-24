@@ -129,38 +129,45 @@ else:
     pattern_ids = {"agnews": 1, "yahoo": 5, "yelp-full": 0, "mnli": 0}
     all_client_num_in_total_list = {"agnews": 100, "yahoo": 1000, "yelp-full": 1000, "mnli": 1000}
     alphas = {"agnews": 1, "yahoo": 0, "yelp-full": 0, "mnli": 0}
-    gammas = {"agnews": 0.001, "yahoo": 0.001, "yelp-full": 0.001, "mnli": 100}
+    gammas = {"agnews": 0.001, "yahoo": 100, "yelp-full": 100, "mnli": 100}
     
 
     # Vary para.
-    datasets = ['agnews', 'yahoo', 'yelp-full', 'mnli'] # 
+    datasets = ['mnli'] # 'agnews', 'mnli', 'yahoo', 'yelp-full'
     num_clients_infer_list = [5] # [1, 5, 10]
     infer_freq_list = [1]
     seeds = [6] 
-    vote_k_list = [0.1,0.2,0.5,1]
+    vote_k_list = [0.05, 0.1, 0.2] # 0.01, 0.05, 0.1, 0.2
     datapoints = [5]
+    models = ["roberta"] # "roberta", "bert", "albert", "roberta", "bert"
+    model_name_or_path_list = ["roberta-large"] # "roberta-base", "bert-base-uncased", "albert-base-v2", "roberta-large", "bert-large-uncased"
+
     
     process = 0
     process_per_gpu = 4
-    device_list = [0,1,3,4]
+    device_list = [1] # 0,1,2,3,6
     device_idx = 0
 
-    for num_clients_infer in num_clients_infer_list:
-        args.num_clients_infer = num_clients_infer
-        for infer_freq in infer_freq_list:
-            args.infer_freq = infer_freq
-            for datapoint in datapoints:
-                args.data_point = datapoint
-                for seed in seeds:
-                    args.seed = seed
-                    for vote_k in vote_k_list:
-                        args.vote_k = vote_k
-                        for dataset in datasets:
-                            args.all_client_num_in_total = all_client_num_in_total_list[dataset]
-                            args.dataset = dataset
-                            args.pattern_ids = pattern_ids[dataset]
-                            args.alpha = alphas[dataset]
-                            args.gamma = gammas[dataset]
+
+for num_clients_infer in num_clients_infer_list:
+    args.num_clients_infer = num_clients_infer
+    for infer_freq in infer_freq_list:
+        args.infer_freq = infer_freq
+        for datapoint in datapoints:
+            args.data_point = datapoint
+            for seed in seeds:
+                args.seed = seed
+                for vote_k in vote_k_list:
+                    args.vote_k = vote_k
+                    for dataset in datasets:
+                        args.all_client_num_in_total = all_client_num_in_total_list[dataset]
+                        args.dataset = dataset
+                        args.pattern_ids = pattern_ids[dataset]
+                        args.alpha = alphas[dataset]
+                        args.gamma = gammas[dataset]
+                        for idx in range(len(models)):
+                            args.model = models[idx]
+                            args.model_name_or_path = model_name_or_path_list[idx]
                             
                             args.device = device_list[device_idx]
                             args.hp = set_hp_list(args.dataset, args.method, args.device, args.train_examples, args.test_examples, args.unlabeled_examples, args.alpha, args.beta, args.gamma, args.client_num_in_total, args.all_client_num_in_total, args.pattern_ids, args.seed, args.model, args.model_name_or_path, args.data_point, args.conver_point, args.limit, args.num_clients_infer, args.infer_freq, args.vote_k)
