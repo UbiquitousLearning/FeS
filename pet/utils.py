@@ -276,14 +276,14 @@ def get_verbalization_ids(word: str, tokenizer: PreTrainedTokenizer, force_singl
     """
     kwargs = {'add_prefix_space': True} if isinstance(tokenizer, GPT2Tokenizer) else {}
     
-    # # github solution: enable roberta processed multi token.
-    # # However, this will incurs other models fail.
-    # if tokenizer.convert_tokens_to_ids(word) == tokenizer.unk_token_id:
-    #     space_word = "Ġ" + word
-    #     ids = tokenizer.convert_tokens_to_ids(space_word)
-    # else:
-    #     ids = tokenizer.convert_tokens_to_ids(word)
-    # return ids
+    # github solution: enable roberta processed multi token.
+    # However, this will incurs other models fail.
+    if tokenizer.convert_tokens_to_ids(word) == tokenizer.unk_token_id:
+        space_word = "Ġ" + word
+        ids = tokenizer.convert_tokens_to_ids(space_word)
+    else:
+        ids = tokenizer.convert_tokens_to_ids(word)
+    return ids
 
     # origin version
     ids = tokenizer.encode(word, add_special_tokens=False, **kwargs)

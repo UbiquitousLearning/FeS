@@ -9,6 +9,11 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
+
+'''
+Original modeling. CPU intensive task. But accuracy is good enough tested by preliminary experiments.
+'''
 import ast
 from enum import Flag
 import json
@@ -58,6 +63,9 @@ check_eval = False
 staleness = True # whether train on the same clients inferred in this round. Staleness paves the way for asynchronous/pipeline
 vote_k_check = True
 random_filter = False
+select = 'vote' # 'vote' or 'sort'
+bitfit_training = False
+augment = 'fixed' # 'curriculum' or 'fixed'
 # conver_point = 10
 # aug_data_point = 100
 # vanilla = False # whether fed vanilla is on, fed vanilla means no augmentation, but is fed, means using ft instead of pl to train local model, and aggregate the model via fedavg
@@ -264,8 +272,10 @@ def train_fedpet(ensemble_model_config: WrapperConfig, ensemble_train_config: Tr
                         # select the unlabeled data for inference by voting_k
                         # forked from https://github.com/HKUNLP/icl-selective-annotation
 
-                        augmented_point = min(int(len(unlabeled_data) * aug_data_point / 100 * gen/infer_freq), len(unlabeled_data))
-
+                        if augment == "curriculum":
+                            augmented_point = min(int(len(unlabeled_data) * aug_data_point / 100 * gen/infer_freq), len(unlabeled_data))
+                        else :
+                            augmented_point = min(aug_data_point, len(unlabeled_data))
                         unlabeled_data_normal = [deepcopy(d) for d in unlabeled_data]
                         if random_filter:
                             select_num = int(len(unlabeled_data) * args.vote_k) if args.vote_k <= 1 else augmented_point
@@ -277,19 +287,25 @@ def train_fedpet(ensemble_model_config: WrapperConfig, ensemble_train_config: Tr
                             task_name = args.task_name
                             select_num = int(len(unlabeled_data) * args.vote_k) if args.vote_k <= 1 else augmented_point
                             logging.info(f"Client {client_idx}: len of unlabeled set: {len(unlabeled_data)}, select_num is {select_num}")
-                            # unlabeled_data = select_by_voting(unlabeled_data,select_num, os.path.join(output_dir, f'g-1', f'client{client_idx}'), task_name)
-                            
-                            # sorted by the probability of labeled data
-                            ipet_data_dir = os.path.join(output_dir, f'g-1', f'client{client_idx}', 'this-gen-train-data')
-                            if not os.path.exists(ipet_data_dir):
-                                logging.info(f"Client {client_idx} has no ipet data.")
-                                ipet_data_dir = None
-                            if ipet_data_dir:
-                                p = os.path.join(ipet_data_dir, 'train.bin')
-                                ipet_data = InputExample.load_examples(p)
-                                sample_num_list.append(original_data_size + ipet_data_size)
-                            train_data_and_ipet_data = train_data + ipet_data if ipet_data_dir else train_data
-                            unlabeled_data = select_by_sorting(train_data_and_ipet_data, unlabeled_data, select_num, task_name)
+
+                            # sorted by the similarity&representive of unlabeled data themselves
+                            if select == 'vote':
+                                logging.info("Select via voting.")
+                                unlabeled_data = select_by_voting(unlabeled_data,select_num, os.path.join(output_dir, f'g-1', f'client{client_idx}'), task_name)
+                            elif select == 'sort':
+                            # sorted by the similarity of labeled data
+                                logging.info("Select via sorting.")
+                                ipet_data_dir = os.path.join(output_dir, f'g-1', f'client{client_idx}', 'this-gen-train-data')
+                                if not os.path.exists(ipet_data_dir):
+                                    logging.info(f"Client {client_idx} has no ipet data.")
+                                    ipet_data_dir = None
+                                if ipet_data_dir:
+                                    p = os.path.join(ipet_data_dir, 'train.bin')
+                                    ipet_data = InputExample.load_examples(p)
+                                    sample_num_list.append(original_data_size + ipet_data_size)
+                                train_data_and_ipet_data = train_data + ipet_data if ipet_data_dir else train_data
+                                unlabeled_data = select_by_sorting(train_data_and_ipet_data, unlabeled_data, select_num, task_name)
+
                             augmented_point = min(int(len(unlabeled_data) * aug_data_point / 100 * gen/infer_freq), len(unlabeled_data)) if args.vote_k <= 1 else augmented_point # if vote_k > 1, it means merely select those data to infer that could be selected for training.
                         else:
                             logging.info("Vote k filter is not activated.")
@@ -299,7 +315,6 @@ def train_fedpet(ensemble_model_config: WrapperConfig, ensemble_train_config: Tr
                         
                         logging.info(f"Client {client_idx}: aggregated_model_path_aug is {aggregated_model_path_aug}")
                         wrapper = TransformerModelWrapper.from_pretrained(aggregated_model_path_aug)
-
                         
                         logging.info(f"Gen {gen}: Client {client_idx} will annotate {augmented_point} data.")
                         if len(unlabeled_data) > 0 and len(train_data) < augmented_point:
@@ -684,7 +699,8 @@ def train_single_model(model: TransformerModelWrapper, train_data: List[InputExa
     if not all_train_data and not config.use_logits:
         logging.warning('Training method was called without training examples')
     else:
-        model = deactivate_relevant_gradients(model)
+        if bitfit_training:
+            model = deactivate_relevant_gradients(model)
         global_step, tr_loss = model.train(
             all_train_data, device,
             per_gpu_train_batch_size=config.per_gpu_train_batch_size,
@@ -837,6 +853,8 @@ def train_fedclassifier(model_config: WrapperConfig, train_config: TrainConfig, 
 
     eval_data_all = eval_data
 
+    aggregated_model_path = None
+
     for gen in range(repetitions):
         delete_cache(gen, output_dir)
         # Select clients
@@ -862,13 +880,15 @@ def train_fedclassifier(model_config: WrapperConfig, train_config: TrainConfig, 
                             train_data=train_data, unlabeled_data=unlabeled_data, eval_data=eval_data, do_train=do_train,
                             do_eval=do_eval, seed=seed, aggregated_model_path=aggregated_model_path, check_data=check_data)
 
-        aggregated_model_path = os.path.join(output_dir, f'g{gen-1}',f'aggregated')
+        aggregated_model_path = os.path.join(output_dir, f'g{gen}',f'aggregated')
         # Aggergate models trained in current round.
         if len(sample_num_list) > 0: # compatible for zero-shot learning
             models_path = []
             for i in range(num_clients):
-                pattern_iter_input_dir = os.path.join(output_dir, f'g{gen-1}',f'client{i}')
+                pattern_iter_input_dir = os.path.join(output_dir, f'g{gen}',f'client{i}')
                 models_path.append(pattern_iter_input_dir)
+                if not os.path.exists(pattern_iter_input_dir):
+                    os.makedirs(pattern_iter_input_dir)
             fl_model = aggregate(models_path=models_path, sample_num_list=sample_num_list)
             wrapper = init_model(model_config)
             wrapper.model = fl_model
@@ -879,6 +899,11 @@ def train_fedclassifier(model_config: WrapperConfig, train_config: TrainConfig, 
             wrapper = init_model(model_config)
             logging.info("Zero-shot: saving origin pretrained model at {}".format(aggregated_model_path))
             wrapper.save(aggregated_model_path) 
+        infer_sample_num_list = np.array([]*len(sample_num_list))
+        logging.info("------INFO------")
+        logging.info(f'Gen {gen}:  labeled_idx = {labeled_idx}, len(labeled_idx) = {len(labeled_idx)}')
+        logging.info(f"Gen {gen}:  train data = {sample_num_list}")
+        logging.info(f"Gen {gen}:  infer data = {infer_sample_num_list}")
             
         if eval_step > 1:# Only eval when gen = 0, 10, 20... per 10 gens
             if gen % 10 == 0:
@@ -902,13 +927,13 @@ def train_fedclassifier(model_config: WrapperConfig, train_config: TrainConfig, 
             eval_result = []
             for i in range(all_client_num_in_total): # eval aggregated performance on all eval set
                 eval_result.append(evaluate(wrapper, eval_data_all[i], eval_config, label_list = model_config.label_list)['scores']['acc'])
-                logging.info("Gen {}: Client {} eval acc is: {}".format(gen, i, eval_result[-1]))
+                # logging.info("Gen {}: Client {} eval acc is: {}".format(gen, i, eval_result[-1]))
 
             if debug:
                 logging.info("All clients' eval performance results is:")
                 logging.info(eval_result)
 
-            logging.info('Gen {} aggregated model performance is: {}'.format(gen-1, np.mean(np.array(eval_result))))
+            logging.info('Gen {} aggregated model performance is: {}'.format(gen, np.mean(np.array(eval_result))))
         
         del wrapper
         gc.collect()

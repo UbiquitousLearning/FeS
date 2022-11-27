@@ -11,7 +11,7 @@ def add_args(parser):
     """
     parser.add_argument('--dataset', type=str, default="agnews",
                         help='Available datasets: agnews, mnli, yahoo, yelp-full')
-    parser.add_argument('--method', type=str, default="fedpet",
+    parser.add_argument('--method', type=str, default="fedclassifier",
                         help='Available methods: fedclassifier, fedpet')
     parser.add_argument('--device', type=int, default=1,
                         help='CUDA_VISIABLE_DEVICE')
@@ -129,23 +129,25 @@ else:
     pattern_ids = {"agnews": 1, "yahoo": 5, "yelp-full": 0, "mnli": 0}
     all_client_num_in_total_list = {"agnews": 100, "yahoo": 1000, "yelp-full": 1000, "mnli": 1000}
     alphas = {"agnews": 1, "yahoo": 0, "yelp-full": 0, "mnli": 0}
-    gammas = {"agnews": 0.001, "yahoo": 100, "yelp-full": 100, "mnli": 100}
+    gammas = {"agnews": 0.001, "yahoo": 0.001, "yelp-full": 0.001, "mnli": 100}
     
 
     # Vary para.
-    datasets = ['mnli'] # 'agnews', 'mnli', 'yahoo', 'yelp-full'
+    datasets = ['agnews', 'mnli', 'yahoo', 'yelp-full'] # 'agnews', 'mnli', 'yahoo', 'yelp-full'
     num_clients_infer_list = [5] # [1, 5, 10]
     infer_freq_list = [1]
     seeds = [6] 
-    vote_k_list = [0.05, 0.1, 0.2] # 0.01, 0.05, 0.1, 0.2
-    datapoints = [5]
+    vote_k_list = [-1] # 0.01, 0.05, 0.1, 0.2
+    vote_k_specific = None
+    # vote_k_specific = {"agnews": 0.1, "yahoo": 0.1, "yelp-full": 0.5, "mnli": 0.2} # this will cover vote_k_list
+    datapoints = [0]
     models = ["roberta"] # "roberta", "bert", "albert", "roberta", "bert"
-    model_name_or_path_list = ["roberta-large"] # "roberta-base", "bert-base-uncased", "albert-base-v2", "roberta-large", "bert-large-uncased"
+    model_name_or_path_list = ["roberta-base"] # "roberta-base", "bert-base-uncased", "albert-base-v2", "roberta-large", "bert-large-uncased"
 
     
     process = 0
-    process_per_gpu = 4
-    device_list = [1] # 0,1,2,3,6
+    process_per_gpu = 2
+    device_list = [3,4] # 0,1,2,3,4,5,6,7
     device_idx = 0
 
 
@@ -160,6 +162,8 @@ for num_clients_infer in num_clients_infer_list:
                 for vote_k in vote_k_list:
                     args.vote_k = vote_k
                     for dataset in datasets:
+                        if vote_k_specific:
+                            args.vote_k = vote_k_specific[dataset]
                         args.all_client_num_in_total = all_client_num_in_total_list[dataset]
                         args.dataset = dataset
                         args.pattern_ids = pattern_ids[dataset]

@@ -59,6 +59,7 @@ def select_by_sorting(labeled_example, unlabeled_examples, select_num, dataset):
     # logging.info(f"unlabeled_embeddings: {unlabeled_embeddings}, labeled_embeddings: {labeled_embeddings}")
     # labeled_embeddings = labeled_embeddings.reshape(1, -1)
     # logging.info(f"After reshaping, labeled_embeddings: {labeled_embeddings}")
+    logging.info("Compute cosin_similarity.")
     similarity = cosine_similarity(unlabeled_embeddings, labeled_embeddings)
     # logging.info(f"similarity shape: {similarity.shape}, similarity: {similarity}")
     similarity = np.mean(similarity, axis=1)
@@ -101,24 +102,25 @@ def fast_votek(embeddings,select_num,k,vote_file=None):
         vote_stat = defaultdict(list)
         for i in range(n):
             cur_emb = embeddings[i].reshape(1, -1)
+            # logging.info("Compute cosin_similarity.")
             cur_scores = np.sum(cosine_similarity(embeddings, cur_emb), axis=1)
             sorted_indices = np.argsort(cur_scores).tolist()[-k-1:-1]
             for idx in sorted_indices:
                 if idx!=i:
-                    vote_stat[idx].append(i)
-            logging.info(i)
+                    vote_stat[idx].append(i) # idx （与i最相似的150个样本之一）的 vote_stat 里面加入 i作为相似的样本
+            # logging.info(i)
             bar.update(1)
         if vote_file is not None:
             with open(vote_file,'w') as f:
                 json.dump(vote_stat,f)
         logging.info(f'voting done, saved into {vote_file}')
-    votes = sorted(vote_stat.items(),key=lambda x:len(x[1]),reverse=True)
+    votes = sorted(vote_stat.items(),key=lambda x:len(x[1]),reverse=True) # 按照拥有相似样本的数量来排序
     logging.info(f'sorted votes')
     selected_indices = []
     selected_times = defaultdict(int)
     while len(selected_indices)<select_num:
         cur_scores = defaultdict(int)
-        logging.info(f'len(selected_indices)={len(selected_indices)}')
+        # logging.info(f'len(selected_indices)={len(selected_indices)}')
         for idx,candidates in votes:
             if idx in selected_indices:
                 cur_scores[idx] = -100
@@ -128,6 +130,6 @@ def fast_votek(embeddings,select_num,k,vote_file=None):
                     cur_scores[idx] += 10 ** (-selected_times[one_support]) # if one_support not been selected, add 1, or add **.
         cur_selected_idx = max(cur_scores.items(),key=lambda x:x[1])[0] # discourage idx that has been selected to encourage diversity.
         selected_indices.append(int(cur_selected_idx))
-        for idx_support in vote_stat[cur_selected_idx]:
+        for idx_support in vote_stat[cur_selected_idx]: # 与cur_selected_idx相关的样本的selected_times加1，support越多，权重越低，越不容易被选中
             selected_times[idx_support] += 1
     return selected_indices
