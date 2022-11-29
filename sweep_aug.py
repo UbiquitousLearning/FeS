@@ -11,7 +11,7 @@ def add_args(parser):
     """
     parser.add_argument('--dataset', type=str, default="agnews",
                         help='Available datasets: agnews, mnli, yahoo, yelp-full')
-    parser.add_argument('--method', type=str, default="fedclassifier",
+    parser.add_argument('--method', type=str, default="fedpet",
                         help='Available methods: fedclassifier, fedpet')
     parser.add_argument('--device', type=int, default=1,
                         help='CUDA_VISIABLE_DEVICE')
@@ -136,18 +136,18 @@ else:
     datasets = ['agnews', 'mnli', 'yahoo', 'yelp-full'] # 'agnews', 'mnli', 'yahoo', 'yelp-full'
     num_clients_infer_list = [5] # [1, 5, 10]
     infer_freq_list = [1]
-    seeds = [6] 
+    seeds = [42] 
     vote_k_list = [-1] # 0.01, 0.05, 0.1, 0.2
     vote_k_specific = None
-    # vote_k_specific = {"agnews": 0.1, "yahoo": 0.1, "yelp-full": 0.5, "mnli": 0.2} # this will cover vote_k_list
-    datapoints = [0]
+    vote_k_specific = {"agnews": 0.1, "yahoo": 0.1, "yelp-full": 0.5, "mnli": 0.2} # this will cover vote_k_list
+    datapoints = [5]
     models = ["roberta"] # "roberta", "bert", "albert", "roberta", "bert"
-    model_name_or_path_list = ["roberta-base"] # "roberta-base", "bert-base-uncased", "albert-base-v2", "roberta-large", "bert-large-uncased"
+    model_name_or_path_list = ["roberta-large"] # "roberta-base", "bert-base-uncased", "albert-base-v2", "roberta-large", "bert-large-uncased"
 
     
     process = 0
-    process_per_gpu = 2
-    device_list = [3,4] # 0,1,2,3,4,5,6,7
+    process_per_gpu = 4
+    device_list = [3] # 0,1,2,3,4,5,6,7
     device_idx = 0
 
 

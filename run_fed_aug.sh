@@ -17,7 +17,7 @@
 # bash run_fed.sh yelp-full fedclassifier 1 40 -1 -1
 
 
-filter_method='token_cpu_vote'
+filter_method='bitfit+filter+curriculum'
 output_dir="/data/cdq/pet_data"
 data_dir="${output_dir}/data"
 
@@ -71,7 +71,7 @@ output_log_dir=./log/${dataset}/all_${all_client_num_in_total}/seed_${seed}/patt
 mkdir -p $output_model_dir
 mkdir -p $output_log_dir
 
-rm -rf $output_model_dir/new_${filter_method}_stale_aug_${data_point}_conver_${conver_point}_limit_${limit}_${method}_${train_examples}_${clients}_${model_name_or_path}_${num_clients_infer}_${infer_freq}_filter_${filter}
+rm -rf $output_model_dir/${filter_method}_${method}_${model_name_or_path}_train_examples_${train_examples}_f_${data_point}_n_${infer_freq}_k_${num_clients_infer}_filter_${filter}
 
 echo $method "start."
 CUDA_VISIBLE_DEVICES=$device python3 cli.py \
@@ -84,7 +84,7 @@ CUDA_VISIBLE_DEVICES=$device python3 cli.py \
 --model_type ${model_type} \
 --model_name_or_path ${model_name_or_path} \
 --task_name ${task_name} \
---output_dir $output_model_dir/new_${filter_method}_stale_aug_${data_point}_conver_${conver_point}_limit_${limit}_${method}_${train_examples}_${clients}_${model_name_or_path}_${num_clients_infer}_${infer_freq}_filter_${filter} \
+--output_dir $output_model_dir/${filter_method}_${method}_${model_name_or_path}_train_examples_${train_examples}_f_${data_point}_n_${infer_freq}_k_${num_clients_infer}_filter_${filter} \
 --ipet_scale_factor 1 \
 --ipet_generations ${iteration} \
 --pet_num_train_epochs ${epochs} \
@@ -108,4 +108,4 @@ CUDA_VISIBLE_DEVICES=$device python3 cli.py \
 --num_clients_infer ${num_clients_infer} \
 --infer_freq ${infer_freq} \
 --vote_k ${filter} \
---aggregated > ${output_log_dir}/new_${filter_method}_stale_aug_${data_point}_conver_${conver_point}_limit_${limit}_${method}_${train_examples}_${clients}_${model_name_or_path}_${num_clients_infer}_${infer_freq}_filter_${filter}.log 2>&1
+--aggregated > ${output_log_dir}/${filter_method}_${method}_${model_name_or_path}_train_examples_${train_examples}_f_${data_point}_n_${infer_freq}_k_${num_clients_infer}_filter_${filter}.log 2>&1

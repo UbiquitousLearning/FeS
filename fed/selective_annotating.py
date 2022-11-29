@@ -21,10 +21,10 @@ def calculate_sentence_transformer_embedding(text_to_encode, mean=True):
     num = len(text_to_encode)
     emb_model = SentenceTransformer('sentence-transformers/paraphrase-mpnet-base-v2')
     embeddings = []
-    bar = tqdm(range(0,num,20),desc='calculate embeddings')
+    # bar = tqdm(range(0,num,20),desc='calculate embeddings')
     for i in range(0,num,20):
         embeddings += emb_model.encode(text_to_encode[i:i+20]).tolist()
-        bar.update(1)
+        # bar.update(1)
     embeddings = torch.tensor(embeddings)
     mean_embeddings = torch.mean(embeddings, 0, True)
     if mean:
@@ -98,7 +98,7 @@ def fast_votek(embeddings,select_num,k,vote_file=None):
         with open(vote_file) as f:
             vote_stat = json.load(f)
     else:
-        bar = tqdm(range(n),desc=f'voting')
+        # bar = tqdm(range(n),desc=f'voting')
         vote_stat = defaultdict(list)
         for i in range(n):
             cur_emb = embeddings[i].reshape(1, -1)
@@ -109,7 +109,7 @@ def fast_votek(embeddings,select_num,k,vote_file=None):
                 if idx!=i:
                     vote_stat[idx].append(i) # idx （与i最相似的150个样本之一）的 vote_stat 里面加入 i作为相似的样本
             # logging.info(i)
-            bar.update(1)
+            # bar.update(1)
         if vote_file is not None:
             with open(vote_file,'w') as f:
                 json.dump(vote_stat,f)
