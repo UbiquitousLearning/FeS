@@ -325,7 +325,7 @@ def main():
     elif args.method == 'fedclassifier':
         pet.train_fedclassifier(sc_model_cfg, sc_train_cfg, sc_eval_cfg, output_dir=args.output_dir,
                              repetitions=args.sc_repetitions, train_data=train_data, unlabeled_data=unlabeled_data,
-                             eval_data=eval_data, do_train=args.do_train, do_eval=args.do_eval, seed=args.seed, beta=args.beta, client_num_in_total=args.client_num_in_total, check_data=check_data,all_client_num_in_total=args.all_client_num_in_total, labeled_idx=labeled_idx)
+                             eval_data=eval_data, do_train=args.do_train, do_eval=args.do_eval, seed=args.seed, beta=args.beta, client_num_in_total=args.client_num_in_total, check_data=check_data,all_client_num_in_total=args.all_client_num_in_total, labeled_idx=labeled_idx, aug_data_point=args.data_point)
 
     else:
         raise ValueError(f"Training method '{args.method}' not implemented")

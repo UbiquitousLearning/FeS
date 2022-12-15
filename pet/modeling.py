@@ -61,11 +61,11 @@ merge_eval = True
 correct_label = False
 check_eval = False
 staleness = True # whether train on the same clients inferred in this round. Staleness paves the way for asynchronous/pipeline
-vote_k_check = True
+vote_k_check = False
 random_filter = False
 select = 'vote' # 'vote' or 'sort'
 bitfit_training = True
-augment = 'curriculum' # 'curriculum' or 'fixed'
+augment = 'fixed' # 'curriculum' or 'fixed'
 # conver_point = 10
 # aug_data_point = 100
 # vanilla = False # whether fed vanilla is on, fed vanilla means no augmentation, but is fed, means using ft instead of pl to train local model, and aggregate the model via fedavg
@@ -554,12 +554,10 @@ def train_pet_ensemble(model_config: WrapperConfig, train_config: TrainConfig, e
 
             if ipet_data_dir:
                 p = os.path.join(ipet_data_dir, 'train.bin')
-                ipet_train_data = InputExample.load_examples(p)
-                # for example in ipet_train_data:
-                #     example.logits = None
-                
-                # ipet_train_data = [deepcopy(ex) for ex in check_data[:996]]
-                
+                if os.path.exists(p):
+                    ipet_train_data = InputExample.load_examples(p)
+                else:
+                    ipet_train_data = None
                 logging.info(f"Evaluating soft label on {ipet_data_dir}")
 
                 # vanilla annotating
@@ -567,31 +565,8 @@ def train_pet_ensemble(model_config: WrapperConfig, train_config: TrainConfig, e
                     ipet_train_data = eval_softlabel(ipet_train_data, check_data, replace=correct_label, limit=limit)
                 else:
                     logging.info("Not using check data for annotating.")
-                # ensemble voting
-                # pattern_ids = [0, 1]
-                # logits_pattern = []
-                # labels_pattern = []
-                # for i in range(len(pattern_ids)):
-                #     pattern_id = pattern_ids[i]
-                #     aggregated_model_path_pattern = aggregated_model_path.split('-')[0] + "-" + aggregated_model_path.split('-')[1] + f'-p{pattern_id}'
-                #     wrapper_tmp = TransformerModelWrapper.from_pretrained(aggregated_model_path_pattern)
-                #     results = evaluate(wrapper_tmp, ipet_train_data, eval_config, model_config.label_list)
-                #     logging.info(aggregated_model_path_pattern)
-                #     label = []
-                #     for l in results['logits']:
-                #         label.append(model_config.label_list[np.argmax(l).item()])
-                #         logits_pattern.append(l)
-                #     labels_pattern.append(label)
-                #     # logging.info(labels_pattern)
-                #     del wrapper_tmp
-                #     gc.collect()
-
-                # ipet_train_data = eval_softlabel(ipet_train_data, check_data, replace=correct_label, labels = labels_pattern, logits = logits_pattern)
             else:
                 ipet_train_data = None
-            
-            # # See test acc before training
-            # eval_result = evaluate(wrapper, eval_data, eval_config, priming_data=train_data)
 
             results_dict.update(train_single_model(wrapper, train_data, train_config, eval_config,
                                                     ipet_train_data=ipet_train_data,
@@ -828,7 +803,7 @@ def merge_logits(logits_dir: str, output_file: str, reduction: str):
 def train_fedclassifier(model_config: WrapperConfig, train_config: TrainConfig, eval_config: EvalConfig, output_dir: str,
                      repetitions: int = 3, train_data: List[InputExample] = None,
                      unlabeled_data: List[InputExample] = None, eval_data: List[InputExample] = None,
-                     do_train: bool = True, do_eval: bool = True, seed: int = 42, beta: int = None, client_num_in_total: int = None, check_data: List[InputExample] = None, all_client_num_in_total: int = None, labeled_idx: List[int] = None):
+                     do_train: bool = True, do_eval: bool = True, seed: int = 42, beta: int = None, client_num_in_total: int = None, check_data: List[InputExample] = None, all_client_num_in_total: int = None, labeled_idx: List[int] = None, augmentation: bool = True, aug_data_point: int = 100):
     """
     Train and evaluate a sequence classification model.
 
@@ -868,6 +843,8 @@ def train_fedclassifier(model_config: WrapperConfig, train_config: TrainConfig, 
             sample_num_list = np.append(sample_num_list, len(train_data_sperate[client_indexes[client]]))
         logging.info("Gen{}: sample_num_list is {}".format(gen, sample_num_list))
 
+       
+        infer_sample_num_list = []*len(sample_num_list)
         for client in range(num_clients):
             client_idx = client_indexes[client]
             gen_output_dir = os.path.join(output_dir, f'g{gen}', f'client{client}')
@@ -875,7 +852,38 @@ def train_fedclassifier(model_config: WrapperConfig, train_config: TrainConfig, 
             unlabeled_data = np.array(unlabeled_data_seperate[client_idx]).tolist()
             eval_data = np.array(eval_data_seperate[client_idx]).tolist()
 
-            train_pet_ensemble(model_config, train_config, eval_config, pattern_ids=[1], output_dir=gen_output_dir,
+            
+            if gen > 0 and augmentation:
+                aggregated_model_path_aug = os.path.join(output_dir, f'g{gen-1}',f'aggregated')
+                wrapper = TransformerModelWrapper.from_pretrained(aggregated_model_path_aug)
+                augmented_point = min(aug_data_point, len(unlabeled_data))
+                if len(unlabeled_data) > 0 and len(train_data) < augmented_point:
+                    results = evaluate(wrapper, unlabeled_data, eval_config, label_list = model_config.label_list)
+                    logits = results['logits']
+                    infer_sample_num_list.append(len(unlabeled_data))
+                    
+                    logits_path = os.path.join(output_dir, f'g{gen-1}', f'client0-p0')
+                    if not os.path.exists(logits_path):
+                        os.makedirs(logits_path)
+                    save_logits(os.path.join(logits_path, 'logits.txt'), logits)
+
+                    logging.info(f"Vote k selection results. Client {client_idx}: mean(max(logits)): {calculate_mean_max_logits(logits)}")
+                    del wrapper
+                    gc.collect()
+
+                    num_new_examples = augmented_point  - len(train_data)
+
+                    generate_fedipet_train_sets(train_data=unlabeled_data, unlabeled_data=unlabeled_data,
+                                        labels=model_config.label_list, logits_percentage = 100, reduction= 'mean',logits_dir=os.path.join(output_dir, f'g{gen-1}'),
+                                        output_dir=os.path.join(output_dir, f'g-1', f'client{client_idx}', 'this-gen-train-data'),
+                                        num_new_examples=num_new_examples,
+                                        n_most_likely=-1, seed=seed,pattern=0)
+                
+            
+
+            
+            ipet_data_dir = os.path.join(output_dir, f'g-1', f'client{client_idx}', 'this-gen-train-data') if gen > 0 and augmentation else None
+            train_pet_ensemble(model_config, train_config, eval_config, pattern_ids=[1], output_dir=gen_output_dir, ipet_data_dir=ipet_data_dir,
                             repetitions=1,
                             train_data=train_data, unlabeled_data=unlabeled_data, eval_data=eval_data, do_train=do_train,
                             do_eval=do_eval, seed=seed, aggregated_model_path=aggregated_model_path, check_data=check_data)
@@ -899,7 +907,7 @@ def train_fedclassifier(model_config: WrapperConfig, train_config: TrainConfig, 
             wrapper = init_model(model_config)
             logging.info("Zero-shot: saving origin pretrained model at {}".format(aggregated_model_path))
             wrapper.save(aggregated_model_path) 
-        infer_sample_num_list = np.array([]*len(sample_num_list))
+        
         logging.info("------INFO------")
         logging.info(f'Gen {gen}:  labeled_idx = {labeled_idx}, len(labeled_idx) = {len(labeled_idx)}')
         logging.info(f"Gen {gen}:  train data = {sample_num_list}")

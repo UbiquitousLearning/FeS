@@ -129,25 +129,26 @@ else:
     pattern_ids = {"agnews": 1, "yahoo": 5, "yelp-full": 0, "mnli": 0}
     all_client_num_in_total_list = {"agnews": 100, "yahoo": 1000, "yelp-full": 1000, "mnli": 1000}
     alphas = {"agnews": 1, "yahoo": 0, "yelp-full": 0, "mnli": 0}
-    gammas = {"agnews": 0.001, "yahoo": 0.001, "yelp-full": 0.001, "mnli": 100}
+    gammas = {"agnews": 0.001, "yahoo": 100, "yelp-full":100, "mnli": 0.001}
     
 
     # Vary para.
     datasets = ['agnews', 'mnli', 'yahoo', 'yelp-full'] # 'agnews', 'mnli', 'yahoo', 'yelp-full'
-    num_clients_infer_list = [5] # [1, 5, 10]
-    infer_freq_list = [1]
-    seeds = [42] 
+    infer_freq_list = [1] # f: frequency of inference, default: 1
+    num_clients_infer_list = [5] # n: number of clients for inference, default: 5
+    datapoints = [100] # k: number of pseudo labels for subsequent training, default: 5
+    seeds = [6,42,99] 
     vote_k_list = [-1] # 0.01, 0.05, 0.1, 0.2
     vote_k_specific = None
     vote_k_specific = {"agnews": 0.1, "yahoo": 0.1, "yelp-full": 0.5, "mnli": 0.2} # this will cover vote_k_list
-    datapoints = [5]
+    
     models = ["roberta"] # "roberta", "bert", "albert", "roberta", "bert"
     model_name_or_path_list = ["roberta-large"] # "roberta-base", "bert-base-uncased", "albert-base-v2", "roberta-large", "bert-large-uncased"
-
+    train_examples = {"agnews": 64, "yahoo": 64, "yelp-full": 64, "mnli": 64}
     
     process = 0
     process_per_gpu = 4
-    device_list = [3] # 0,1,2,3,4,5,6,7
+    device_list = [0,2,3,4,6] # 0,1,2,3,4,5,6,7
     device_idx = 0
 
 
@@ -169,6 +170,7 @@ for num_clients_infer in num_clients_infer_list:
                         args.pattern_ids = pattern_ids[dataset]
                         args.alpha = alphas[dataset]
                         args.gamma = gammas[dataset]
+                        args.train_examples = train_examples[dataset]
                         for idx in range(len(models)):
                             args.model = models[idx]
                             args.model_name_or_path = model_name_or_path_list[idx]
