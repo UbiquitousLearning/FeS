@@ -114,6 +114,7 @@ logging.basicConfig(level=logging.INFO,
 parser = argparse.ArgumentParser()
 args = add_args(parser)
 
+# you could set it to False to run experiments manually
 auto = True
 
 if not auto:
@@ -125,6 +126,7 @@ if not auto:
     os.system('nohup bash run_fed_aug.sh '
                 '{args.hp} '.format(args=args))
 else:
+    # following is the params FFNLP used in paper
     # Fixed para.
     pattern_ids = {"agnews": 1, "yahoo": 5, "yelp-full": 0, "mnli": 0}
     all_client_num_in_total_list = {"agnews": 100, "yahoo": 1000, "yelp-full": 1000, "mnli": 1000}
