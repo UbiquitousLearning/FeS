@@ -1,8 +1,8 @@
-# Federated Few-shot Learning for Mobile NLP (FFNLP)
+# Federated Few-shot Learning for Mobile NLP (NFS)
 
-FFNLP is an training-inference orchestration framework for enable private mobile NLP training with few labels.
+NFS is an training-inference orchestration framework for enable private mobile NLP training with few labels.
 
-FFNLP is built atop Pattern-Exploiting Training (PET) (commit id: 21d32d), the document file and instruction could be found in [README_pet.md](./README_pet.md)
+NFS is built atop Pattern-Exploiting Training (PET) (commit id: 21d32d), the document file and instruction could be found in [README_pet.md](./README_pet.md)
 
 # Step-by-step installation
 After `git clone`-ing this repository, please run the following command to install our dependencies.
@@ -11,7 +11,7 @@ After `git clone`-ing this repository, please run the following command to insta
 # create directly via conda (recommended)
 conda env create -f environment.yaml
 # or you can create the environment manually
-conda create -n ffnlp python=3.7
+conda create -n nfs python=3.7
 pip install -r requirements.txt
 ```
 
@@ -29,7 +29,7 @@ bash script_shell/download.sh
 # Main experiemnts
 ```bash
 # RoBERTa-large
-conda activate ffnlp
+conda activate nfs
 python sweep_aug.py
 ```
 
