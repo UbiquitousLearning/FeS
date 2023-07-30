@@ -1,8 +1,8 @@
-# Federated Few-shot Learning for Mobile NLP (NFS)
+# Federated Few-shot Learning for Mobile NLP (FeS)
 
-NFS is an training-inference orchestration framework for enable private mobile NLP training with few labels.
+FeS (old name: NFS) is an training-inference orchestration framework for enable private mobile NLP training with few labels.
 
-NFS is built atop Pattern-Exploiting Training (PET) (commit id: 21d32d), the document file and instruction could be found in [README_pet.md](./README_pet.md)
+FeS is built atop Pattern-Exploiting Training (PET) (commit id: 21d32d), the document file and instruction could be found in [README_pet.md](./README_pet.md)
 
 # Step-by-step installation
 After `git clone`-ing this repository, please run the following command to install our dependencies.
