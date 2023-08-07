@@ -9,9 +9,10 @@ After `git clone`-ing this repository, please run the following command to insta
 
 ```bash
 # create directly via conda (recommended)
-conda env create -f environment.yaml
+conda env create -f environment.yml
 # or you can create the environment manually
 conda create -n nfs python=3.7
+conda activate nfs
 pip install -r requirements.txt
 ```
 
